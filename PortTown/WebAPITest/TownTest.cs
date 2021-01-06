@@ -12,7 +12,7 @@ namespace WebAPITest
         {
             var controller = new TownController();
 
-            var result = controller.Get();
+            var result = controller.GetAsync();
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
     }

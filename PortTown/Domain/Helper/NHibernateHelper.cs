@@ -8,11 +8,13 @@ namespace Domain.Helper
 {
     public sealed class NHibernateHelper
     {
-        private static readonly string pathToDB = "D:\\FER\\dipl\\3.semestar\\OO\\baza\\PortTownDb.mdf";
+        //private static readonly string pathToDB = "D:\\FER\\dipl\\3.semestar\\OO\\baza\\PortTownDb.mdf";
+        private static readonly string pathToDB = "C:\\Users\\Nikola\\Documents\\GitHub\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
         private static readonly bool deleteShemaOnStart = true;
 
         private const string CurrentSessionKey = "nhibernate.current_session";
-        private static readonly string connectionString = $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={pathToDB};Integrated Security=True";
+        //private static readonly string connectionString = $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={pathToDB};User Id = {user}; password={pwd};Trusted_Connection=False;MultipleActiveResultSets=true;";
+        private static readonly string connectionString = $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={pathToDB};Integrated Security=True;";
         private static readonly ISessionFactory _sessionFactory;
 
         static NHibernateHelper()

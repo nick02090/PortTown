@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace Domain
 {
     public class Town
     {
         [Key]
         [Required]
-        public Guid Id { get; set; }
-
-        public string Name { get; set; }
-        public int Level { get; set; }
-
-        public List<Building> Buildings { get; set; }
-        public List<Item> Items { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual int Level { get; set; }
+        public virtual List<Building> Buildings { get; set; }
+        public virtual List<Item> Items { get; set; }
     }
 }

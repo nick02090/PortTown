@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="Theme.PortTown.Button.Focused" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">?colorPrimary</item>
+        <item name="android:textColor">?colorOnPrimary</item>
+    </style>
+
+    <style name="Widget.PortTown.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:padding">8dp</item>
+        <item name="boxStrokeWidth">0.5dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:textColorHint">?colorSecondary</item>
+        <item name="hintTextColor">?colorOnPrimary</item>
+        <item name="boxStrokeColor">?colorSecondary</item>
+    </style>
+</resources>

@@ -4,10 +4,8 @@ namespace Domain
 {
     public class ProductionBuilding : Building
     {
-
-        public ResourceType ResourceProduced { get; set; }
-        public float ProductionRate { get; set; }
-        public DateTime LastHarvestTime { get; set; }
-
+        public virtual ResourceType ResourceProduced { get; set; }
+        public virtual float ProductionRate { get; set; }
+        public virtual DateTime LastHarvestTime { get; set; }
     }
 }

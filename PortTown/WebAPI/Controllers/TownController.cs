@@ -12,7 +12,6 @@ namespace WebAPI.Controllers
     public class TownController : ApiController
     {
         // GET api/<controller>
-        // GET api/<controller>
         public async Task<Town> GetAsync()
         {
             await AddingMock();
@@ -30,7 +29,13 @@ namespace WebAPI.Controllers
                 {
                     towns = await session
                         .Query<Town>()
-                        .Where(c => c.Level >= 2)
+                        .Where(x => x.Level >= 2)
+                        .Select(x => new Town
+                        { 
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level
+                        })
                         .ToListAsync();
 
                     await tx.CommitAsync();

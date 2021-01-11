@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Cfg;
+﻿using Domain.Enums;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
@@ -8,30 +9,32 @@ namespace Domain.Helper
 {
     public sealed class NHibernateHelper
     {
-        //private static readonly string pathToDB = "D:\\FER\\dipl\\3.semestar\\OO\\baza\\PortTownDb.mdf";
         private static readonly string pathToDB = "C:\\Users\\Nikola\\Documents\\GitHub\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
         private static readonly bool deleteShemaOnStart = true;
 
         private const string CurrentSessionKey = "nhibernate.current_session";
-        //private static readonly string connectionString = $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={pathToDB};User Id = {user}; password={pwd};Trusted_Connection=False;MultipleActiveResultSets=true;";
         private static readonly string connectionString = $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={pathToDB};Integrated Security=True;";
         private static readonly ISessionFactory _sessionFactory;
 
         static NHibernateHelper()
         {
+            var fluentConfiguration = Fluently.Configure()
+                .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql)
+                .Mappings(m =>
+                {
+                    m.FluentMappings.AddFromAssemblyOf<Town>();
+                    m.FluentMappings.AddFromAssemblyOf<ProductionBuilding>();
+                });
+
             if (deleteShemaOnStart)
             {
-                _sessionFactory = Fluently.Configure()
-                    .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql)
-                    .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Town>())
+                _sessionFactory = fluentConfiguration
                     .ExposeConfiguration(cfg => new SchemaExport(cfg).Create(false, false))
                     .BuildSessionFactory();
             }
             else
             {
-                _sessionFactory = Fluently.Configure()
-                    .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql)
-                    .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Town>())
+                _sessionFactory = fluentConfiguration
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg))
                     .BuildSessionFactory();
             }

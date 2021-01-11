@@ -11,7 +11,14 @@ namespace Domain
         public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual int Level { get; set; }
-        public virtual List<Building> Buildings { get; set; }
-        public virtual List<Item> Items { get; set; }
+        public virtual ICollection<ProductionBuilding> ProductionBuildings { get; set; }
+        public virtual ICollection<Storage> Storages { get; set; }
+        public virtual ICollection<Silo> Silos { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
+
+        public Town()
+        {
+            ProductionBuildings = new List<ProductionBuilding>();
+        }
     }
 }

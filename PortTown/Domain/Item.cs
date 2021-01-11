@@ -2,7 +2,7 @@
 {
     public class Item : Craftable
     {
-        public string Name { get; set; }
-        public int Value { get; set; }
+        public virtual string Name { get; set; }
+        public virtual int Value { get; set; }
     }
 }

@@ -2,6 +2,6 @@
 {
     public class Silo : Building
     {
-        public float StoredFood { get; set; }
+        public virtual int StoredFood { get; set; }
     }
 }

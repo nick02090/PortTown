@@ -5,6 +5,6 @@ namespace Domain
 {
     public class Storage : Building
     {
-        public Dictionary<ResourceType, float> StoredResources { get; set; }
+        public virtual IDictionary<ResourceType, int> StoredResources { get; set; }
     }
 }

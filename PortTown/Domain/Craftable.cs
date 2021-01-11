@@ -9,8 +9,8 @@ namespace Domain
     {
         [Key]
         [Required]
-        public Guid Id { get; set; }
-        public Dictionary<ResourceType, int> RequiredResources { get; set; }
-        public DateTime TimeToBuild { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual IDictionary<ResourceType, int> RequiredResources { get; set; }
+        public virtual DateTime TimeToBuild { get; set; }
     }
 }

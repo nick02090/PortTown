@@ -12,7 +12,7 @@ namespace Domain.Mappings
 
             Map(x => x.Name);
             Map(x => x.Level);
-            HasMany(x => x.ProductionBuildings).KeyColumn("TownId").Inverse().Cascade.All().Not.LazyLoad();
+            HasMany(x => x.ProductionBuildings).KeyColumn("TownId").Inverse().Cascade.All();
         }
     }
 }

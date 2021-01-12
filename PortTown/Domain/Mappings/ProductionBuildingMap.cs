@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using FluentNHibernate.Mapping;
+﻿using FluentNHibernate.Mapping;
 
 namespace Domain.Mappings
 {
@@ -12,21 +11,21 @@ namespace Domain.Mappings
             Id(x => x.Id).GeneratedBy.GuidNative();
 
             // Craftable
-            // requiredResources
-            // timeToBuild
+            //HasMany(x => x.RequiredResources).AsMap(x => x);
+            Map(x => x.TimeToBuild);
+            Map(x => x.TimeUntilCrafted);
 
             // Building
             Map(x => x.Name);
             Map(x => x.Level);
             Map(x => x.Capacity);
-            Map(x => x.BuildingType).CustomType<BuildingType>();
-            Map(x => x.Town.Id).Column("TownId");
-            References(x => x.Town).ForeignKey("TownId").Cascade.None();
+            Map(x => x.BuildingType);
+            References(x => x.Town, "TownId").Cascade.None();
 
             // ProductionBuilding
-            // resourceProduced
-            // productionRate
-            // lastHarvestTime
+            Map(x => x.ResourceProduced);
+            Map(x => x.ProductionRate);
+            Map(x => x.LastHarvestTime);
         }
     }
 }

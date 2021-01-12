@@ -12,5 +12,6 @@ namespace Domain
         public virtual Guid Id { get; set; }
         public virtual IDictionary<ResourceType, int> RequiredResources { get; set; }
         public virtual DateTime TimeToBuild { get; set; }
+        public virtual DateTime? TimeUntilCrafted { get; set; }
     }
 }

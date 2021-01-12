@@ -19,6 +19,10 @@ namespace Domain
         public Town()
         {
             ProductionBuildings = new List<ProductionBuilding>();
+            Storages = new List<Storage>();
+            Silos = new List<Silo>();
+            Items = new List<Item>();
+            Level = 1;
         }
     }
 }

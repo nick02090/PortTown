@@ -16,6 +16,9 @@ namespace WebAPI.Controllers
         {
             await AddingMock();
             var towns = await GetTownsAsync();
+            var town = towns.FirstOrDefault();
+            await AddingProdsMock(town);
+            towns = await GetTownsAsync();
             return towns.FirstOrDefault();
         }
 
@@ -27,16 +30,18 @@ namespace WebAPI.Controllers
             {
                 using (var tx = session.BeginTransaction())
                 {
-                    towns = await session
+                    var result = await session
                         .Query<Town>()
-                        .Where(x => x.Level >= 2)
                         .Select(x => new Town
                         { 
                             Id = x.Id,
                             Name = x.Name,
-                            Level = x.Level
+                            Level = x.Level,
+                            ProductionBuildings = x.ProductionBuildings
                         })
                         .ToListAsync();
+
+                    towns = result.ToList();
 
                     await tx.CommitAsync();
                 }
@@ -53,14 +58,36 @@ namespace WebAPI.Controllers
             ISession session = NHibernateHelper.GetCurrentSession();
             var spajicGrad = new Town
             {
-                Name = "SpajicGrad",
-                Level = 5
+                Name = "SpajicGrad"
             };
             try
             {
                 using (ITransaction tx = session.BeginTransaction())
                 {
                     await session.SaveAsync(spajicGrad);
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return;
+        }
+
+        private async Task AddingProdsMock(Town town)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var prod = new ProductionBuilding
+            {
+                Name = "Zlatara",
+                Town = town
+            };
+            try
+            {
+                using (ITransaction tx = session.BeginTransaction())
+                {
+                    await session.SaveAsync(prod);
                     await tx.CommitAsync();
                 }
             }

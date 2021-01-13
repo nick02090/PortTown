@@ -11,7 +11,7 @@ namespace Domain.Mappings
             Id(x => x.Id).GeneratedBy.GuidNative();
 
             // Craftable
-            //HasMany(x => x.RequiredResources).AsMap(x => x);
+            HasMany(x => x.RequiredResources).KeyColumn("CraftableId").Inverse().Cascade.All();
             Map(x => x.TimeToBuild);
             Map(x => x.TimeUntilCrafted);
 

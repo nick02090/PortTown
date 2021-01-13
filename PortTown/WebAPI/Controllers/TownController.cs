@@ -2,6 +2,7 @@
 using Domain.Helper;
 using NHibernate;
 using NHibernate.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,10 @@ namespace WebAPI.Controllers
             var town = towns.FirstOrDefault();
             await AddingProdsMock(town);
             towns = await GetTownsAsync();
-            return towns.FirstOrDefault();
+            town = towns.FirstOrDefault();
+            var prods = await GetProdsAsync(town.Id);
+            town.ProductionBuildings = prods;
+            return town;
         }
 
         private async Task<List<Town>> GetTownsAsync()
@@ -30,18 +34,19 @@ namespace WebAPI.Controllers
             {
                 using (var tx = session.BeginTransaction())
                 {
-                    var result = await session
+                    towns = await session
                         .Query<Town>()
                         .Select(x => new Town
                         { 
                             Id = x.Id,
                             Name = x.Name,
                             Level = x.Level,
-                            ProductionBuildings = x.ProductionBuildings
+                            ProductionBuildings = x.ProductionBuildings.Select(y => new ProductionBuilding
+                            {
+                                Id = y.Id
+                            }).ToList()
                         })
                         .ToListAsync();
-
-                    towns = result.ToList();
 
                     await tx.CommitAsync();
                 }
@@ -51,6 +56,39 @@ namespace WebAPI.Controllers
                 NHibernateHelper.CloseSession();
             }
             return towns;
+        }
+
+        private async Task<List<ProductionBuilding>> GetProdsAsync(Guid townId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<ProductionBuilding> prods = new List<ProductionBuilding>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    prods = await session
+                        .Query<ProductionBuilding>()
+                        .Where(x => x.Town.Id.Equals(townId))
+                        .Select(x => new ProductionBuilding
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            RequiredResources = x.RequiredResources.Select(y => new ResourceBatch
+                            {
+                                Id = y.Id
+                            }).ToList()
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return prods;
         }
 
         private async Task AddingMock()

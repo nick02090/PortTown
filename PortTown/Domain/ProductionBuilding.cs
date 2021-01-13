@@ -11,15 +11,7 @@ namespace Domain
 
         public ProductionBuilding()
         {
-            // Craftable
-            // SERIALIZE: RequiredResources
-            // SERIALIZE: TimeToBuild
-            TimeUntilCrafted = null;
-
             // Building
-            // SERIALIZE: Name
-            Level = 1;
-            // SERIALIZE: Capacity
             BuildingType = BuildingType.Production;
 
             // ProductionBuilding

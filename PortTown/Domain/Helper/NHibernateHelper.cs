@@ -23,6 +23,7 @@ namespace Domain.Helper
                 {
                     m.FluentMappings.AddFromAssemblyOf<Town>();
                     m.FluentMappings.AddFromAssemblyOf<ProductionBuilding>();
+                    m.FluentMappings.AddFromAssemblyOf<ResourceBatch>();
                 });
 
             if (deleteShemaOnStart)

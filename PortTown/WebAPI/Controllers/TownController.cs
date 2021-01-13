@@ -66,15 +66,16 @@ namespace WebAPI.Controllers
                     prods = await session
                         .Query<ProductionBuilding>()
                         .Where(x => x.ParentBuilding.Town.Id.Equals(townId) && x.ParentBuilding.BuildingType == BuildingType.Production)
-                        .Select(x => new ProductionBuilding
+                        .Select(x => new ProductionBuilding(x.ParentBuilding)
                         {
                             Id = x.Id,
-                            Name = x.Name,
-                            Level = x.Level,
-                            RequiredResources = x.ParentBuilding.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                            {
-                                Id = y.Id
-                            }).ToList()
+                            ResourceProduced = x.ResourceProduced,
+                            ProductionRate = x.ProductionRate,
+                            LastHarvestTime = x.LastHarvestTime
+                            //RequiredResources = x.ParentBuilding.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                            //{
+                            //    Id = y.Id
+                            //}).ToList()
                         })
                         .ToListAsync();
 
@@ -125,12 +126,9 @@ namespace WebAPI.Controllers
                 using (ITransaction tx = session.BeginTransaction())
                 {
                     await session.SaveAsync(craftable);
-                    building.ParentCraftable = craftable;
+                    building.SetParentCraftable(craftable);
                     await session.SaveAsync(building);
-                    var prod = new ProductionBuilding
-                    {
-                        ParentBuilding = building
-                    };
+                    var prod = new ProductionBuilding(building);
                     await session.SaveAsync(prod);
                     res = prod;
                     await tx.CommitAsync();

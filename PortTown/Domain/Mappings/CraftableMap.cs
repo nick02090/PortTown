@@ -16,6 +16,7 @@ namespace Domain.Mappings
             Map(x => x.TimeToBuild);
             Map(x => x.TimeUntilCrafted);
             Map(x => x.CraftableType);
+            Map(x => x.IsFinishedCrafting);
 
             // Relations
             HasMany(x => x.RequiredResources).KeyColumn("CraftableId").Inverse().Cascade.All(); // ONE-TO-MANY

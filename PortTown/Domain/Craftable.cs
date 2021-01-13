@@ -14,6 +14,9 @@ namespace Domain
         public virtual DateTime TimeToBuild { get; set; }
         public virtual DateTime? TimeUntilCrafted { get; set; }
         public virtual CraftableType CraftableType { get; set; }
+        public virtual bool IsFinishedCrafting { get; set; }
+
+        // References to children
         public virtual Building ChildBuilding { get; set; }
         public virtual Item ChildItem { get; set; }
 
@@ -22,6 +25,7 @@ namespace Domain
             RequiredResources = new List<ResourceBatch>(); // SERIALIZE
             // SERIALIZE: TimeToBuild
             TimeUntilCrafted = null;
+            IsFinishedCrafting = false;
         }
     }
 }

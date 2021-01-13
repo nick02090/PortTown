@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public abstract class Craftable
+    public class Craftable
     {
         [Key]
         [Required]
@@ -12,6 +13,9 @@ namespace Domain
         public virtual ICollection<ResourceBatch> RequiredResources { get; set; }
         public virtual DateTime TimeToBuild { get; set; }
         public virtual DateTime? TimeUntilCrafted { get; set; }
+        public virtual CraftableType CraftableType { get; set; }
+        public virtual Building ChildBuilding { get; set; }
+        public virtual Item ChildItem { get; set; }
 
         public Craftable()
         {

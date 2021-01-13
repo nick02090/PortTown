@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using Domain.Helper;
 using NHibernate;
 using NHibernate.Linq;
@@ -15,12 +16,8 @@ namespace WebAPI.Controllers
         // GET api/<controller>
         public async Task<Town> GetAsync()
         {
-            await AddingMock();
-            var towns = await GetTownsAsync();
-            var town = towns.FirstOrDefault();
-            await AddingProdsMock(town);
-            towns = await GetTownsAsync();
-            town = towns.FirstOrDefault();
+            var town = await AddingTownMock();
+            await AddingProdMock(town);
             var prods = await GetProdsAsync(town.Id);
             town.ProductionBuildings = prods;
             return town;
@@ -41,7 +38,7 @@ namespace WebAPI.Controllers
                             Id = x.Id,
                             Name = x.Name,
                             Level = x.Level,
-                            ProductionBuildings = x.ProductionBuildings.Select(y => new ProductionBuilding
+                            Buildings = x.Buildings.Select(y => new Building
                             {
                                 Id = y.Id
                             }).ToList()
@@ -68,13 +65,13 @@ namespace WebAPI.Controllers
                 {
                     prods = await session
                         .Query<ProductionBuilding>()
-                        .Where(x => x.Town.Id.Equals(townId))
+                        .Where(x => x.ParentBuilding.Town.Id.Equals(townId) && x.ParentBuilding.BuildingType == BuildingType.Production)
                         .Select(x => new ProductionBuilding
                         {
                             Id = x.Id,
                             Name = x.Name,
                             Level = x.Level,
-                            RequiredResources = x.RequiredResources.Select(y => new ResourceBatch
+                            RequiredResources = x.ParentBuilding.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
                             {
                                 Id = y.Id
                             }).ToList()
@@ -91,7 +88,7 @@ namespace WebAPI.Controllers
             return prods;
         }
 
-        private async Task AddingMock()
+        private async Task<Town> AddingTownMock()
         {
             ISession session = NHibernateHelper.GetCurrentSession();
             var spajicGrad = new Town
@@ -110,22 +107,32 @@ namespace WebAPI.Controllers
             {
                 NHibernateHelper.CloseSession();
             }
-            return;
+            return spajicGrad;
         }
 
-        private async Task AddingProdsMock(Town town)
+        private async Task<ProductionBuilding> AddingProdMock(Town town)
         {
             ISession session = NHibernateHelper.GetCurrentSession();
-            var prod = new ProductionBuilding
+            var craftable = new Craftable();
+            var building = new Building
             {
                 Name = "Zlatara",
                 Town = town
             };
+            ProductionBuilding res;
             try
             {
                 using (ITransaction tx = session.BeginTransaction())
                 {
+                    await session.SaveAsync(craftable);
+                    building.ParentCraftable = craftable;
+                    await session.SaveAsync(building);
+                    var prod = new ProductionBuilding
+                    {
+                        ParentBuilding = building
+                    };
                     await session.SaveAsync(prod);
+                    res = prod;
                     await tx.CommitAsync();
                 }
             }
@@ -133,7 +140,7 @@ namespace WebAPI.Controllers
             {
                 NHibernateHelper.CloseSession();
             }
-            return;
+            return res;
         }
 
         // GET api/<controller>/5

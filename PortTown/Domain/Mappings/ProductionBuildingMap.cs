@@ -6,26 +6,19 @@ namespace Domain.Mappings
     {
         public ProductionBuildingMap()
         {
+            // Table
             Table("ProductionBuilding");
 
+            // Id
             Id(x => x.Id).GeneratedBy.GuidNative();
 
-            // Craftable
-            HasMany(x => x.RequiredResources).KeyColumn("CraftableId").Inverse().Cascade.All();
-            Map(x => x.TimeToBuild);
-            Map(x => x.TimeUntilCrafted);
-
-            // Building
-            Map(x => x.Name);
-            Map(x => x.Level);
-            Map(x => x.Capacity);
-            Map(x => x.BuildingType);
-            References(x => x.Town, "TownId").Cascade.None();
-
-            // ProductionBuilding
+            // Properties
             Map(x => x.ResourceProduced);
             Map(x => x.ProductionRate);
             Map(x => x.LastHarvestTime);
+
+            // Relations
+            References(x => x.ParentBuilding, "ParentBuildingId").Cascade.None(); // ONE-TO-ONE
         }
     }
 }

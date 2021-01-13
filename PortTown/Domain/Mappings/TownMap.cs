@@ -6,13 +6,18 @@ namespace Domain.Mappings
     {
         public TownMap()
         {
+            // Table
             Table("Town");
 
+            // Id
             Id(x => x.Id).GeneratedBy.GuidNative();
 
+            // Properties
             Map(x => x.Name);
             Map(x => x.Level);
-            HasMany(x => x.ProductionBuildings).KeyColumn("TownId").Inverse().Cascade.All();
+
+            // Relations
+            HasMany(x => x.Buildings).KeyColumn("TownId").Inverse().Cascade.All(); // ONE-TO-MANY
         }
     }
 }

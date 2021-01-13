@@ -8,6 +8,7 @@ namespace Domain
         public virtual ResourceType ResourceProduced { get; set; }
         public virtual int ProductionRate { get; set; }
         public virtual DateTime LastHarvestTime { get; set; }
+        public virtual Building ParentBuilding { get; set; }
 
         public ProductionBuilding()
         {

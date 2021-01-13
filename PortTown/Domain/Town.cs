@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Domain
 {
@@ -11,6 +13,7 @@ namespace Domain
         public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual int Level { get; set; }
+        public virtual ICollection<Building> Buildings { get; set; }
         public virtual ICollection<ProductionBuilding> ProductionBuildings { get; set; }
         public virtual ICollection<Storage> Storages { get; set; }
         public virtual ICollection<Silo> Silos { get; set; }
@@ -18,6 +21,7 @@ namespace Domain
 
         public Town()
         {
+            Buildings = new List<Building>();
             ProductionBuildings = new List<ProductionBuilding>();
             Storages = new List<Storage>();
             Silos = new List<Silo>();

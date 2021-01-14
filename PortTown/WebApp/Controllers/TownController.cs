@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WebApp.Models.Buildings;
+using WebApp.Utils;
 
 namespace WebApp.Controllers
 {
@@ -42,6 +44,32 @@ namespace WebApp.Controllers
                 //returning the town info to view  
                 return View(town);
             }
+        }
+
+        [ChildActionOnly]
+        public ActionResult Buildings()
+        {
+            Buildings buildings = new Buildings();
+            buildings.BuildingsList.Add(new Building("Farm", 1, BuildingsInfo.FARM_INFO));
+            buildings.BuildingsList.Add(new Building("Workshop", 1, BuildingsInfo.WORKSHOP_INFO));
+            buildings.BuildingsList.Add(new Building("Gold mine", 1, BuildingsInfo.GOLD_MINE_INFO));
+            buildings.BuildingsList.Add(new Building("Silo", 1, BuildingsInfo.SILO_INFO));
+            buildings.BuildingsList.Add(new Building("Warehouse", 1, BuildingsInfo.WAREHOUSE_INFO));
+            buildings.BuildingsList.Add(new Building("Quarry", 1, BuildingsInfo.QUARRY_INFO));
+            buildings.BuildingsList.Add(new Building("Coal mine", 1, BuildingsInfo.COAL_MINE));
+            buildings.BuildingsList.Add(new Building("Iron mine", 1, BuildingsInfo.IRON_MINE));
+            buildings.BuildingsList.Add(new Building("Sawmill", 1, BuildingsInfo.SAMWILL_INFO));
+            buildings.BuildingsList.Add(new Building("Palace", 1, BuildingsInfo.PALACE_INFO));
+            return PartialView("Buildings", buildings);
+        }
+
+        public ActionResult Build()
+        {
+            Buildings buildings = new Buildings();
+            buildings.BuildingsList.Add(new Building("Farm", 1, BuildingsInfo.FARM_INFO));
+            buildings.BuildingsList.Add(new Building("Silo", 1, BuildingsInfo.SILO_INFO));
+            buildings.BuildingsList.Add(new Building("Sawmill", 1, BuildingsInfo.SAMWILL_INFO));
+            return View("Build", buildings);
         }
     }
 }

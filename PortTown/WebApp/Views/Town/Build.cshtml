@@ -1,0 +1,31 @@
+﻿@model WebApp.Models.Buildings.Buildings
+
+@{
+    ViewBag.Title = "Build";
+}
+
+<p>
+    @Html.ActionLink("My Town", "Index")
+</p>
+
+<h2>Available buildings</h2>
+
+<table class="table">
+    <tr>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.BuildingsList)
+{
+    <tr>
+        <td>
+            @Html.Encode(item.Name)
+        </td>
+        <td></td>
+        <td>
+            @Html.ActionLink("Build", "Create")
+        </td>
+    </tr>
+}
+
+</table>

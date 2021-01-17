@@ -1,8 +1,5 @@
 ﻿using System.Web.Http;
 using Unity;
-using Unity.Injection;
-using Unity.Lifetime;
-using WebAPI.Controllers;
 using WebAPI.Interfaces;
 using WebAPI.Repositories;
 using WebAPI.Resolver;
@@ -15,6 +12,16 @@ namespace WebAPI.Configuration
         {
             var container = new UnityContainer();
             container.RegisterType<ITownRepository, TownRepository>();
+            container.RegisterType<ICraftableRepository, CraftableRepository>();
+            container.RegisterType<IBuildingRepository, BuildingRepository>();
+            container.RegisterType<IItemRepository, ItemRepository>();
+            container.RegisterType<IProductionBuildingRepository, ProductionBuildingRepository>();
+            container.RegisterType<IResourceBatchRepository, ResourceBatchRepository>();
+            container.RegisterType<ISiloRepository, SiloRepository>();
+            container.RegisterType<IStorageRespository, StorageRespository>();
+            container.RegisterType<IUserRespository, UserRespository>();
+
+
             config.DependencyResolver = new UnityResolver(container);
 
             // JSON formatting

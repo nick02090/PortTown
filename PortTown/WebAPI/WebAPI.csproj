@@ -116,9 +116,25 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IBaseRepository.cs" />
+    <Compile Include="Interfaces\IBuildingRepository.cs" />
+    <Compile Include="Interfaces\ICraftableRepository.cs" />
+    <Compile Include="Interfaces\IItemRepository.cs" />
+    <Compile Include="Interfaces\IProductionBuildingRepository.cs" />
+    <Compile Include="Interfaces\IResourceBatchRepository.cs" />
+    <Compile Include="Interfaces\ISiloRepository.cs" />
+    <Compile Include="Interfaces\IStorageRespository.cs" />
     <Compile Include="Interfaces\ITownRepository.cs" />
+    <Compile Include="Interfaces\IUserRespository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BuildingRepository.cs" />
+    <Compile Include="Repositories\CraftableRepository.cs" />
+    <Compile Include="Repositories\ItemRepository.cs" />
+    <Compile Include="Repositories\ProductionBuildingRepository.cs" />
+    <Compile Include="Repositories\ResourceBatchRepository.cs" />
+    <Compile Include="Repositories\SiloRepository.cs" />
+    <Compile Include="Repositories\StorageRespository.cs" />
     <Compile Include="Repositories\TownRepository.cs" />
+    <Compile Include="Repositories\UserRespository.cs" />
     <Compile Include="Resolver\UnityResolver.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,19 +12,83 @@ namespace WebAPI.Repositories
 {
     public class TownRepository : ITownRepository
     {
-        public Task<Town> CreateAsync(Town entity)
+        public async Task<Town> CreateAsync(Town entity)
         {
-            throw new NotImplementedException();
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.SaveAsync(entity);
+
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return entity;
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await GetAsync(id);
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.DeleteAsync(entity);
+
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return;
         }
 
-        public Task<IEnumerable<Town>> GetAsync()
+        public async Task<IEnumerable<Town>> GetAsync()
         {
-            throw new NotImplementedException();
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<Town> towns = new List<Town>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    towns = await session
+                        .Query<Town>()
+                        .Select(x => new Town
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            Buildings = x.Buildings.Select(y => new Building
+                            {
+                                Id = y.Id
+                            }).ToList()
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return towns;
         }
 
         public async Task<Town> GetAsync(Guid id)
@@ -60,10 +124,29 @@ namespace WebAPI.Repositories
             return town;
         }
 
-        public Task<Town> UpdateAsync(Town entity)
+        public async Task<Town> UpdateAsync(Town entity)
         {
-            throw new NotImplementedException();
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.UpdateAsync(entity);
+                
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return entity;
         }
+    }
 
 
         //private async Task<List<Town>> GetTownsAsync()
@@ -183,5 +266,4 @@ namespace WebAPI.Repositories
         //    }
         //    return res;
         //}
-    }
 }

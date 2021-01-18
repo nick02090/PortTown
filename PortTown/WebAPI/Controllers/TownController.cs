@@ -126,7 +126,7 @@ namespace WebAPI.Controllers
                 using (ITransaction tx = session.BeginTransaction())
                 {
                     await session.SaveAsync(craftable);
-                    building.SetParentCraftable(craftable);
+                    building.ParentCraftable = craftable;
                     await session.SaveAsync(building);
                     var prod = new ProductionBuilding(building);
                     await session.SaveAsync(prod);

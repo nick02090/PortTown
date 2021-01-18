@@ -1,10 +1,14 @@
 ﻿using Domain.Enums;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class ProductionBuilding : Building
+    public class ProductionBuilding
     {
+        [Key]
+        [Required]
+        public virtual Guid Id { get; set; }
         public virtual ResourceType ResourceProduced { get; set; }
         public virtual int ProductionRate { get; set; }
         public virtual DateTime LastHarvestTime { get; set; }
@@ -14,9 +18,6 @@ namespace Domain
 
         public ProductionBuilding()
         {
-            // Building
-            BuildingType = BuildingType.Production;
-
             // ProductionBuilding
             // TODO: Serialize ResourceProduced
             // TODO: Serialize ProductionRate
@@ -25,16 +26,7 @@ namespace Domain
 
         public ProductionBuilding(Building parentBuilding)
         {
-            SetParentBuilding(parentBuilding);
-        }
-
-        public virtual void SetParentBuilding(Building parentBuilding)
-        {
             ParentBuilding = parentBuilding;
-            Name = parentBuilding.Name;
-            Level = parentBuilding.Level;
-            Capacity = parentBuilding.Capacity;
-            Town = parentBuilding.Town;
         }
     }
 }

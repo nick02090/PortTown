@@ -122,7 +122,6 @@
     <Compile Include="Interfaces\IItemRepository.cs" />
     <Compile Include="Interfaces\IProductionBuildingRepository.cs" />
     <Compile Include="Interfaces\IResourceBatchRepository.cs" />
-    <Compile Include="Interfaces\ISiloRepository.cs" />
     <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ITownRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
@@ -132,7 +131,6 @@
     <Compile Include="Repositories\ItemRepository.cs" />
     <Compile Include="Repositories\ProductionBuildingRepository.cs" />
     <Compile Include="Repositories\ResourceBatchRepository.cs" />
-    <Compile Include="Repositories\SiloRepository.cs" />
     <Compile Include="Repositories\StorageRespository.cs" />
     <Compile Include="Repositories\TownRepository.cs" />
     <Compile Include="Repositories\UserRespository.cs" />

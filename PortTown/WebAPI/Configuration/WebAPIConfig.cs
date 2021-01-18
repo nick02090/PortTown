@@ -17,7 +17,6 @@ namespace WebAPI.Configuration
             container.RegisterType<IItemRepository, ItemRepository>();
             container.RegisterType<IProductionBuildingRepository, ProductionBuildingRepository>();
             container.RegisterType<IResourceBatchRepository, ResourceBatchRepository>();
-            container.RegisterType<ISiloRepository, SiloRepository>();
             container.RegisterType<IStorageRepository, StorageRespository>();
             container.RegisterType<IUserRepository, UserRespository>();
 

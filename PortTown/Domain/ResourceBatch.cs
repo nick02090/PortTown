@@ -12,5 +12,6 @@ namespace Domain
         public virtual ResourceType ResourceType { get; set; }
         public virtual int Size { get; set; }
         public virtual ProductionBuilding Craftable { get; set; }
+        public virtual Storage Storage { get; set; }
     }
 }

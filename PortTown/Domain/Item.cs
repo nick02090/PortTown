@@ -12,6 +12,7 @@ namespace Domain
         public virtual string Name { get; set; }
         public virtual int Value { get; set; }
         public virtual ItemQuality Quality { get; set; }
+        public virtual Town Town { get; set; }
 
         // Reference to parent
         public virtual Craftable ParentCraftable { get; set; }

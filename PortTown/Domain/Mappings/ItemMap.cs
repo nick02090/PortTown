@@ -18,6 +18,7 @@ namespace Domain.Mappings
             Map(x => x.Quality);
 
             // Relations
+            References(x => x.Town, "TownId").Cascade.None(); // MANY-TO-ONE
             References(x => x.ParentCraftable, "ParentCraftableId").Cascade.None(); // ONE-TO-ONE
         }
     }

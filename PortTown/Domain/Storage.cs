@@ -1,10 +1,27 @@
-﻿using System.Collections.Generic;
-using Domain.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class Storage : Building
+    public class Storage
     {
-        public virtual IDictionary<ResourceType, int> StoredResources { get; set; }
+        [Key]
+        [Required]
+        public virtual Guid Id { get; set; }
+        public virtual ICollection<ResourceBatch> StoredResources { get; set; }
+
+        // Parent reference
+        public virtual Building ParentBuilding { get; set; }
+
+        public Storage()
+        {
+            StoredResources = new List<ResourceBatch>(); // SERIALIZE
+        }
+
+        public Storage(Building parentBuilding)
+        {
+            ParentBuilding = parentBuilding;
+        }
     }
 }

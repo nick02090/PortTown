@@ -19,7 +19,6 @@ namespace Domain
         public virtual Craftable ParentCraftable { get; set; }
         // References to children
         public virtual Storage ChildStorage { get; set; }
-        public virtual Silo ChildSilo { get; set; }
         public virtual ProductionBuilding ChildProductionBuilding { get; set; }
 
         public Building()

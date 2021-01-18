@@ -21,14 +21,13 @@ namespace Domain.Helper
                 .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql)
                 .Mappings(m =>
                 {
-                    // USER
+                    m.FluentMappings.AddFromAssemblyOf<User>();
                     m.FluentMappings.AddFromAssemblyOf<Town>();
                     m.FluentMappings.AddFromAssemblyOf<Craftable>();
                     m.FluentMappings.AddFromAssemblyOf<Building>();
-                    // ITEM
+                    m.FluentMappings.AddFromAssemblyOf<Item>();
                     m.FluentMappings.AddFromAssemblyOf<ProductionBuilding>();
-                    // SILO
-                    // STORAGE
+                    m.FluentMappings.AddFromAssemblyOf<Storage>();
                     m.FluentMappings.AddFromAssemblyOf<ResourceBatch>();
                 });
 

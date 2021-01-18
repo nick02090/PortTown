@@ -1,9 +1,14 @@
 ﻿using Domain.Enums;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class Building : Craftable
+    public class Building
     {
+        [Key]
+        [Required]
+        public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual int Level { get; set; }
         public virtual int Capacity { get; set; }
@@ -14,14 +19,10 @@ namespace Domain
         public virtual Craftable ParentCraftable { get; set; }
         // References to children
         public virtual Storage ChildStorage { get; set; }
-        public virtual Silo ChildSilo { get; set; }
         public virtual ProductionBuilding ChildProductionBuilding { get; set; }
 
         public Building()
         {
-            // Craftable
-            CraftableType = CraftableType.Building;
-
             // TODO: Serialize Name
             Level = 1;
             // TODO: Serialize Capacity
@@ -29,16 +30,7 @@ namespace Domain
 
         public Building(Craftable parentCraftable) : base()
         {
-            SetParentCraftable(parentCraftable);
-        }
-
-        public virtual void SetParentCraftable(Craftable parentCraftable)
-        {
             ParentCraftable = parentCraftable;
-            RequiredResources = parentCraftable.RequiredResources;
-            TimeToBuild = parentCraftable.TimeToBuild;
-            TimeUntilCrafted = parentCraftable.TimeUntilCrafted;
-            IsFinishedCrafting = parentCraftable.IsFinishedCrafting;
         }
     }
 }

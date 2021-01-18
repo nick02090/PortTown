@@ -21,6 +21,7 @@ namespace Domain.Mappings
             // Relations
             HasMany(x => x.RequiredResources).KeyColumn("CraftableId").Inverse().Cascade.All(); // ONE-TO-MANY
             HasOne(x => x.ChildBuilding).ForeignKey("ParentCraftableId").PropertyRef(nameof(Building.ParentCraftable)); // ONE-TO-ONE
+            HasOne(x => x.ChildItem).ForeignKey("ParentCraftableId").PropertyRef(nameof(Item.ParentCraftable)); // ONE-TO-ONE
         }
     }
 }

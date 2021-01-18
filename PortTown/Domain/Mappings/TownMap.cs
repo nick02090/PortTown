@@ -18,6 +18,8 @@ namespace Domain.Mappings
 
             // Relations
             HasMany(x => x.Buildings).KeyColumn("TownId").Inverse().Cascade.All(); // ONE-TO-MANY
+            HasMany(x => x.Items).KeyColumn("TownId").Inverse().Cascade.All(); // ONE-TO-MANY
+            References(x => x.User, "UserId").Cascade.None(); // ONE-TO-ONE
         }
     }
 }

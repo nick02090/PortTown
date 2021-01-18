@@ -11,7 +11,7 @@ namespace Domain
         public virtual Guid Id { get; set; }
         public virtual ResourceType ResourceType { get; set; }
         public virtual int Size { get; set; }
-        public virtual ProductionBuilding Craftable { get; set; }
+        public virtual Craftable Craftable { get; set; }
         public virtual Storage Storage { get; set; }
     }
 }

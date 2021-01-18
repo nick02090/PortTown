@@ -11,7 +11,7 @@ using WebAPI.Interfaces;
 
 namespace WebAPI.Repositories
 {
-    public class UserRespository : IUserRespository
+    public class UserRespository : IUserRepository
     {
         public async Task<User> CreateAsync(User entity)
         {

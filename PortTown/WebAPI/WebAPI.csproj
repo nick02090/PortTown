@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="Configuration\WebAPIConfig.cs" />
     <Compile Include="Controllers\TownController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -122,9 +123,9 @@
     <Compile Include="Interfaces\IProductionBuildingRepository.cs" />
     <Compile Include="Interfaces\IResourceBatchRepository.cs" />
     <Compile Include="Interfaces\ISiloRepository.cs" />
-    <Compile Include="Interfaces\IStorageRespository.cs" />
+    <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ITownRepository.cs" />
-    <Compile Include="Interfaces\IUserRespository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BuildingRepository.cs" />
     <Compile Include="Repositories\CraftableRepository.cs" />

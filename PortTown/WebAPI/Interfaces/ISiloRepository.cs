@@ -2,7 +2,7 @@
 
 namespace WebAPI.Interfaces
 {
-    interface ISiloRepository : IBaseRepository<Silo>
+    public interface ISiloRepository : IBaseRepository<Silo>
     {
     }
 }

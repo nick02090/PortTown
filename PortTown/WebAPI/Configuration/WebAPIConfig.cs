@@ -18,8 +18,8 @@ namespace WebAPI.Configuration
             container.RegisterType<IProductionBuildingRepository, ProductionBuildingRepository>();
             container.RegisterType<IResourceBatchRepository, ResourceBatchRepository>();
             container.RegisterType<ISiloRepository, SiloRepository>();
-            container.RegisterType<IStorageRespository, StorageRespository>();
-            container.RegisterType<IUserRespository, UserRespository>();
+            container.RegisterType<IStorageRepository, StorageRespository>();
+            container.RegisterType<IUserRepository, UserRespository>();
 
 
             config.DependencyResolver = new UnityResolver(container);

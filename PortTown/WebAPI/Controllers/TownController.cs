@@ -1,4 +1,6 @@
 ﻿using Domain;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using WebAPI.Interfaces;
@@ -15,9 +17,9 @@ namespace WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public async Task<Town> GetAsync()
+        public async Task<IEnumerable<Town>> GetAsync()
         {
-            return await _repository.GetAsync(new System.Guid("97819259-7042-4d28-a441-839ced00417e"));
+            return await _repository.GetAsync();
             //var town = await AddingTownMock();
             //await AddingProdMock(town);
             //var prods = await GetProdsAsync(town.Id);
@@ -26,9 +28,9 @@ namespace WebAPI.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public async Task<Town> GetAsync(Guid id)
         {
-            return "value";
+            return await _repository.GetAsync(id);
         }
 
         // POST api/<controller>

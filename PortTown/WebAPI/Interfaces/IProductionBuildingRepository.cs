@@ -2,7 +2,7 @@
 
 namespace WebAPI.Interfaces
 {
-    interface IProductionBuildingRepository : IBaseRepository<ProductionBuilding>
+    public interface IProductionBuildingRepository : IBaseRepository<ProductionBuilding>
     {
 
     }

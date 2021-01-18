@@ -2,7 +2,7 @@
 
 namespace WebAPI.Interfaces
 {
-    interface IResourceBatchRepository : IBaseRepository<ResourceBatch>
+    public interface IResourceBatchRepository : IBaseRepository<ResourceBatch>
     {
 
     }

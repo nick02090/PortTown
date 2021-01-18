@@ -11,7 +11,7 @@ using WebAPI.Interfaces;
 
 namespace WebAPI.Repositories
 {
-    public class StorageRespository : IStorageRespository
+    public class StorageRespository : IStorageRepository
     {
         public async Task<Storage> CreateAsync(Storage entity)
         {

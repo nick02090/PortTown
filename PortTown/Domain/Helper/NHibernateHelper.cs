@@ -25,7 +25,7 @@ namespace Domain.Helper
                     m.FluentMappings.AddFromAssemblyOf<Town>();
                     m.FluentMappings.AddFromAssemblyOf<Craftable>();
                     m.FluentMappings.AddFromAssemblyOf<Building>();
-                    // ITEM
+                    m.FluentMappings.AddFromAssemblyOf<Item>();
                     m.FluentMappings.AddFromAssemblyOf<ProductionBuilding>();
                     // SILO
                     // STORAGE

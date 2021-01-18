@@ -20,12 +20,6 @@ namespace WebAPI.Controllers
         public async Task<IEnumerable<Town>> GetAsync()
         {
             return await _repository.GetAsync();
-
-            //var town = await AddingTownMock();
-            //await AddingProdMock(town);
-            //var prods = await GetProdsAsync(town.Id);
-            //town.ProductionBuildings = prods;
-            //return town;
         }
 
         // GET api/<controller>/5

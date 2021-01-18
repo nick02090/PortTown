@@ -111,6 +111,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\WebAPIConfig.cs" />
+    <Compile Include="Controllers\BuildingController.cs" />
+    <Compile Include="Controllers\CraftableController.cs" />
+    <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\ProductionBuildingController.cs" />
+    <Compile Include="Controllers\ResourceBatchController.cs" />
+    <Compile Include="Controllers\StorageController.cs" />
     <Compile Include="Controllers\TownController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">

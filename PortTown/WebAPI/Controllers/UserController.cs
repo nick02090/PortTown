@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using WebAPI.Interfaces;
 
@@ -19,30 +18,40 @@ namespace WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<User>> GetAsync()
         {
-            return new string[] { "value1", "value2" };
+            return await _repository.GetAsync();
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public async Task<User> GetAsync(Guid id)
         {
-            return "value";
+            return await _repository.GetAsync(id);
         }
 
         // POST api/<controller>
-        public void Post([FromBody] string value)
+        public async Task<User> CreateAsync([FromBody] User entity)
         {
+            return await _repository.CreateAsync(entity);
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
+        public async Task<User> UpdateAsync(Guid id, [FromBody] User entity)
         {
+            var entitydb = await _repository.GetAsync(id);
+
+            entitydb.Username = entity.Username;
+            entitydb.Email = entity.Email;
+            entitydb.Password = entity.Password;
+
+            return await _repository.UpdateAsync(entitydb);
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public async Task DeleteAsync(Guid id)
         {
+            await _repository.DeleteAsync(id);
+            return;
         }
     }
 }

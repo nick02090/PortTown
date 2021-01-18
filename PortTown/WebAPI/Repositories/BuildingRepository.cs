@@ -76,7 +76,10 @@ namespace WebAPI.Repositories
                             Level = x.Level,
                             Capacity = x.Capacity,
                             BuildingType = x.BuildingType,
-                            Town = x.Town,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .ToListAsync();
 
@@ -108,7 +111,10 @@ namespace WebAPI.Repositories
                             Level = x.Level,
                             Capacity = x.Capacity,
                             BuildingType = x.BuildingType,
-                            Town = x.Town,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 

@@ -74,7 +74,10 @@ namespace WebAPI.Repositories
                             Id = x.Id,
                             ResourceType = x.ResourceType,
                             Size = x.Size,
-                            Craftable = x.Craftable
+                            Craftable = new Craftable
+                            {
+                                Id = x.Craftable.Id
+                            }
                         })
                         .ToListAsync();
 
@@ -104,7 +107,10 @@ namespace WebAPI.Repositories
                             Id = x.Id,
                             ResourceType = x.ResourceType,
                             Size = x.Size,
-                            Craftable = x.Craftable
+                            Craftable = new Craftable
+                            {
+                                Id = x.Craftable.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 

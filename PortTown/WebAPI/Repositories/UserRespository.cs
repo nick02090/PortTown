@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using WebAPI.Interfaces;
 
 namespace WebAPI.Repositories
@@ -76,7 +75,10 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Town = x.Town
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .ToListAsync();
 
@@ -107,7 +109,10 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Town = x.Town
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 

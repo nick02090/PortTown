@@ -16,7 +16,8 @@ namespace WebAPI.Controllers
         // GET api/<controller>
         public async Task<Town> GetAsync()
         {
-            var town = await AddingTownMock();
+            var user = await AddingUserMock();
+            var town = await AddingTownMock(user);
             await AddingProdMock(town);
             var prods = await GetProdsAsync(town.Id);
             town.ProductionBuildings = prods;
@@ -89,12 +90,37 @@ namespace WebAPI.Controllers
             return prods;
         }
 
-        private async Task<Town> AddingTownMock()
+        private async Task<User> AddingUserMock()
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var user = new User
+            {
+                Username = "Cala",
+                Password = "calakralj",
+                Email = "cala.cala@gmail.com"
+            };
+            try
+            {
+                using(ITransaction tx = session.BeginTransaction())
+                {
+                    await session.SaveAsync(user);
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return user;
+        }
+
+        private async Task<Town> AddingTownMock(User user)
         {
             ISession session = NHibernateHelper.GetCurrentSession();
             var spajicGrad = new Town
             {
-                Name = "SpajicGrad"
+                Name = "SpajicGrad",
+                User = user
             };
             try
             {

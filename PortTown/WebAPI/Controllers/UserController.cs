@@ -42,6 +42,11 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<User> CreateAsync([FromBody] User entity)
         {
+            if (!await _service.CheckAvailability(entity.Email))
+            {
+                return null;
+            }
+
             entity.Password = _passwordHasher.HashPassword(entity.Password);
             var entitydb = await _repository.CreateAsync(entity);
             entitydb.Password = null;
@@ -72,7 +77,7 @@ namespace WebAPI.Controllers
 
         [Route("api/user/authenticate")]
         [HttpPost]
-        public async Task<User> Authenticate([FromBody] User entity)
+        public async Task<User> AuthenticateAsync([FromBody] User entity)
         {
             var entitydb = await _service.Authenticate(entity.Email, entity.Password);
 
@@ -84,6 +89,20 @@ namespace WebAPI.Controllers
             entitydb.Password = null;
 
             return entitydb;
+        }
+
+        [Route("api/user/check-availability")]
+        [HttpPost]
+        public async Task<bool> CheckAvailabilityAsync([FromBody] User entity)
+        {
+            return await _service.CheckAvailability(entity.Email);
+        }
+
+        [Route("api/user/logout/{token}")]
+        [HttpGet]
+        public async Task LogoutAsync([FromUri] string token)
+        {
+            await _service.Logout(token);
         }
     }
 }

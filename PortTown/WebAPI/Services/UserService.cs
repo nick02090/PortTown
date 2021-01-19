@@ -61,12 +61,30 @@ namespace WebAPI.Services
 
         public async Task<bool> CheckAvailability(string email)
         {
-            throw new NotImplementedException();
+            var user = await UserRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public async Task Logout(string token)
         {
-            throw new NotImplementedException();
+            var user = await UserRepository.GetByTokenAsync(token);
+
+            if (user == null)
+            {
+                return;
+            }
+
+            user.Token = null;
+
+            await UserRepository.UpdateAsync(user);
+
+            return;
         }
     }
 }

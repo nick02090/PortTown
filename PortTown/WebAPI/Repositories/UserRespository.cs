@@ -135,7 +135,7 @@ namespace WebAPI.Repositories
                 {
                     user = await session
                         .Query<User>()
-                        .Where(x => x.Email == x.Email)
+                        .Where(x => x.Email == email)
                         .Select(x => new User
                         {
                             Id = x.Id,
@@ -153,6 +153,41 @@ namespace WebAPI.Repositories
                     await tx.CommitAsync();
                 }    
             } 
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return user;
+        }
+
+        public async Task<User> GetByTokenAsync(string token)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var user = new User();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    user = await session
+                        .Query<User>()
+                        .Where(x => x.Token == token)
+                        .Select(x => new User
+                        {
+                            Id = x.Id,
+                            Username = x.Username,
+                            Email = x.Email,
+                            Password = x.Password,
+                            Token = x.Token
+                            //Town = new Town
+                            //{
+                            //    Id = x.Town.Id
+                            //}
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
             finally
             {
                 NHibernateHelper.CloseSession();

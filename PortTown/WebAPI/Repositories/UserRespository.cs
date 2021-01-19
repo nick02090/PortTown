@@ -20,10 +20,7 @@ namespace WebAPI.Repositories
             {
                 using (var tx = session.BeginTransaction())
                 {
-
                     await session.SaveAsync(entity);
-
-
                     await tx.CommitAsync();
                 }
             }
@@ -75,10 +72,11 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Town = new Town
-                            {
-                                Id = x.Town.Id
-                            }
+                            Token = x.Token
+                            //Town = new Town
+                            //{
+                            //    Id = x.Town.Id
+                            //}
                         })
                         .ToListAsync();
 
@@ -109,16 +107,52 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Town = new Town
-                            {
-                                Id = x.Town.Id
-                            }
+                            Token = x.Token
+                            //Town = new Town
+                            //{
+                            //    Id = x.Town.Id
+                            //}
                         })
                         .SingleOrDefaultAsync();
 
                     await tx.CommitAsync();
                 }
             }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return user;
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var user = new User();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    user = await session
+                        .Query<User>()
+                        .Where(x => x.Email == x.Email)
+                        .Select(x => new User
+                        {
+                            Id = x.Id,
+                            Username = x.Username,
+                            Email = x.Email,
+                            Password = x.Password,
+                            Token = x.Token
+                            //Town = new Town
+                            //{
+                            //    Id = x.Town.Id
+                            //}
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }    
+            } 
             finally
             {
                 NHibernateHelper.CloseSession();

@@ -16,6 +16,7 @@ namespace Domain.Mappings
             Map(x => x.Username);
             Map(x => x.Email);
             Map(x => x.Password);
+            Map(x => x.Token);
 
             // Relations
             HasOne(x => x.Town).ForeignKey("UserId").PropertyRef(nameof(Town.User)); // ONE-TO-ONE

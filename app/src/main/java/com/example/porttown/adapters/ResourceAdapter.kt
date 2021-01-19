@@ -1,4 +1,4 @@
-package com.example.porttown.ui.game.resources
+package com.example.porttown.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -32,9 +32,11 @@ class ResourceAdapter(private val resources: List<Resource>) :
 
     override fun onBindViewHolder(holder: ResourceViewHolder, position: Int) {
         val resource = resources[position]
-        holder.resourceName.text = resource.getName()
-        holder.resourceCount.text = resource.getCount().toString()
-        holder.resourceImage.setImageResource(resource.getImageResource())
+        holder.apply {
+            resourceName.text = resourceName.resources.getString(resource.getNameResource())
+            resourceCount.text = resource.getCount().toString()
+            resourceImage.setImageResource(resource.getImageResource())
+        }
     }
 
     override fun getItemCount(): Int = resources.size

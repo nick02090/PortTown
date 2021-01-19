@@ -1,42 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/filledTextField"
-        style="@style/Widget.PortTown.TextInputLayout"
+    <data>
+
+        <variable
+            name="loginViewModel"
+            type="com.example.porttown.viewmodels.AuthViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/username_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:background="@color/black">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/username_text_layout"
+            style="@style/Widget.PortTown.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?colorOnPrimary"
-            android:textCursorDrawable="@drawable/cursor_color_on_primary" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="@string/username_hint"
+            app:counterEnabled="true"
+            app:counterMaxLength="16"
+            app:counterTextColor="?colorOnPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/password_text_layout"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/filledTextField2"
-        style="@style/Widget.PortTown.TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/password_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filledTextField">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username_input_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="16"
+                android:maxLines="1"
+                android:textColor="?colorOnPrimary"
+                android:textCursorDrawable="@drawable/cursor_color_on_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEditText2"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_text_layout"
+            style="@style/Widget.PortTown.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?colorOnPrimary"
-            android:textCursorDrawable="@drawable/cursor_color_on_primary" />
-    </com.google.android.material.textfield.TextInputLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:hint="@string/password_hint"
+            app:counterEnabled="true"
+            app:counterMaxLength="16"
+            app:counterTextColor="?colorOnPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/town_name_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/username_text_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_input_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="16"
+                android:maxLines="1"
+                android:textColor="?colorOnPrimary"
+                android:textCursorDrawable="@drawable/cursor_color_on_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/town_name_input_layout"
+            style="@style/Widget.PortTown.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Town name"
+            android:visibility="gone"
+            app:counterEnabled="true"
+            app:counterMaxLength="25"
+            app:counterTextColor="?colorOnPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/next_button"
+            app:layout_constraintTop_toBottomOf="@+id/password_text_layout"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/town_name_input_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:textColor="?colorOnPrimary"
+                android:textCursorDrawable="@drawable/cursor_color_on_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_bottom_rounded_corners_ripple"
+            android:clickable="true"
+            android:onClick="@{() -> loginViewModel.onNextClicked()}"
+            android:text="Next"
+            android:textColor="?colorSecondary"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/town_name_input_layout" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gold"
+            app:layout_constraintTop_toBottomOf="@id/next_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

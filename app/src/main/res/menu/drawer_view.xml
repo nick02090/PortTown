@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/nav_game"
+        android:title="@string/text_game">
+        <menu>
+            <group android:checkableBehavior="none">
+                <item
+                    android:id="@+id/nav_town"
+                    android:title="@string/town" />
 
-        <item
-            android:id="@+id/nav_town"
-            android:title="Town"></item>
+                <item
+                    android:id="@+id/nav_market"
+                    android:title="@string/market" />
+            </group>
+        </menu>
 
-        <item
-            android:id="@+id/nav_market"
-            android:title="Market"></item>
-    </group>
+    </item>
+    <item
+        android:id="@+id/nav_account"
+        android:title="@string/account">
 
-    <group>
-        <item
-            android:id="@+id/subtitle"
-            android:title="Account">
-
-            <menu>
+        <menu>
+            <group android:checkableBehavior="none">
                 <item
                     android:id="@+id/nav_logout"
-                    android:title="Log out"></item>
-            </menu>
-        </item>
-    </group>
+                    android:title="@string/log_out" />
+                <item
+                    android:id="@+id/nav_settings"
+                    android:title="@string/settings" />
+            </group>
+        </menu>
+    </item>
+
 </menu>

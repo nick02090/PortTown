@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="loginViewModel"
-            type="com.example.porttown.ui.login.LoginViewModel" />
+            type="com.example.porttown.viewmodels.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/login_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="?colorPrimary">
+
+        <!-- Fix progress bar padding -->
+        <View
+            android:id="@+id/guideline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/verifying_user"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/gameName"
@@ -66,19 +91,21 @@
 
             <Button
                 android:id="@+id/login_button"
-                style="@style/Theme.PortTown.Button.Focused"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1dp"
                 android:background="@drawable/button_top_rounded_corners_ripple"
                 android:clickable="true"
                 android:focusedByDefault="true"
+                android:onClick="@{() -> loginViewModel.onLoginClicked()}"
                 android:text="@string/login_button_text"
                 android:textColor="?colorSecondary" />
 
             <include
                 android:id="@+id/login_form"
                 layout="@layout/fragment_login_form"
-                android:visibility="gone" />
+                android:visibility="gone"
+                bind:loginViewModel="@{loginViewModel}" />
 
             <Button
                 android:id="@+id/register_button"
@@ -86,9 +113,11 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/button_bottom_rounded_corners_ripple"
                 android:clickable="true"
+                android:onClick="@{() -> loginViewModel.onRegisterClicked()}"
                 android:text="@string/register_button_text"
                 android:textColor="?colorSecondary" />
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+

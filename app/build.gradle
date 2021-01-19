@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'kotlin-android-extensions'
     id "androidx.navigation.safeargs.kotlin"
     id 'idea'
 }
@@ -53,6 +52,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
+    //Wave animation
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 
     //navigation
@@ -61,17 +61,38 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
-    //testing
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    //not testing anyways
+    //    testImplementation 'junit:junit:4.+'
+    //    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    //dagger
-    implementation 'com.google.dagger:dagger:2.30.1'
-    kapt 'com.google.dagger:dagger-compiler:2.30.1'
-    implementation 'com.google.dagger:dagger-android:2.30.1'
-    implementation 'com.google.dagger:dagger-android-support:2.30.1'
-    // if you use the support libraries
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.30.1'
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+
+    //Koin
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+
+    //Moshi
+    implementation "com.squareup.moshi:moshi:1.11.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.11.0"
+
+    def latestFastAdapterRelease = '5.3.2'
+    implementation "com.mikepenz:fastadapter:5.3.2"
+    implementation "com.mikepenz:fastadapter-extensions-binding:${latestFastAdapterRelease}"
+    // view binding helpers
+    implementation "com.mikepenz:fastadapter-extensions-utils:${latestFastAdapterRelease}"
+
+    //Settings
+    implementation "androidx.preference:preference-ktx:1.1.1"
+
+    //    implementation "com.mikepenz:fastadapter-extensions-diff:${latestFastAdapterRelease}" // diff util helpers
+//    implementation "com.mikepenz:fastadapter-extensions-drag:${latestFastAdapterRelease}" // drag support
+//    implementation "com.mikepenz:fastadapter-extensions-paged:${latestFastAdapterRelease}" // paging support
+//    implementation "com.mikepenz:fastadapter-extensions-scroll:${latestFastAdapterRelease}" // scroll helpers
+//    implementation "com.mikepenz:fastadapter-extensions-swipe:${latestFastAdapterRelease}" // swipe support
+//    implementation "com.mikepenz:fastadapter-extensions-ui:${latestFastAdapterRelease}" // pre-defined ui components
+
 }
 

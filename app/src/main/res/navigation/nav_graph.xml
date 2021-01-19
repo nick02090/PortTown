@@ -3,21 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/town_fragment">
-
+    app:startDestination="@id/townFragment">
     <fragment
-        android:id="@+id/login_fragment"
-        android:name="com.example.porttown.ui.login.LoginFragment"
-        android:label="Login"
-        tools:layout="@layout/fragment_login"/>
-
+        android:id="@+id/townFragment"
+        android:name="com.example.porttown.ui.game.town.TownFragment"
+        android:label="@string/town" />
     <fragment
-        android:id="@+id/town_fragment"
-        android:name="com.example.porttown.ui.game.TownFragment"
-        android:label="Town"
-        tools:layout="@layout/fragment_town">
-        <action
-            android:id="@+id/action_gameFragment_to_loginFragment"
-            app:destination="@id/login_fragment" />
-    </fragment>
+        android:id="@+id/marketFragment"
+        android:name="com.example.porttown.ui.game.market.MarketFragment"
+        android:label="@string/market" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.porttown.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
 </navigation>

@@ -141,6 +141,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHasher.cs" />
+    <Compile Include="Interfaces\IAppSettings.cs" />
     <Compile Include="Interfaces\IBaseRepository.cs" />
     <Compile Include="Interfaces\IBuildingRepository.cs" />
     <Compile Include="Interfaces\ICraftableRepository.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Repositories\UserRespository.cs" />
     <Compile Include="Resolver\UnityResolver.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Settings\AppSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

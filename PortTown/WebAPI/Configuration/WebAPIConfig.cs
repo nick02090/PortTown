@@ -4,6 +4,7 @@ using WebAPI.Interfaces;
 using WebAPI.Repositories;
 using WebAPI.Resolver;
 using WebAPI.Services;
+using WebAPI.Settings;
 
 namespace WebAPI.Configuration
 {
@@ -24,6 +25,9 @@ namespace WebAPI.Configuration
             #endregion
             #region Services
             container.RegisterType<IUserService, UserService>();
+            #endregion
+            #region Settings
+            container.RegisterSingleton<IAppSettings, AppSettings>();
             #endregion
             config.DependencyResolver = new UnityResolver(container);
 

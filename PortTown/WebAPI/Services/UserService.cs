@@ -12,13 +12,13 @@ namespace WebAPI.Services
 {
     public class UserService : IUserService
     {
-        private readonly string secret = "P0rtT0wn15Th3835t4ppl1c4t10n3v3rM4d38yHum4n8r41n";
-
         private readonly IUserRepository UserRepository;
+        private readonly IAppSettings AppSettings;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IAppSettings appSettings)
         {
             UserRepository = userRepository;
+            AppSettings = appSettings;
         }
 
         public async Task<User> Authenticate(string email, string password)
@@ -38,7 +38,7 @@ namespace WebAPI.Services
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

@@ -1,6 +1,5 @@
 ﻿using Domain;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,18 +24,19 @@ namespace WebAPI.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IEnumerable<User>> GetAsync()
+        public async Task<HttpResponseMessage> GetAsync()
         {
-            return await _repository.GetAsync();
+            var users = await _repository.GetAsync();
+            return Request.CreateResponse(HttpStatusCode.OK, users);
         }
 
         // GET api/<controller>/5
         [HttpGet]
-        public async Task<User> GetAsync([FromUri] Guid id)
+        public async Task<HttpResponseMessage> GetAsync([FromUri] Guid id)
         {
             var entitydb = await _repository.GetAsync(id);
             entitydb.Password = null;
-            return entitydb;
+            return Request.CreateResponse(HttpStatusCode.OK, entitydb);
         }
 
         // POST api/<controller>
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
             if (!(bool)isAvailable["Availability"])
             {
                 var error = new JSONErrorFormatter("User with that email already exists!",
-                    entity.Email, $"api/user/register/{townName}", "UserService.CheckAvailability");
+                    entity.Email, "Email", "POST", $"api/user/register/{townName}", "UserService.CheckAvailability");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
             // Hash the password and create a new user (entitydb)
@@ -70,25 +70,35 @@ namespace WebAPI.Controllers
 
         // PUT api/<controller>/5
         [HttpPut]
-        public async Task<User> UpdateAsync([FromUri]Guid id, [FromBody] User entity)
+        public async Task<HttpResponseMessage> UpdateAsync([FromUri]Guid id, [FromBody] User entity)
         {
             var entitydb = await _repository.GetAsync(id);
 
             entitydb.Username = entity.Username;
             entitydb.Email = entity.Email;
-            // TODO: Check email availability
+            // Check updated email availability
+            var isAvailable = await _service.CheckAvailability(entity.Email);
+            if (!(bool)isAvailable["Availability"])
+            {
+                var error = new JSONErrorFormatter("User with that email already exists!",
+                    entity.Email, "Email", "PUT", $"api/user", "UserService.CheckAvailability");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            // Hash the password
             entitydb.Password = _passwordHasher.HashPassword(entity.Password);
-
+            // Update the user
             var updatedEntitydb = await _repository.UpdateAsync(entitydb);
+            // Remove the password from the result
             updatedEntitydb.Password = null;
-            return updatedEntitydb;
+            return Request.CreateResponse(HttpStatusCode.OK, updatedEntitydb);
         }
 
         // DELETE api/<controller>/5
         [HttpDelete]
-        public async Task DeleteAsync(Guid id)
+        public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
+            return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
         [Route("api/user/authenticate")]
@@ -100,8 +110,8 @@ namespace WebAPI.Controllers
             if (entitydb == null)
             {
                 // invalid email
-                var error = new JSONErrorFormatter("Invalid email!",
-                    entity.Email, "api/user/authenticate", "UserRepository.GetByEmailAsync");
+                var error = new JSONErrorFormatter("Invalid email!", entity.Email, "Email", 
+                    "POST", "api/user/authenticate", "UserRepository.GetByEmailAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
 
@@ -110,13 +120,13 @@ namespace WebAPI.Controllers
             if (entityauth == null)
             {
                 // invalid password
-                var error = new JSONErrorFormatter("Invalid password!",
-                    entity.Password, "api/user/authenticate", "UserService.Authenticate");
+                var error = new JSONErrorFormatter("Invalid password!", entity.Password, "Password", 
+                    "POST", "api/user/authenticate", "UserService.Authenticate");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
 
             entityauth.Password = null;
-            return Request.CreateResponse(HttpStatusCode.Accepted, entityauth);
+            return Request.CreateResponse(HttpStatusCode.OK, entityauth);
         }
 
         [Route("api/user/check-availability")]
@@ -129,9 +139,10 @@ namespace WebAPI.Controllers
 
         [Route("api/user/logout/{token}")]
         [HttpGet]
-        public async Task LogoutAsync([FromUri] string token)
+        public async Task<HttpResponseMessage> LogoutAsync([FromUri] string token)
         {
             await _service.Logout(token);
+            return Request.CreateResponse(HttpStatusCode.NoContent);
         }
     }
 }

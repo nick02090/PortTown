@@ -51,6 +51,10 @@ namespace WebAPI.Services
 
             await UserRepository.UpdateAsync(user);
 
+            // load town data
+            var town = await TownRepository.GetAsync(user.Town.Id);
+            user.Town = town;
+
             // remove password before returning
             user.Password = null;
 
@@ -66,8 +70,11 @@ namespace WebAPI.Services
             {
                 availability.Availability = true;
             }
+            else
+            {
+                availability.Availability = false;
+            }
 
-            availability.Availability = false;
             return availability;
         }
 

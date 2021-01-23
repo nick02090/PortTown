@@ -38,18 +38,29 @@ namespace WebAPI.Controllers
         }
 
         // POST api/<controller>
-        [Route("api/user/register")]
+        [Route("api/user/register/{townName}")]
         [HttpPost]
-        public async Task<User> CreateAsync([FromBody] User entity)
+        public async Task<object> CreateAsync([FromUri] string townName, [FromBody] User entity)
         {
-            if (!await _service.CheckAvailability(entity.Email))
+            var originalPassword = entity.Password;
+            // Check email availability
+            var isAvailable = await _service.CheckAvailability(entity.Email);
+            if (!isAvailable.Availability)
             {
-                return null;
+                return new JSONErrorFormatter("User with that email already exists!", 
+                    entity.Email, $"api/user/register/{townName}", "UserService.CheckAvailability");
             }
-
+            // Hash the password and create a new user (entitydb)
             entity.Password = _passwordHasher.HashPassword(entity.Password);
-            var entitydb = await _repository.CreateAsync(entity);
+            var entitydb = await _service.CreateUserWithTown(entity, townName);
+            // Authenticate user with original password
+            // NOTE: authentication should always pass here, so no need to check the cast
+            entitydb.Password = originalPassword;
+            var entityauth = await AuthenticateAsync(entitydb) as User;
+            // Remove password from the result 
             entitydb.Password = null;
+            // Add the token to the result
+            entitydb.Token = entityauth.Token;
             return entitydb;
         }
 
@@ -61,6 +72,7 @@ namespace WebAPI.Controllers
 
             entitydb.Username = entity.Username;
             entitydb.Email = entity.Email;
+            // TODO: Check email availability
             entitydb.Password = _passwordHasher.HashPassword(entity.Password);
 
             var updatedEntitydb = await _repository.UpdateAsync(entitydb);
@@ -77,23 +89,33 @@ namespace WebAPI.Controllers
 
         [Route("api/user/authenticate")]
         [HttpPost]
-        public async Task<User> AuthenticateAsync([FromBody] User entity)
+        public async Task<object> AuthenticateAsync([FromBody] User entity)
         {
-            var entitydb = await _service.Authenticate(entity.Email, entity.Password);
+            var entitydb = await _repository.GetByEmailAsync(entity.Email);
 
             if (entitydb == null)
             {
-                return null;
+                // invalid email
+                return new JSONErrorFormatter("Invalid email!", 
+                    entity.Email, "api/user/authenticate", "UserRepository.GetByEmailAsync");
             }
 
-            entitydb.Password = null;
+            var entityauth = await _service.Authenticate(entitydb, entity.Password);
 
-            return entitydb;
+            if (entityauth == null)
+            {
+                // invalid password
+                return new JSONErrorFormatter("Invalid password!",
+                    entity.Password, "api/user/authenticate", "UserService.Authenticate");
+            }
+
+            entityauth.Password = null;
+            return entityauth;
         }
 
         [Route("api/user/check-availability")]
         [HttpPost]
-        public async Task<bool> CheckAvailabilityAsync([FromBody] User entity)
+        public async Task<dynamic> CheckAvailabilityAsync([FromBody] User entity)
         {
             return await _service.CheckAvailability(entity.Email);
         }

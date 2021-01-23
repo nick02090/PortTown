@@ -72,11 +72,11 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Token = x.Token
-                            //Town = new Town
-                            //{
-                            //    Id = x.Town.Id
-                            //}
+                            Token = x.Token,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .ToListAsync();
 
@@ -107,11 +107,11 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Token = x.Token
-                            //Town = new Town
-                            //{
-                            //    Id = x.Town.Id
-                            //}
+                            Token = x.Token,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 
@@ -142,11 +142,11 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Token = x.Token
-                            //Town = new Town
-                            //{
-                            //    Id = x.Town.Id
-                            //}
+                            Token = x.Token,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 
@@ -177,11 +177,11 @@ namespace WebAPI.Repositories
                             Username = x.Username,
                             Email = x.Email,
                             Password = x.Password,
-                            Token = x.Token
-                            //Town = new Town
-                            //{
-                            //    Id = x.Town.Id
-                            //}
+                            Token = x.Token,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            }
                         })
                         .SingleOrDefaultAsync();
 

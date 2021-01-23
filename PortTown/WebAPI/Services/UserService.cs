@@ -1,6 +1,8 @@
 ﻿using Domain;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
+using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,23 +15,19 @@ namespace WebAPI.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
+        private readonly ITownRepository TownRepository;
         private readonly IAppSettings AppSettings;
 
-        public UserService(IUserRepository userRepository, IAppSettings appSettings)
+        public UserService(IUserRepository userRepository, ITownRepository townRepository,
+            IAppSettings appSettings)
         {
             UserRepository = userRepository;
+            TownRepository = townRepository;
             AppSettings = appSettings;
         }
 
-        public async Task<User> Authenticate(string email, string password)
+        public async Task<User> Authenticate(User user, string password)
         {
-            var user = await UserRepository.GetByEmailAsync(email);
-
-            if (user == null)
-            {
-                return null;
-            }
-
             var passwordHasher = new PasswordHasher();
             if (!passwordHasher.VerifyHashedPassword(user.Password, password))
             {
@@ -59,16 +57,31 @@ namespace WebAPI.Services
             return user;
         }
 
-        public async Task<bool> CheckAvailability(string email)
+        public async Task<dynamic> CheckAvailability(string email)
         {
+            dynamic availability = new ExpandoObject();
             var user = await UserRepository.GetByEmailAsync(email);
 
             if (user == null)
             {
-                return true;
+                availability.Availability = true;
             }
 
-            return false;
+            availability.Availability = false;
+            return availability;
+        }
+
+        public async Task<User> CreateUserWithTown(User user, string townName)
+        {
+            var userdb = await UserRepository.CreateAsync(user);
+            var town = new Town
+            {
+                Name = townName,
+                User = userdb
+            };
+            town = await TownRepository.CreateAsync(town);
+            userdb.Town = town;
+            return userdb;
         }
 
         public async Task Logout(string token)

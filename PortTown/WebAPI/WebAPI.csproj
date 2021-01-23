@@ -141,6 +141,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\JSONErrorFormatter.cs" />
+    <Compile Include="Helpers\JSONFormatter.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Interfaces\IAppSettings.cs" />
     <Compile Include="Interfaces\IBaseRepository.cs" />

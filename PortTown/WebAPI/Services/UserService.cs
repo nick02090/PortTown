@@ -61,18 +61,18 @@ namespace WebAPI.Services
             return user;
         }
 
-        public async Task<dynamic> CheckAvailability(string email)
+        public async Task<JSONFormatter> CheckAvailability(string email)
         {
-            dynamic availability = new ExpandoObject();
+            var availability = new JSONFormatter();
             var user = await UserRepository.GetByEmailAsync(email);
 
             if (user == null)
             {
-                availability.Availability = true;
+                availability.AddField("Availability", true);
             }
             else
             {
-                availability.Availability = false;
+                availability.AddField("Availability", false);
             }
 
             return availability;

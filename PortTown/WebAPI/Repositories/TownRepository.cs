@@ -77,7 +77,13 @@ namespace WebAPI.Repositories
                             Buildings = x.Buildings.Select(y => new Building
                             {
                                 Id = y.Id
-                            }).ToList()
+                            }).ToList(),
+                            User = new User
+                            {
+                                Id = x.User.Id,
+                                Username = x.User.Username,
+                                Email = x.User.Email
+                            }
                         })
                         .ToListAsync();
 
@@ -110,7 +116,13 @@ namespace WebAPI.Repositories
                             Buildings = x.Buildings.Select(y => new Building
                             {
                                 Id = y.Id
-                            }).ToList()
+                            }).ToList(),
+                            User = new User
+                            {
+                                Id = x.User.Id,
+                                Username = x.User.Username,
+                                Email = x.User.Email
+                            }
                         })
                         .SingleOrDefaultAsync();
 

@@ -1,6 +1,7 @@
 ﻿using Domain;
 using System;
-using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using WebAPI.Interfaces;
@@ -20,51 +21,55 @@ namespace WebAPI.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IEnumerable<Town>> GetAsync()
+        public async Task<HttpResponseMessage> GetAsync()
         {
-            return await _repository.GetAsync();
+            var towns = await _repository.GetAsync();
+            return Request.CreateResponse(HttpStatusCode.OK, towns);
         }
 
         // GET api/<controller>/5
         [HttpGet]
-        public async Task<Town> GetAsync(Guid id)
+        public async Task<HttpResponseMessage> GetAsync(Guid id)
         {
-            return await _repository.GetAsync(id);
+            var town = await _repository.GetAsync(id);
+            return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 
         // POST api/<controller>
         [HttpPost]
-        public async Task<Town> CreateAsync([FromBody] Town entity)
+        public async Task<HttpResponseMessage> CreateAsync([FromBody] Town entity)
         {
-            return await _repository.CreateAsync(entity);
+            var town = await _repository.CreateAsync(entity);
+            return Request.CreateResponse(HttpStatusCode.Created, town);
         }
 
         // PUT api/<controller>/5
         [HttpPut]
-        public async Task<Town> UpdateAsync(Guid id, [FromBody] Town entity)
+        public async Task<HttpResponseMessage> UpdateAsync(Guid id, [FromBody] Town entity)
         {
             var entitydb = await _repository.GetAsync(id);
 
             entitydb.Name = entity.Name;
             entitydb.Level = entity.Level;
 
-            return await _repository.UpdateAsync(entitydb);
+            entitydb = await _repository.UpdateAsync(entitydb);
+            return Request.CreateResponse(HttpStatusCode.OK, entitydb);
         }
 
         // DELETE api/<controller>/5
         [HttpDelete]
-        public async Task DeleteAsync(Guid id)
+        public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
-            return;
+            return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
         [Route("api/town/reset/{id}")]
         [HttpPost]
-        public async Task ResetAsync([FromUri] Guid id)
+        public async Task<HttpResponseMessage> ResetAsync([FromUri] Guid id)
         {
             await _service.ResetAsync(id);
-            return;
+            return Request.CreateResponse(HttpStatusCode.NoContent);
         }
     }
 }

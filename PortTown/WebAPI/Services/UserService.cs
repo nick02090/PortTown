@@ -1,8 +1,6 @@
 ﻿using Domain;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
-using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

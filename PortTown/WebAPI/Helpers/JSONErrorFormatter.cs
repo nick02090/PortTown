@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace WebAPI.Helpers
+﻿namespace WebAPI.Helpers
 {
     public class JSONErrorFormatter
     {

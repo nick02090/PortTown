@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Domain;
+using System;
 using System.Threading.Tasks;
+using WebAPI.Helpers;
 
 namespace WebAPI.Interfaces
 {
     public interface IBuildingService
     {
-        Task<bool> CanUpgradeAsync(Guid id);
+        Task<JSONFormatter> CanUpgrade(Guid id);
+        #region Template
+        Task<JSONFormatter> CheckInitialTemplateData();
+        Task AddInitialTemplateData();
+        Task AddDataToTemplate(Building building);
+        #endregion
     }
 }

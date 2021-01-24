@@ -73,7 +73,7 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             ResourceType = x.ResourceType,
-                            Size = x.Size,
+                            Quantity = x.Quantity,
                             Craftable = new Craftable
                             {
                                 Id = x.Craftable.Id
@@ -106,7 +106,7 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             ResourceType = x.ResourceType,
-                            Size = x.Size,
+                            Quantity = x.Quantity,
                             Craftable = new Craftable
                             {
                                 Id = x.Craftable.Id

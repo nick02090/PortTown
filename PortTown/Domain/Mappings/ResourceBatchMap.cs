@@ -14,7 +14,7 @@ namespace Domain.Mappings
 
             // Properties
             Map(x => x.ResourceType);
-            Map(x => x.Size);
+            Map(x => x.Quantity);
 
             // Relations
             References(x => x.Craftable, "CraftableId").Cascade.None(); // MANY-TO-ONE

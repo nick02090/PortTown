@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             var entitydb = await _repository.GetAsync(id);
 
             entitydb.ResourceType = entity.ResourceType;
-            entitydb.Size = entity.Size;
+            entitydb.Quantity = entity.Quantity;
 
             return await _repository.UpdateAsync(entitydb);
         }

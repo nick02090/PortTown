@@ -7,8 +7,6 @@ namespace Domain.Enums
         [Description("Production")]
         Production,
         [Description("Storage")]
-        Storage,
-        [Description("Silo")]
-        Silo
+        Storage
     }
 }

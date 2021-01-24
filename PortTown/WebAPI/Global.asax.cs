@@ -10,6 +10,15 @@ namespace WebAPI
         protected void Application_Start(object sender, EventArgs e)
         {
             GlobalConfiguration.Configure(WebAPIConfig.Register);
+
+            WebAPIConfig.CheckForInitialDataAsync().ContinueWith(async result =>
+            {
+                var hasData = await result;
+                if (!hasData)
+                {
+                    await WebAPIConfig.CreateInitialDataAsync();
+                }
+            });
         }
 
         protected void Session_Start(object sender, EventArgs e)

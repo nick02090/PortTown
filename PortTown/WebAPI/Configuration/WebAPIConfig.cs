@@ -1,4 +1,9 @@
-﻿using System.Web.Http;
+﻿using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Web.Http;
 using Unity;
 using WebAPI.Interfaces;
 using WebAPI.Repositories;
@@ -26,6 +31,7 @@ namespace WebAPI.Configuration
             #region Services
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<ITownService, TownService>();
+            container.RegisterType<IBuildingService, BuildingService>();
             #endregion
             #region Settings
             container.RegisterSingleton<IAppSettings, AppSettings>();
@@ -34,7 +40,7 @@ namespace WebAPI.Configuration
 
             // JSON formatting
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings
-                .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                .ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             GlobalConfiguration.Configuration.Formatters
                 .Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
 
@@ -46,6 +52,68 @@ namespace WebAPI.Configuration
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+        }
+
+        private static readonly string Baseurl = "https://localhost:44366/";
+        public static async Task<bool> CheckForInitialDataAsync()
+        {
+            bool hasData = false;
+
+            using (var client = new HttpClient())
+            {
+                //Passing service base url  
+                client.BaseAddress = new Uri(Baseurl);
+
+                // Clear any previously defined headers
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format  
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient  
+                HttpResponseMessage response = await client.GetAsync("api/building/check-initial-template-data");
+
+                //Checking the response is successful or not which is sent using HttpClient  
+                if (response.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api   
+                    var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                    //Deserializing the response recieved from web api and storing into the User  
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(responseResult);
+                    hasData = result.HasData;
+                }
+                //returning the user info  
+                return hasData;
+            }
+        }
+
+        public static async Task CreateInitialDataAsync()
+        {
+            using (var client = new HttpClient())
+            {
+                //Passing service base url  
+                client.BaseAddress = new Uri(Baseurl);
+
+                // Clear any previously defined headers
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format  
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient  
+                HttpResponseMessage response = await client.PostAsync("api/building/add-initial-template-data", null);
+
+                //Checking the response is successful or not which is sent using HttpClient  
+                if (response.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api   
+                    var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                    //Deserializing the response recieved from web api and storing into the User  
+                    dynamic result = JsonConvert.DeserializeObject<dynamic>(responseResult);
+                }
+                //returning the user info  
+                return;
+            }
         }
     }
 }

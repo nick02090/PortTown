@@ -19,6 +19,7 @@ namespace Domain.Mappings
             // Relations
             References(x => x.Craftable, "CraftableId").Cascade.None(); // MANY-TO-ONE
             References(x => x.Storage, "StorageId").Cascade.None(); // MANY-TO-ONE
+            References(x => x.Upgradeable, "UpgradeableId").Cascade.None(); // MANY-TO-ONE
         }
     }
 }

@@ -13,5 +13,6 @@ namespace Domain
         public virtual int Quantity { get; set; }
         public virtual Craftable Craftable { get; set; }
         public virtual Storage Storage { get; set; }
+        public virtual Upgradeable Upgradeable { get; set; }
     }
 }

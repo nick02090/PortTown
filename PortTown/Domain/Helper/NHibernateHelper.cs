@@ -8,7 +8,8 @@ namespace Domain.Helper
 {
     public sealed class NHibernateHelper
     {
-        private static readonly string pathToDB = "C:\\Users\\Korisnik\\source\\repos\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
+        //private static readonly string pathToDB = "C:\\Users\\Korisnik\\source\\repos\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
+        private static readonly string pathToDB = "C:\\Users\\Nikola\\Documents\\GitHub\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
         private static readonly bool deleteShemaOnStart = true;
 
         private const string CurrentSessionKey = "nhibernate.current_session";
@@ -29,6 +30,7 @@ namespace Domain.Helper
                     m.FluentMappings.AddFromAssemblyOf<ProductionBuilding>();
                     m.FluentMappings.AddFromAssemblyOf<Storage>();
                     m.FluentMappings.AddFromAssemblyOf<ResourceBatch>();
+                    m.FluentMappings.AddFromAssemblyOf<Upgradeable>();
                 });
 
             if (deleteShemaOnStart)

@@ -14,6 +14,7 @@ namespace Domain
         public virtual ICollection<Building> Buildings { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual User User { get; set; }
+        public virtual Upgradeable Upgradeable { get; set; }
 
         public Town()
         {

@@ -14,6 +14,7 @@ namespace Domain
         public virtual int Capacity { get; set; }
         public virtual BuildingType BuildingType { get; set; }
         public virtual Town Town { get; set; }
+        public virtual Upgradeable Upgradeable { get; set; }
 
         // Reference to parent
         public virtual Craftable ParentCraftable { get; set; }

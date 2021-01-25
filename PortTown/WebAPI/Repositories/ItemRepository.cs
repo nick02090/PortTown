@@ -114,6 +114,34 @@ namespace WebAPI.Repositories
             return item;
         }
 
+        public async Task<IEnumerable<Item>> GetTemplateAsync()
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<Item> items = new List<Item>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    items = await session
+                        .Query<Item>()
+                        .Where(x => x.Town.Id == null)
+                        .Select(x => new Item
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return items;
+        }
+
         public async Task<Item> UpdateAsync(Item entity)
         {
             ISession session = NHibernateHelper.GetCurrentSession();

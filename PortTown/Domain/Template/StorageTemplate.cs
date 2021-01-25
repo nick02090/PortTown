@@ -12,18 +12,23 @@ namespace Domain.Template
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 10
+                Quantity = 5
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
             }
         };
-        private static readonly DateTime timeToBuildStone;
-        private static readonly int stoneCapacity;
-        private static readonly string stoneName = "Stonehenge";
+        private static readonly DateTime timeToBuildStone = new DateTime().AddSeconds(15);
+        private static readonly int stoneCapacity = 600;
+        private static readonly string stoneName = "Stone Storage";
         private static readonly ICollection<ResourceBatch> stoneStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Stone,
-                Quantity = 100
+                Quantity = 0
             }
         };
 
@@ -33,18 +38,23 @@ namespace Domain.Template
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 10
+                Quantity = 5
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
             }
         };
-        private static readonly DateTime timeToBuildWood;
-        private static readonly int woodCapacity;
-        private static readonly string woodName = "Enchanted Woods";
+        private static readonly DateTime timeToBuildWood = new DateTime().AddSeconds(15);
+        private static readonly int woodCapacity = 800;
+        private static readonly string woodName = "Wood Shed";
         private static readonly ICollection<ResourceBatch> woodStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Wood,
-                Quantity = 200
+                Quantity = 0
             }
         };
 
@@ -57,15 +67,15 @@ namespace Domain.Template
                 Quantity = 10
             }
         };
-        private static readonly DateTime timeToBuildGold;
-        private static readonly int goldCapacity;
-        private static readonly string goldName = "Goldmine";
+        private static readonly DateTime timeToBuildGold = new DateTime().AddSeconds(15);
+        private static readonly int goldCapacity = 200;
+        private static readonly string goldName = "Vault";
         private static readonly ICollection<ResourceBatch> goldStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 50
+                Quantity = 0
             }
         };
 
@@ -76,17 +86,27 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 100
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 50
             }
         };
-        private static readonly DateTime timeToBuildFood;
-        private static readonly int foodCapacity;
+        private static readonly DateTime timeToBuildFood = new DateTime().AddSeconds(15);
+        private static readonly int foodCapacity = 600;
         private static readonly string foodName = "Silo";
         private static readonly ICollection<ResourceBatch> foodStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Food,
-                Quantity = 500
+                Quantity = 0
             }
         };
 
@@ -97,17 +117,27 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 100
             }
         };
-        private static readonly DateTime timeToBuildIron;
-        private static readonly int ironCapacity;
-        private static readonly string ironName = "Ironmine";
+        private static readonly DateTime timeToBuildIron = new DateTime().AddSeconds(15);
+        private static readonly int ironCapacity = 300;
+        private static readonly string ironName = "Iron Refinery";
         private static readonly ICollection<ResourceBatch> ironStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Iron,
-                Quantity = 70
+                Quantity = 0
             }
         };
 
@@ -117,18 +147,23 @@ namespace Domain.Template
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 10
+                Quantity = 15
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 200
             }
         };
-        private static readonly DateTime timeToBuildCoal;
-        private static readonly int coalCapacity;
-        private static readonly string coalName = "Coalmine";
+        private static readonly DateTime timeToBuildCoal = new DateTime().AddSeconds(15);
+        private static readonly int coalCapacity = 300;
+        private static readonly string coalName = "Coal Bin";
         private static readonly ICollection<ResourceBatch> coalStoredResources = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Coal,
-                Quantity = 70
+                Quantity = 0
             }
         };
 

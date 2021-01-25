@@ -12,14 +12,24 @@ namespace Domain.Template
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 10
+                Quantity = 15
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Iron,
+                Quantity = 50
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 100
             }
         };
-        private static readonly DateTime timeToBuildStone;
-        private static readonly int stoneCapacity;
-        private static readonly int stoneProductionRate;
+        private static readonly DateTime timeToBuildStone = new DateTime().AddSeconds(15);
+        private static readonly int stoneCapacity = 200;
+        private static readonly float stoneProductionRate = 0.02778f;   // 100 per hour
         private static readonly ResourceType stoneResourceType = ResourceType.Stone;
-        private static readonly string stoneName = "Stonecraft";
+        private static readonly string stoneName = "Quarry";
 
         // ********************** WOOD **********************
         private static readonly ICollection<ResourceBatch> woodCost = new List<ResourceBatch>()
@@ -28,11 +38,16 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Iron,
+                Quantity = 20
             }
         };
-        private static readonly DateTime timeToBuildWood;
-        private static readonly int woodCapacity;
-        private static readonly int woodProductionRate;
+        private static readonly DateTime timeToBuildWood = new DateTime().AddSeconds(15);
+        private static readonly int woodCapacity = 200;
+        private static readonly float woodProductionRate = 0.04167f;    // 150 per hour
         private static readonly ResourceType woodResourceType = ResourceType.Wood;
         private static readonly string woodName = "Sawmill";
 
@@ -43,28 +58,33 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Iron,
+                Quantity = 10
             }
         };
-        private static readonly DateTime timeToBuildGold;
-        private static readonly int goldCapacity;
-        private static readonly int goldProductionRate;
+        private static readonly DateTime timeToBuildGold = new DateTime().AddSeconds(15);
+        private static readonly int goldCapacity = 100;
+        private static readonly float goldProductionRate = 0.01389f;    // 50 per hour
         private static readonly ResourceType goldResourceType = ResourceType.Gold;
-        private static readonly string goldName = "Goldsmith";
+        private static readonly string goldName = "Gold Mine";
 
         // ********************** FOOD **********************
         private static readonly ICollection<ResourceBatch> foodCost = new List<ResourceBatch>()
         {
             new ResourceBatch()
             {
-                ResourceType = ResourceType.Gold,
-                Quantity = 10
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
             }
         };
-        private static readonly DateTime timeToBuildFood;
-        private static readonly int foodCapacity;
-        private static readonly int foodProductionRate;
+        private static readonly DateTime timeToBuildFood = new DateTime().AddSeconds(15);
+        private static readonly int foodCapacity = 200;
+        private static readonly float foodProductionRate = 0.04167f;    // 150 per hour
         private static readonly ResourceType foodResourceType = ResourceType.Food;
-        private static readonly string foodName = "Food Factory";
+        private static readonly string foodName = "Farm";
 
         // ********************** IRON **********************
         private static readonly ICollection<ResourceBatch> ironCost = new List<ResourceBatch>()
@@ -73,13 +93,28 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 20
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Iron,
+                Quantity = 10
             }
         };
-        private static readonly DateTime timeToBuildIron;
-        private static readonly int ironCapacity;
-        private static readonly int ironProductionRate;
+        private static readonly DateTime timeToBuildIron = new DateTime().AddSeconds(15);
+        private static readonly int ironCapacity = 100;
+        private static readonly float ironProductionRate = 0.01389f;    // 50 per hour
         private static readonly ResourceType ironResourceType = ResourceType.Iron;
-        private static readonly string ironName = "Steel Factory";
+        private static readonly string ironName = "Iron Mine";
 
         // ********************** COAL **********************
         private static readonly ICollection<ResourceBatch> coalCost = new List<ResourceBatch>()
@@ -87,14 +122,24 @@ namespace Domain.Template
             new ResourceBatch()
             {
                 ResourceType = ResourceType.Gold,
-                Quantity = 10
+                Quantity = 20
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 50
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Iron,
+                Quantity = 100
             }
         };
-        private static readonly DateTime timeToBuildCoal;
-        private static readonly int coalCapacity;
-        private static readonly int coalProductionRate;
+        private static readonly DateTime timeToBuildCoal = new DateTime().AddSeconds(15);
+        private static readonly int coalCapacity = 100;
+        private static readonly float coalProductionRate = 0.01389f;    // 50 per hour
         private static readonly ResourceType coalResourceType = ResourceType.Coal;
-        private static readonly string coalName = "Coal Factory";
+        private static readonly string coalName = "Coal Mine";
 
         public static IEnumerable<ProductionBuilding> Template()
         {

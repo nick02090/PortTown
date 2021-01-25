@@ -10,7 +10,7 @@ namespace Domain
         [Required]
         public virtual Guid Id { get; set; }
         public virtual ResourceType ResourceProduced { get; set; }
-        public virtual int ProductionRate { get; set; }
+        public virtual float ProductionRate { get; set; }
         public virtual DateTime LastHarvestTime { get; set; }
 
         // Parent reference

@@ -31,7 +31,7 @@ namespace Domain.Template
         }
 
         public static ProductionBuilding GenerateProductionBuilding(Building parentBuilding, 
-            int productionRate, ResourceType resourceType)
+            float productionRate, ResourceType resourceType)
         {
             return new ProductionBuilding
             {

@@ -17,6 +17,17 @@ namespace Domain.Template
             };
         }
 
+        public static Item GenerateItem(Craftable parentCraftable, string name,
+            int value, BuildingType buildingType)
+        {
+            return new Item
+            {
+                ParentCraftable = parentCraftable,
+                Name = name,
+                Value = value
+            };
+        }
+
         public static Building GenerateBuilding(Craftable parentCraftable, string name, 
             int capacity, BuildingType buildingType)
         {

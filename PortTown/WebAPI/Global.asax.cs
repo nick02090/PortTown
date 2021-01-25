@@ -11,12 +11,23 @@ namespace WebAPI
         {
             GlobalConfiguration.Configure(WebAPIConfig.Register);
 
-            WebAPIConfig.CheckForInitialDataAsync().ContinueWith(async result =>
+            // Check and create buildings template
+            WebAPIConfig.CheckForInitialBuildingsAsync().ContinueWith(async result =>
             {
                 var hasData = await result;
                 if (!hasData)
                 {
-                    await WebAPIConfig.CreateInitialDataAsync();
+                    await WebAPIConfig.CreateInitialBuildingsAsync();
+                }
+            });
+
+            // Check and create items template
+            WebAPIConfig.CheckForInitialItemsAsync().ContinueWith(async result =>
+            {
+                var hasData = await result;
+                if (!hasData)
+                {
+                    await WebAPIConfig.CreateInitialItemsAsync();
                 }
             });
         }

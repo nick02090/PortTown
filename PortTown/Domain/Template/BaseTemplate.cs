@@ -18,7 +18,7 @@ namespace Domain.Template
         }
 
         public static Item GenerateItem(Craftable parentCraftable, string name,
-            int value, BuildingType buildingType)
+            int value)
         {
             return new Item
             {

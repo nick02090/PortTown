@@ -73,6 +73,21 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Value = x.Value,
+                            Name = x.Name,
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            }
                         })
                         .ToListAsync();
 
@@ -101,6 +116,21 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Value = x.Value,
+                            Name = x.Name,
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            }
                         })
                         .SingleOrDefaultAsync();
 
@@ -129,6 +159,21 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Value = x.Value,
+                            Name = x.Name,
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            }
                         })
                         .ToListAsync();
 

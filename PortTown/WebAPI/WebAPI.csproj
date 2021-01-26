@@ -136,6 +136,7 @@
     <Compile Include="Controllers\ResourceBatchController.cs" />
     <Compile Include="Controllers\StorageController.cs" />
     <Compile Include="Controllers\TownController.cs" />
+    <Compile Include="Controllers\UpgradeableController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -155,6 +156,7 @@
     <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ITownRepository.cs" />
     <Compile Include="Interfaces\ITownService.cs" />
+    <Compile Include="Interfaces\IUpgradeableRepository.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="Repositories\ResourceBatchRepository.cs" />
     <Compile Include="Repositories\StorageRespository.cs" />
     <Compile Include="Repositories\TownRepository.cs" />
+    <Compile Include="Repositories\UpgradeableRepository.cs" />
     <Compile Include="Repositories\UserRespository.cs" />
     <Compile Include="Resolver\UnityResolver.cs" />
     <Compile Include="Services\BuildingService.cs" />

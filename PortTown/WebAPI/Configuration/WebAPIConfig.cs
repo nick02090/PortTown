@@ -27,6 +27,7 @@ namespace WebAPI.Configuration
             container.RegisterType<IResourceBatchRepository, ResourceBatchRepository>();
             container.RegisterType<IStorageRepository, StorageRespository>();
             container.RegisterType<IUserRepository, UserRespository>();
+            container.RegisterType<IUpgradeableRepository, UpgradeableRepository>();
             #endregion
             #region Services
             container.RegisterType<IUserService, UserService>();

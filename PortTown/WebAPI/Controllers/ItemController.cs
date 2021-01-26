@@ -52,6 +52,8 @@ namespace WebAPI.Controllers
             var entitydb = await _repository.GetAsync(id);
 
             entitydb.Value = entity.Value;
+            entitydb.Name = entity.Name;
+            entitydb.Quality = entity.Quality;
 
             entitydb = await _repository.UpdateAsync(entitydb);
             return Request.CreateResponse(HttpStatusCode.OK, entitydb);

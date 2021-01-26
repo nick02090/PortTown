@@ -4,5 +4,6 @@ namespace WebAPI.Interfaces
 {
     public interface IUpgradeableRepository : IBaseRepository<Upgradeable>
     {
+
     }
 }

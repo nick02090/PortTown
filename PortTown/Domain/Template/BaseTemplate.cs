@@ -17,6 +17,30 @@ namespace Domain.Template
             };
         }
 
+        public static Upgradeable GenerateTownUpgradeable(Town town, DateTime timeToUpgrade, 
+            float upgradeMultiplier, ICollection<ResourceBatch> upgradeCost)
+        {
+            return new Upgradeable
+            {
+                Town = town,
+                TimeToUpgrade = timeToUpgrade,
+                UpgradeMultiplier = upgradeMultiplier,
+                RequiredResources = upgradeCost
+            };
+        }
+
+        public static Upgradeable GenerateBuildingUpgradeable(Building building, DateTime timeToUpgrade,
+            float upgradeMultiplier, ICollection<ResourceBatch> upgradeCost)
+        {
+            return new Upgradeable
+            {
+                Building = building,
+                TimeToUpgrade = timeToUpgrade,
+                UpgradeMultiplier = upgradeMultiplier,
+                RequiredResources = upgradeCost
+            };
+        }
+
         public static Item GenerateItem(Craftable parentCraftable, string name,
             int value)
         {

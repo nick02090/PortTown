@@ -32,6 +32,22 @@ namespace Domain.Template
             }
         };
 
+        private static readonly DateTime timeToUpgradeStone = new DateTime().AddSeconds(60);
+        private static readonly float stoneUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> stoneUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 100
+            }
+        };
+
         // ********************** WOOD **********************
         private static readonly ICollection<ResourceBatch> woodCost = new List<ResourceBatch>()
         {
@@ -58,6 +74,22 @@ namespace Domain.Template
             }
         };
 
+        private static readonly DateTime timeToUpgradeWood = new DateTime().AddSeconds(60);
+        private static readonly float woodUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> woodUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 10
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 100
+            }
+        };
+
         // ********************** GOLD **********************
         private static readonly ICollection<ResourceBatch> goldCost = new List<ResourceBatch>()
         {
@@ -76,6 +108,17 @@ namespace Domain.Template
             {
                 ResourceType = ResourceType.Gold,
                 Quantity = 0
+            }
+        };
+
+        private static readonly DateTime timeToUpgradeGold = new DateTime().AddSeconds(60);
+        private static readonly float goldUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> goldUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 20
             }
         };
 
@@ -110,6 +153,27 @@ namespace Domain.Template
             }
         };
 
+        private static readonly DateTime timeToUpgradeFood = new DateTime().AddSeconds(60);
+        private static readonly float foodUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> foodUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 20
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 200
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 100
+            }
+        };
+
         // ********************** IRON **********************
         private static readonly ICollection<ResourceBatch> ironCost = new List<ResourceBatch>()
         {
@@ -141,7 +205,28 @@ namespace Domain.Template
             }
         };
 
-        // ********************** COAL **********************
+        private static readonly DateTime timeToUpgradeIron = new DateTime().AddSeconds(60);
+        private static readonly float ironUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> ironUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 20
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Wood,
+                Quantity = 100
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 200
+            }
+        };
+
+        // ********************** COAL ****Z*****************
         private static readonly ICollection<ResourceBatch> coalCost = new List<ResourceBatch>()
         {
             new ResourceBatch()
@@ -167,38 +252,60 @@ namespace Domain.Template
             }
         };
 
+        private static readonly DateTime timeToUpgradeCoal = new DateTime().AddSeconds(60);
+        private static readonly float coalUpgradeMultiplier = 2.0f;
+        private static readonly ICollection<ResourceBatch> coalUpgradeCost = new List<ResourceBatch>()
+        {
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Gold,
+                Quantity = 30
+            },
+            new ResourceBatch()
+            {
+                ResourceType = ResourceType.Stone,
+                Quantity = 400
+            }
+        };
+
         public static IEnumerable<Storage> Template()
         {
             var storages = new List<Storage>();
 
             // Storage building for Stone
             var stoneCraftable = BaseTemplate.GenerateCraftable(stoneCost, timeToBuildStone, CraftableType.Building);
-            var stoneBuilding = BaseTemplate.GenerateBuilding(stoneCraftable, stoneName, stoneCapacity, BuildingType.Storage);
+            var stoneUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeStone, stoneUpgradeMultiplier, stoneUpgradeCost);
+            var stoneBuilding = BaseTemplate.GenerateBuilding(stoneCraftable, stoneName, stoneCapacity, BuildingType.Storage, stoneUpgradeable);
             var stoneStorage = BaseTemplate.GenerateStorage(stoneBuilding, stoneStoredResources);
             storages.Add(stoneStorage);
             // Storage building for Wood
             var woodCraftable = BaseTemplate.GenerateCraftable(woodCost, timeToBuildWood, CraftableType.Building);
-            var woodBuilding = BaseTemplate.GenerateBuilding(woodCraftable, woodName, woodCapacity, BuildingType.Storage);
+            var woodUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeWood, woodUpgradeMultiplier, woodUpgradeCost);
+            var woodBuilding = BaseTemplate.GenerateBuilding(woodCraftable, woodName, woodCapacity, BuildingType.Storage, woodUpgradeable);
             var woodStorage = BaseTemplate.GenerateStorage(woodBuilding, woodStoredResources);
             storages.Add(woodStorage);
             // Storage building for Gold
             var goldCraftable = BaseTemplate.GenerateCraftable(goldCost, timeToBuildGold, CraftableType.Building);
-            var goldBuilding = BaseTemplate.GenerateBuilding(goldCraftable, goldName, goldCapacity, BuildingType.Storage);
+            var goldUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeGold, goldUpgradeMultiplier, goldUpgradeCost);
+            var goldBuilding = BaseTemplate.GenerateBuilding(goldCraftable, goldName, goldCapacity, BuildingType.Storage, goldUpgradeable);
             var goldStorage = BaseTemplate.GenerateStorage(goldBuilding, goldStoredResources);
             storages.Add(goldStorage);
             // Storage building for Food
             var foodCraftable = BaseTemplate.GenerateCraftable(foodCost, timeToBuildFood, CraftableType.Building);
-            var foodBuilding = BaseTemplate.GenerateBuilding(foodCraftable, foodName, foodCapacity, BuildingType.Storage);
+            var foodUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeFood, foodUpgradeMultiplier, foodUpgradeCost);
+            var foodBuilding = BaseTemplate.GenerateBuilding(foodCraftable, foodName, foodCapacity, BuildingType.Storage, foodUpgradeable);
             var foodStorage = BaseTemplate.GenerateStorage(foodBuilding, foodStoredResources);
             storages.Add(foodStorage);
             // Storage building for Iron
             var ironCraftable = BaseTemplate.GenerateCraftable(ironCost, timeToBuildIron, CraftableType.Building);
-            var ironBuilding = BaseTemplate.GenerateBuilding(ironCraftable, ironName, ironCapacity, BuildingType.Storage);
+            var ironUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeIron, ironUpgradeMultiplier, ironUpgradeCost);
+            var ironBuilding = BaseTemplate.GenerateBuilding(ironCraftable, ironName, ironCapacity, BuildingType.Storage, ironUpgradeable);
             var ironStorage = BaseTemplate.GenerateStorage(ironBuilding, ironStoredResources);
             storages.Add(ironStorage);
             // Storage building for Coal
             var coalCraftable = BaseTemplate.GenerateCraftable(coalCost, timeToBuildCoal, CraftableType.Building);
-            var coalBuilding = BaseTemplate.GenerateBuilding(coalCraftable, coalName, coalCapacity, BuildingType.Storage);
+            var coalUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeCoal, coalUpgradeMultiplier, coalUpgradeCost);
+            var coalBuilding = BaseTemplate.GenerateBuilding(coalCraftable, coalName, coalCapacity, BuildingType.Storage, coalUpgradeable);
             var coalStorage = BaseTemplate.GenerateStorage(coalBuilding, coalStoredResources);
             storages.Add(coalStorage);
 

@@ -17,24 +17,11 @@ namespace Domain.Template
             };
         }
 
-        public static Upgradeable GenerateTownUpgradeable(Town town, DateTime timeToUpgrade, 
+        public static Upgradeable GenerateUpgradeable(DateTime timeToUpgrade, 
             float upgradeMultiplier, ICollection<ResourceBatch> upgradeCost)
         {
             return new Upgradeable
             {
-                Town = town,
-                TimeToUpgrade = timeToUpgrade,
-                UpgradeMultiplier = upgradeMultiplier,
-                RequiredResources = upgradeCost
-            };
-        }
-
-        public static Upgradeable GenerateBuildingUpgradeable(Building building, DateTime timeToUpgrade,
-            float upgradeMultiplier, ICollection<ResourceBatch> upgradeCost)
-        {
-            return new Upgradeable
-            {
-                Building = building,
                 TimeToUpgrade = timeToUpgrade,
                 UpgradeMultiplier = upgradeMultiplier,
                 RequiredResources = upgradeCost
@@ -53,7 +40,7 @@ namespace Domain.Template
         }
 
         public static Building GenerateBuilding(Craftable parentCraftable, string name, 
-            int capacity, BuildingType buildingType)
+            int capacity, BuildingType buildingType, Upgradeable buildingUpgradeable)
         {
             return new Building
             {
@@ -61,6 +48,7 @@ namespace Domain.Template
                 Name = name,
                 BuildingType = buildingType,
                 Capacity = capacity,
+                Upgradeable = buildingUpgradeable,
                 Level = 1
             };
         }

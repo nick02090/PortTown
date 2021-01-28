@@ -94,6 +94,20 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
                             }
                         })
                         .ToListAsync();
@@ -144,6 +158,20 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -184,6 +212,20 @@ namespace WebAPI.Repositories
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
                                 TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
                                 RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
                                 {
                                     Id = y.Id,
                                     ResourceType = y.ResourceType,

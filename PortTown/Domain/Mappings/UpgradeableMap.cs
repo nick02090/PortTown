@@ -14,7 +14,7 @@ namespace Domain.Mappings
 
             // Properties
             Map(x => x.TimeToUpgrade);
-            Map(x => x.TimeUntilUpgraded);
+            Map(x => x.TimeUntilUpgraded, "TimeUntilUpgrade");
             Map(x => x.IsFinishedUpgrading);
             Map(x => x.UpgradeMultiplier);
 

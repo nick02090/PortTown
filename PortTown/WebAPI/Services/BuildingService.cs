@@ -50,6 +50,11 @@ namespace WebAPI.Services
             return upgradeable;
         }
 
+        public async Task<Building> UpdateJobs(Building building)
+        {
+            throw new NotImplementedException();
+        }
+
         #region Template
         public async Task AddDataToTemplate(Building building)
         {

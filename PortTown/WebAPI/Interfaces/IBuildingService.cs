@@ -8,6 +8,7 @@ namespace WebAPI.Interfaces
     public interface IBuildingService
     {
         Task<JSONFormatter> CanUpgrade(Guid id);
+        Task<Building> UpdateJobs(Building building);
         #region Template
         Task<JSONFormatter> CheckInitialTemplateData();
         Task AddInitialTemplateData();

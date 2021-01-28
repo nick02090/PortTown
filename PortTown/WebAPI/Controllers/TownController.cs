@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using WebAPI.Helpers;
 using WebAPI.Interfaces;
 
 namespace WebAPI.Controllers
@@ -23,7 +24,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetAsync()
         {
-            var towns = await _repository.GetAsync();
+            var towns = await _service.GetTowns();
             return Request.CreateResponse(HttpStatusCode.OK, towns);
         }
 
@@ -31,7 +32,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetAsync(Guid id)
         {
-            var town = await _repository.GetAsync(id);
+            var town = await _service.GetTown(id);
             return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateAsync(Guid id, [FromBody] Town entity)
         {
-            var entitydb = await _repository.GetAsync(id);
+            var entitydb = await _service.GetTown(id);
 
             entitydb.Name = entity.Name;
             entitydb.Level = entity.Level;
@@ -70,6 +71,48 @@ namespace WebAPI.Controllers
         {
             await _service.ResetAsync(id);
             return Request.CreateResponse(HttpStatusCode.NoContent);
+        }
+
+        [Route("api/town/upgrade/{id}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpgradeAsync([FromUri] Guid id)
+        {
+            var town = await _service.GetTown(id);
+            if (!town.Upgradeable.IsFinishedUpgrading)
+            {
+                var error = new JSONErrorFormatter("The town hasn't finished upgrading!", town.Upgradeable.IsFinishedUpgrading, 
+                    "Upgradeable.IsFinishedUpgrading", "POST", $"api/town/upgrade/{id}",
+                    "TownController.UpgradeAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            town = await _service.UpgradeLevel(town);
+            return Request.CreateResponse(HttpStatusCode.OK, town);
+        }
+
+        [Route("api/town/start-upgrade/{id}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> StartUpgradeAsync([FromUri] Guid id)
+        {
+            var town = await _service.GetTown(id);
+            var canUpgradeLevel = await _service.CanUpgradeLevel(town);
+            if (!(bool)canUpgradeLevel["CanUpgrade"])
+            {
+                var error = new JSONErrorFormatter("The town level cannot be upgraded due to unsufficient funds!", 
+                    town.Level, "Level", "POST", $"api/town/start-upgrade/{id}",
+                    "TownController.StartUpgradeAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            town = await _service.StartUpgradeLevel(town);
+            return Request.CreateResponse(HttpStatusCode.OK, town);
+        }
+
+        [Route("api/town/can-upgrade/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> CanUpgradeAsync([FromUri] Guid id)
+        {
+            var town = await _service.GetTown(id);
+            var canUpgrade = await _service.CanUpgradeLevel(town);
+            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
         }
     }
 }

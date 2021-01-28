@@ -14,13 +14,17 @@ namespace WebAPI.Services
     {
         private readonly IUserRepository UserRepository;
         private readonly ITownRepository TownRepository;
+        private readonly ITownService TownService;
         private readonly IAppSettings AppSettings;
 
         public UserService(IUserRepository userRepository, ITownRepository townRepository,
-            IAppSettings appSettings)
+            ITownService townService, IAppSettings appSettings)
         {
             UserRepository = userRepository;
             TownRepository = townRepository;
+
+            TownService = townService;
+
             AppSettings = appSettings;
         }
 
@@ -50,7 +54,7 @@ namespace WebAPI.Services
             await UserRepository.UpdateAsync(user);
 
             // load town data
-            var town = await TownRepository.GetAsync(user.Town.Id);
+            var town = await TownService.GetTown(user.Town.Id);
             user.Town = town;
 
             // remove password before returning

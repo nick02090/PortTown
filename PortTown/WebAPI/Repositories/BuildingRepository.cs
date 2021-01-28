@@ -158,6 +158,55 @@ namespace WebAPI.Repositories
             return building;
         }
 
+        public async Task<IEnumerable<Building>> GetByTownAsync(Guid townId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<Building> buildings = new List<Building>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    buildings = await session
+                        .Query<Building>()
+                        .Where(x => x.Town.Id == townId)
+                        .Select(x => new Building
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            Capacity = x.Capacity,
+                            BuildingType = x.BuildingType,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id
+                            },
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            }
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return buildings;
+        }
+
         public async Task<IEnumerable<Building>> GetTemplateAsync()
         {
             ISession session = NHibernateHelper.GetCurrentSession();

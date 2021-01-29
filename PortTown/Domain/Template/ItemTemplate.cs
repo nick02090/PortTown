@@ -22,7 +22,7 @@ namespace Domain.Template
         };
         private static readonly DateTime timeToBuildSword = new DateTime().AddMinutes(180);
         private static readonly string swordName = "Sword";
-        private static readonly int swordValue = 20;
+        private static readonly int swordPrice = 20;
 
 
         // ********************** SHIELD **********************
@@ -41,7 +41,7 @@ namespace Domain.Template
         };
         private static readonly DateTime timeToBuildShield = new DateTime().AddMinutes(90);
         private static readonly string shieldName = "Shield";
-        private static readonly int shieldValue = 8;
+        private static readonly int shieldPrice = 8;
 
 
         // ********************** NECKLACE **********************
@@ -65,7 +65,7 @@ namespace Domain.Template
         };
         private static readonly DateTime timeToBuildNecklace = new DateTime().AddMinutes(360);
         private static readonly string necklaceName = "Necklace";
-        private static readonly int necklaceValue = 30;
+        private static readonly int necklacePrice = 30;
 
 
         // ********************** POTTERY **********************
@@ -84,7 +84,7 @@ namespace Domain.Template
         };
         private static readonly DateTime timeToBuildPottery = new DateTime().AddMinutes(5);
         private static readonly string potteryName = "Pottery";
-        private static readonly int potteryValue = 5;
+        private static readonly int potteryPrice = 5;
 
 
         public static IEnumerable<Item> Template()
@@ -93,19 +93,23 @@ namespace Domain.Template
 
             // Sword
             var swordCraftable = BaseTemplate.GenerateCraftable(swordCost, timeToBuildSword, CraftableType.Item);
-            var swordItem = BaseTemplate.GenerateItem(swordCraftable, swordName, swordValue);
+            var swordSellable = BaseTemplate.GenerateSellable(swordPrice);
+            var swordItem = BaseTemplate.GenerateItem(swordCraftable, swordName, swordSellable);
             items.Add(swordItem);
             // Shield
             var shieldCraftable = BaseTemplate.GenerateCraftable(shieldCost, timeToBuildShield, CraftableType.Item);
-            var shieldItem = BaseTemplate.GenerateItem(shieldCraftable, shieldName, shieldValue);
+            var shieldSellable = BaseTemplate.GenerateSellable(shieldPrice);
+            var shieldItem = BaseTemplate.GenerateItem(shieldCraftable, shieldName, shieldSellable);
             items.Add(shieldItem);
             // Necklace 
             var necklaceCraftable = BaseTemplate.GenerateCraftable(necklaceCost, timeToBuildNecklace, CraftableType.Item);
-            var necklaceItem = BaseTemplate.GenerateItem(necklaceCraftable, necklaceName, necklaceValue);
+            var necklaceSellable = BaseTemplate.GenerateSellable(necklacePrice);
+            var necklaceItem = BaseTemplate.GenerateItem(necklaceCraftable, necklaceName, necklaceSellable);
             items.Add(necklaceItem);
             // Pottery 
             var potteryCraftable = BaseTemplate.GenerateCraftable(potteryCost, timeToBuildPottery, CraftableType.Item);
-            var potteryItem = BaseTemplate.GenerateItem(potteryCraftable, potteryName, potteryValue);
+            var potterySellable = BaseTemplate.GenerateSellable(potteryPrice);
+            var potteryItem = BaseTemplate.GenerateItem(potteryCraftable, potteryName, potterySellable);
             items.Add(potteryItem);
 
             return items;

@@ -72,7 +72,6 @@ namespace WebAPI.Repositories
                         .Select(x => new Item
                         {
                             Id = x.Id,
-                            Value = x.Value,
                             Name = x.Name,
                             ParentCraftable = new Craftable
                             {
@@ -87,6 +86,11 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
                             }
                         })
                         .ToListAsync();
@@ -115,7 +119,6 @@ namespace WebAPI.Repositories
                         .Select(x => new Item
                         {
                             Id = x.Id,
-                            Value = x.Value,
                             Name = x.Name,
                             ParentCraftable = new Craftable
                             {
@@ -130,6 +133,11 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -158,7 +166,6 @@ namespace WebAPI.Repositories
                         .Select(x => new Item
                         {
                             Id = x.Id,
-                            Value = x.Value,
                             Name = x.Name,
                             ParentCraftable = new Craftable
                             {
@@ -173,6 +180,11 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
                             }
                         })
                         .ToListAsync();

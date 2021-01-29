@@ -83,6 +83,20 @@ namespace WebAPI.Repositories
                                 Id = x.User.Id,
                                 Username = x.User.Username,
                                 Email = x.User.Email
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList(),
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded
                             }
                         })
                         .ToListAsync();
@@ -122,6 +136,20 @@ namespace WebAPI.Repositories
                                 Id = x.User.Id,
                                 Username = x.User.Username,
                                 Email = x.User.Email
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList(),
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded
                             }
                         })
                         .SingleOrDefaultAsync();

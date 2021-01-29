@@ -19,5 +19,6 @@ namespace WebAPI.Interfaces
         bool DoesTownAllowUpgrade(Town town, int nextLevel);
         Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);
         ICollection<Storage> FilterStorages(ResourceType resourceType, ICollection<Building> buildings);
+        Task<Town> CreateFromTemplate(Town template);
     }
 }

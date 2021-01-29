@@ -132,6 +132,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserViewModel\UserTownViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\JSONFormatter.cs" />
     <Compile Include="Utils\BuildingsInfo.cs" />
   </ItemGroup>
   <ItemGroup>

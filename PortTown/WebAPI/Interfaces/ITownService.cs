@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,5 +17,7 @@ namespace WebAPI.Interfaces
         Task<Town> StartUpgradeLevel(Town town);
         Task<JSONFormatter> CanUpgradeLevel(Town town);
         bool DoesTownAllowUpgrade(Town town, int nextLevel);
+        Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);
+        ICollection<Storage> FilterStorages(ResourceType resourceType, ICollection<Building> buildings);
     }
 }

@@ -22,8 +22,6 @@ namespace WebAPI.Interfaces
         Task<JSONFormatter> CanCraftBuilding(Building building, Guid townId);
         #endregion
         Task<Building> UpdateJobs(Building building);
-        Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);
-        ICollection<Storage> FilterStorages(ResourceType resourceType, ICollection<Building> buildings);
         #region Template
         Task<JSONFormatter> CheckInitialTemplateData();
         Task AddInitialTemplateData();

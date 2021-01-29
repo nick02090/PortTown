@@ -15,5 +15,6 @@ namespace WebAPI.Interfaces
         Task<Town> UpgradeLevel(Town town);
         Task<Town> StartUpgradeLevel(Town town);
         Task<JSONFormatter> CanUpgradeLevel(Town town);
+        bool DoesTownAllowUpgrade(Town town, int nextLevel);
     }
 }

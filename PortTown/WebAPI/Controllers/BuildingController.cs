@@ -69,6 +69,48 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        [Route("api/building/upgrade/{id}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpgradeAsync([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            if (!building.Upgradeable.IsFinishedUpgrading)
+            {
+                var error = new JSONErrorFormatter("The building hasn't finished upgrading!", building.Upgradeable.IsFinishedUpgrading,
+                    "Upgradeable.IsFinishedUpgrading", "POST", $"api/building/upgrade/{id}",
+                    "BuildingController.UpgradeAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            building = await _service.UpgradeLevel(building);
+            return Request.CreateResponse(HttpStatusCode.OK, building);
+        }
+
+        [Route("api/building/start-upgrade/{id}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> StartUpgradeAsync([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            var canUpgradeLevel = await _service.CanUpgradeLevel(building);
+            if (!(bool)canUpgradeLevel["CanUpgrade"])
+            {
+                var error = new JSONErrorFormatter("The building level cannot be upgraded due to unsufficient funds!",
+                    building.Level, "Level", "POST", $"api/building/start-upgrade/{id}",
+                    "BuildingController.StartUpgradeAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            building = await _service.StartUpgradeLevel(building);
+            return Request.CreateResponse(HttpStatusCode.OK, building);
+        }
+
+        [Route("api/building/can-upgrade/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> CanUpgradeAsync([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            var canUpgrade = await _service.CanUpgradeLevel(building);
+            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
+        }
+
         #region Template
         [Route("api/building/check-initial-template-data")]
         [HttpGet]

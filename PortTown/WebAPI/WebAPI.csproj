@@ -149,6 +149,7 @@
     <Compile Include="Interfaces\IBuildingRepository.cs" />
     <Compile Include="Interfaces\IBuildingService.cs" />
     <Compile Include="Interfaces\ICraftableRepository.cs" />
+    <Compile Include="Interfaces\ICraftableService.cs" />
     <Compile Include="Interfaces\IItemRepository.cs" />
     <Compile Include="Interfaces\IItemService.cs" />
     <Compile Include="Interfaces\IProductionBuildingRepository.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Interfaces\ITownRepository.cs" />
     <Compile Include="Interfaces\ITownService.cs" />
     <Compile Include="Interfaces\IUpgradeableRepository.cs" />
+    <Compile Include="Interfaces\IUpgradeableService.cs" />
     <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,8 +173,10 @@
     <Compile Include="Repositories\UserRespository.cs" />
     <Compile Include="Resolver\UnityResolver.cs" />
     <Compile Include="Services\BuildingService.cs" />
+    <Compile Include="Services\CraftableService.cs" />
     <Compile Include="Services\ItemService.cs" />
     <Compile Include="Services\TownService.cs" />
+    <Compile Include="Services\UpgradeableService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Settings\AppSettings.cs" />
   </ItemGroup>

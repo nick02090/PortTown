@@ -31,6 +31,7 @@ namespace Domain.Helper
                     m.FluentMappings.AddFromAssemblyOf<Storage>();
                     m.FluentMappings.AddFromAssemblyOf<ResourceBatch>();
                     m.FluentMappings.AddFromAssemblyOf<Upgradeable>();
+                    m.FluentMappings.AddFromAssemblyOf<Sellable>();
                 });
 
             if (deleteShemaOnStart)

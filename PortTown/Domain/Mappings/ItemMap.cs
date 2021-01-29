@@ -20,6 +20,7 @@ namespace Domain.Mappings
             // Relations
             References(x => x.Town, "TownId").Cascade.None(); // MANY-TO-ONE
             References(x => x.ParentCraftable, "ParentCraftableId").Cascade.None(); // ONE-TO-ONE
+            HasOne(x => x.Sellable).ForeignKey("ItemId").PropertyRef(nameof(Sellable.Item)); // ONE-TO-ONE
         }
     }
 }

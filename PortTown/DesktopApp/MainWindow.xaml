@@ -5,11 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Label Content="My Towns" HorizontalAlignment="Left" Margin="48,26,0,0" VerticalAlignment="Top"/>
-        <Label Content="Town name" Name="TownName" HorizontalAlignment="Left" Margin="90,57,0,0" VerticalAlignment="Top"/>
-        <Label Content="Town level" Name="TownLevel" HorizontalAlignment="Left" Margin="222,57,0,0" VerticalAlignment="Top"/>
+        Title="MainWindow" Height="446.4" Width="800">
 
-    </Grid>
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Height="379" Margin="0,0,-0.4,0">
+            <Label Content="My Towns" HorizontalAlignment="Left" Margin="48,26,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"/>
+            <Label Content="Town name" Name="TownName" HorizontalAlignment="Left" Margin="90,100,0,0" VerticalAlignment="Top" Height="40" Width="90" FontSize="16"/>
+            <Label Content="Town level" Name="TownLevel" HorizontalAlignment="Left" Margin="222,100,0,0" VerticalAlignment="Top" FontSize="16"/>
+
+            <Button Content="Market" HorizontalAlignment="Left" Margin="48,261,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Height="40" Width="104"/>
+        </Grid>
+        <StatusBar DockPanel.Dock="Bottom" Background="CadetBlue" Height="38" Margin="0,0,-0.4,0">
+            <StatusBarItem Width="642" Margin="0,47,0,19.8">
+                <TextBlock Name="ResourceBar"/>
+            </StatusBarItem>
+        </StatusBar>
+    </DockPanel>
+
 </Window>

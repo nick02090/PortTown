@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿//using Domain;
+using DesktopApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -19,12 +20,12 @@ namespace DesktopApp
         {
             InitializeComponent();
 
-            var town = GetTown();
-            if (town != null)
-            {
-                TownName.Content = town.Name;
-                TownLevel.Content = town.Level;
-            }
+            //var town = GetTown();
+            //if (town != null)
+            //{
+            //    TownName.Content = town.Name;
+            //    TownLevel.Content = town.Level;
+            //}
         }
 
         private Town GetTown()

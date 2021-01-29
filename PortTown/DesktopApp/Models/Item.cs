@@ -15,5 +15,11 @@ namespace DesktopApp.Models
         public ItemQuality itemQuality;
 
         public Guid townId;
+
+        public Item(string name, int value)
+        {
+            Name = name;
+            Value = value;
+        }
     }
 }

@@ -18,5 +18,14 @@ namespace DesktopApp.Models
         public Guid townId;
 
         //public Craftable craftable;
+        public Building(string name, int capacity, int level)
+        {
+            // TODO: Remove this when connected to API
+            Id = Guid.NewGuid();
+
+            Name = name;
+            Capacity = capacity;
+            Level = level;
+        }
     }
 }

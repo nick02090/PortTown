@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DesktopApp.Models
 {
-    public class Resource: TableAddable
+    public class MarketItem: TableAddable
     {
         public Guid Id { get; set; }
         public string Name;
@@ -16,7 +16,7 @@ namespace DesktopApp.Models
         public Guid townId;
 
         //public Craftable craftable;
-        public Resource(string name)
+        public MarketItem(string name)
         {
             // TODO: Remove this when connected to API
             Id = Guid.NewGuid();

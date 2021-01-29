@@ -16,6 +16,9 @@ using System.Data;
 using System.Data.SqlClient;
 using DesktopApp.Models;
 using System.Reflection;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace DesktopApp
 {
@@ -27,7 +30,10 @@ namespace DesktopApp
         public AdminWindow()
         {
             InitializeComponent();
+            
         }
+
+        const string Baseurl = "https://localhost:44366/";
 
         public DataTable userTable { get; set; }
         public DataTable buildingTable { get; set; }
@@ -42,10 +48,12 @@ namespace DesktopApp
             DataColumn dc2 = new DataColumn("Username", typeof(string));
             DataColumn dc3 = new DataColumn("Email", typeof(string));
             DataColumn dc4 = new DataColumn("Password", typeof(string));
+            DataColumn dc5 = new DataColumn("Town", typeof(string));
             userTable.Columns.Add(dc1);
             userTable.Columns.Add(dc2);
             userTable.Columns.Add(dc3);
             userTable.Columns.Add(dc4);
+            userTable.Columns.Add(dc5);
             UserTable.ItemsSource = userTable.DefaultView;
 
             buildingTable = new DataTable("buildings");
@@ -102,6 +110,13 @@ namespace DesktopApp
             editResourceButton.IsEnabled = false;
             removeMarketButton.IsEnabled = false;
             editMarketButton.IsEnabled = false;
+
+            var users = GetUsers();
+            if (users != null)
+            {
+            AddListToTable(users);
+            }
+
         }
 
         private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -271,6 +286,7 @@ namespace DesktopApp
 
         public void AddAddable(TableAddable addableObject, DataTable dataTable, System.Windows.Controls.DataGrid dataGrid)
         {
+            AddUserToDB((User)addableObject);
             DataRow dr = dataTable.NewRow();
             PropertyInfo[] properties = addableObject.GetType().GetProperties();
             for (int i = 0; i < properties.Length; i++)
@@ -295,6 +311,71 @@ namespace DesktopApp
         public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)
         {
             return grid.SelectedItems.Cast<DataRowView>().ToList();
+        }
+
+        private void AddUserToDB(User user)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var userJson = JsonConvert.SerializeObject(user);
+            var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = client.PostAsync("api/user/register/" + user.TownName, userStringContent).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        private List<User> GetUsers()
+        {
+            List<User> users = null;
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = client.GetAsync("api/town").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                //Deserializing the response recieved from web api and storing into the Town  
+                users = JsonConvert.DeserializeObject<List<User>>(responseResult);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+
+            return users;
+        }
+
+        private void AddListToTable(List<User> itemList)
+        {
+            foreach (var item in itemList)
+            {
+                AddAddable(item, userTable, UserTable);
+            }
         }
     }
 }

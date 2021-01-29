@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void AddResourceClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text), (Application.Current.MainWindow as AdminWindow).resourceTable, (Application.Current.MainWindow as AdminWindow).ResourceTable);
+            (Application.Current.MainWindow as AdminWindow).AddAddable(new Resource(textbox1.Text), (Application.Current.MainWindow as AdminWindow).resourceTable, (Application.Current.MainWindow as AdminWindow).ResourceTable);
             this.Hide();
         }
     }

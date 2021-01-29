@@ -12,8 +12,9 @@ namespace DesktopApp.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string TownName { get; set; }
 
-        public User(string username, string email, string password)
+        public User(string username, string email, string password, string townName)
         {
             // TODO: Remove this when connected to API
             Id = Guid.NewGuid();
@@ -21,6 +22,7 @@ namespace DesktopApp.Models
             Username = username;
             Email = email;
             Password = password;
+            TownName = townName;
         }
     }
 }

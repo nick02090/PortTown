@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void AddUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text), (Application.Current.MainWindow as AdminWindow).userTable, (Application.Current.MainWindow as AdminWindow).UserTable);
+            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text), (Application.Current.MainWindow as AdminWindow).userTable, (Application.Current.MainWindow as AdminWindow).UserTable);
             this.Hide();
         }
     }

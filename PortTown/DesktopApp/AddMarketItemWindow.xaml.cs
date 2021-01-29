@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void AddMarketItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text), (Application.Current.MainWindow as AdminWindow).marketTable, (Application.Current.MainWindow as AdminWindow).MarketTable);
+            (Application.Current.MainWindow as AdminWindow).AddAddable(new MarketItem(textbox1.Text), (Application.Current.MainWindow as AdminWindow).marketTable, (Application.Current.MainWindow as AdminWindow).MarketTable);
             this.Hide();
         }
     }

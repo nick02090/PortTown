@@ -149,6 +149,7 @@
     <Compile Include="Enums\ItemQuality.cs" />
     <Compile Include="Models\Building.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\MarketItem.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Models\TableAddable.cs" />
     <Compile Include="Models\Town.cs" />

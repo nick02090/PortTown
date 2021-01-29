@@ -32,11 +32,12 @@ namespace DesktopApp
             textbox1.Text = selectedRow[1].ToString();
             textbox2.Text = selectedRow[2].ToString();
             textbox3.Text = selectedRow[3].ToString();
+            textbox4.Text = selectedRow[4].ToString();
         }
 
         private void EditUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text), (Application.Current.MainWindow as AdminWindow).userTable, (Application.Current.MainWindow as AdminWindow).UserTable);
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text), (Application.Current.MainWindow as AdminWindow).userTable, (Application.Current.MainWindow as AdminWindow).UserTable);
             this.Hide();
         }
     }

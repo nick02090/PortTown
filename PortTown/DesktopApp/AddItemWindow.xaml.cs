@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void AddItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text), (Application.Current.MainWindow as AdminWindow).itemTable, (Application.Current.MainWindow as AdminWindow).ItemTable);
+            (Application.Current.MainWindow as AdminWindow).AddAddable(new Item(textbox1.Text, Int32.Parse(textbox2.Text)), (Application.Current.MainWindow as AdminWindow).itemTable, (Application.Current.MainWindow as AdminWindow).ItemTable);
             this.Hide();
         }
     }

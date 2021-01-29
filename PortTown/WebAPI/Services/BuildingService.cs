@@ -17,6 +17,7 @@ namespace WebAPI.Services
         private readonly IResourceBatchRepository ResourceBatchRepository;
         private readonly IProductionBuildingRepository ProductionBuildingRepository;
         private readonly IStorageRepository StorageRepository;
+        private readonly IUpgradeableRepository UpgradeableRepository;
 
         private readonly ITownService TownService;
         private readonly IUpgradeableService UpgradeableService;
@@ -26,6 +27,7 @@ namespace WebAPI.Services
         public BuildingService(IBuildingRepository buildingRepository,
             ICraftableRepository craftableRepository, IResourceBatchRepository resourceBatchRepository, 
             IProductionBuildingRepository productionBuildingRepository, IStorageRepository storageRepository, 
+            IUpgradeableRepository upgradeableRepository,
             ITownService townService, IUpgradeableService upgradeableService,
             ICraftableService craftableService, IProductionBuildingService productionBuildingService)
         {
@@ -35,6 +37,7 @@ namespace WebAPI.Services
             ResourceBatchRepository = resourceBatchRepository;
             ProductionBuildingRepository = productionBuildingRepository;
             StorageRepository = storageRepository;
+            UpgradeableRepository = upgradeableRepository;
 
             // Services
             TownService = townService;
@@ -260,6 +263,14 @@ namespace WebAPI.Services
                 await ResourceBatchRepository.CreateAsync(craftableCost);
             }
 
+            // Get upgradeable
+            var upgradeable = building.Upgradeable;
+            // Save the cost for the upgradeable for later usage
+            var upgradeableCosts = upgradeable.RequiredResources;
+            upgradeable.RequiredResources = null;
+
+            building.Upgradeable = null;
+
             // Production building
             if (building.BuildingType == BuildingType.Production)
             {
@@ -281,6 +292,17 @@ namespace WebAPI.Services
                 // Update and create the production building
                 child.ParentBuilding = building;
                 await StorageRepository.CreateAsync(child);
+            }
+
+            // Create the upgradeable entity and update the building
+            upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
+            building.Upgradeable = upgradeable;
+            // Create the upgradeable costs
+            foreach (var upgradeableCost in upgradeableCosts)
+            {
+                upgradeable.Building = building;
+                upgradeableCost.Upgradeable = upgradeable;
+                await ResourceBatchRepository.CreateAsync(upgradeableCost);
             }
         }
 
@@ -304,11 +326,31 @@ namespace WebAPI.Services
                     craftableCost.Craftable = craftable;
                     await ResourceBatchRepository.CreateAsync(craftableCost);
                 }
+
+                // Get upgradeable
+                var upgradeable = building.Upgradeable;
+                // Save the cost for the upgradeable for later usage
+                var upgradeableCosts = upgradeable.RequiredResources;
+                upgradeable.RequiredResources = null;
+                building.Upgradeable = null;
+
                 // Create the building entity and update the production building
                 building = await BuildingRepository.CreateAsync(building);
                 productionBuilding.ParentBuilding = building;
                 // Create the production buildling
                 await ProductionBuildingRepository.CreateAsync(productionBuilding);
+
+
+                upgradeable.Building = building;
+                // Create the upgradeable entity and update the building
+                upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
+                building.Upgradeable = upgradeable;
+                // Create the upgradeable costs
+                foreach (var upgradeableCost in upgradeableCosts)
+                {
+                    upgradeableCost.Upgradeable = upgradeable;
+                    await ResourceBatchRepository.CreateAsync(upgradeableCost);
+                }
             }
             // Create template for storages
             foreach (var storage in StorageTemplate.Template())
@@ -328,6 +370,14 @@ namespace WebAPI.Services
                     craftableCost.Craftable = craftable;
                     await ResourceBatchRepository.CreateAsync(craftableCost);
                 }
+
+                // Get upgradeable
+                var upgradeable = building.Upgradeable;
+                // Save the cost for the upgradeable for later usage
+                var upgradeableCosts = upgradeable.RequiredResources;
+                upgradeable.RequiredResources = null;
+                building.Upgradeable = null;
+
                 // Create the building entity and update the storage
                 building = await BuildingRepository.CreateAsync(building);
                 storage.ParentBuilding = building;
@@ -341,6 +391,17 @@ namespace WebAPI.Services
                 {
                     storageResource.Storage = storagedb;
                     await ResourceBatchRepository.CreateAsync(storageResource);
+                }
+
+                upgradeable.Building = building;
+                // Create the upgradeable entity and update the building
+                upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
+                building.Upgradeable = upgradeable;
+                // Create the upgradeable costs
+                foreach (var upgradeableCost in upgradeableCosts)
+                {
+                    upgradeableCost.Upgradeable = upgradeable;
+                    await ResourceBatchRepository.CreateAsync(upgradeableCost);
                 }
             }
         }

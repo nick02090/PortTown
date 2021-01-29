@@ -10,6 +10,26 @@ namespace WebAPI
         protected void Application_Start(object sender, EventArgs e)
         {
             GlobalConfiguration.Configure(WebAPIConfig.Register);
+
+            // Check and create buildings template
+            WebAPIConfig.CheckForInitialBuildingsAsync().ContinueWith(async result =>
+            {
+                var hasData = await result;
+                if (!hasData)
+                {
+                    await WebAPIConfig.CreateInitialBuildingsAsync();
+                }
+            });
+
+            // Check and create items template
+            WebAPIConfig.CheckForInitialItemsAsync().ContinueWith(async result =>
+            {
+                var hasData = await result;
+                if (!hasData)
+                {
+                    await WebAPIConfig.CreateInitialItemsAsync();
+                }
+            });
         }
 
         protected void Session_Start(object sender, EventArgs e)

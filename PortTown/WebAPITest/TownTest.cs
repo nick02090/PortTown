@@ -10,10 +10,10 @@ namespace WebAPITest
         [TestMethod]
         public void TestMethod1()
         {
-            var controller = new TownController();
+            //var controller = new TownController();
 
-            var result = controller.Get();
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            //var result = controller.GetAsync();
+            //Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
     }
 }

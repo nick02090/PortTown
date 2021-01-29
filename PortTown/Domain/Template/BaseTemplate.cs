@@ -28,6 +28,15 @@ namespace Domain.Template
             };
         }
 
+        public static Town GenerateTown(Upgradeable townUpgradeable, ICollection<Building> buildings)
+        {
+            return new Town
+            {
+                Upgradeable = townUpgradeable,
+                Buildings = buildings
+            };
+        }
+
         public static Sellable GenerateSellable(int price)
         {
             return new Sellable()

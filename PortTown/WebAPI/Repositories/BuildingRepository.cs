@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using Domain.Helper;
 using NHibernate;
 using NHibernate.Linq;
@@ -306,6 +307,52 @@ namespace WebAPI.Repositories
                         .Query<Building>()
                         .Where(x => x.Town.Id == null)
                         .Where(x => x.Id == id)
+                        .Select(x => new Building
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            Capacity = x.Capacity,
+                            BuildingType = x.BuildingType,
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            }
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return building;
+        }
+
+        public async Task<Building> GetTemplateAsync(BuildingType buildingType, string name)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var building = new Building();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    building = await session
+                        .Query<Building>()
+                        .Where(x => x.Town.Id == null)
+                        .Where(x => x.BuildingType == buildingType && x.Name == name)
                         .Select(x => new Building
                         {
                             Id = x.Id,

@@ -16,18 +16,23 @@ namespace WebAPI.Services
         private readonly IBuildingRepository BuildingRepository;
         private readonly IItemRepository ItemRepository;
         private readonly IResourceBatchRepository ResourceBatchRepository;
+        private readonly IUpgradeableRepository UpgradeableRepository;
+        private readonly ICraftableRepository CraftableRepository;
 
         private readonly IUpgradeableService UpgradeableService;
 
         public TownService(ITownRepository townRepository,
             IBuildingRepository buildingRepository, IItemRepository itemRepository,
-            IResourceBatchRepository resourceBatchRepository, IUpgradeableService upgradeableService)
+            IResourceBatchRepository resourceBatchRepository, IUpgradeableRepository upgradeableRepository,
+            ICraftableRepository craftableRepository, IUpgradeableService upgradeableService)
         {
             // Repositories
             TownRepository = townRepository;
             BuildingRepository = buildingRepository;
             ItemRepository = itemRepository;
             ResourceBatchRepository = resourceBatchRepository;
+            UpgradeableRepository = upgradeableRepository;
+            CraftableRepository = craftableRepository;
 
             // Services
             UpgradeableService = upgradeableService;
@@ -50,6 +55,42 @@ namespace WebAPI.Services
                 updatedTowns.Add(updatedTown);
             }
             return updatedTowns;
+        }
+        public async Task<Town> CreateFromTemplate(Town template)
+        {
+            // Save buildings and upgradeable for later usage
+            var buildings = template.Buildings;
+            var upgradeable = template.Upgradeable;
+            template.Buildings = null;
+            template.Upgradeable = null;
+            // Create town
+            var town = await TownRepository.CreateAsync(template);
+
+            // Create buildings from template
+            var townBuildings = new List<Building>();
+            foreach (var building in buildings)
+            {
+                var townBuilding = await BuildingRepository.GetTemplateAsync(building.BuildingType, building.Name);
+                // Create craftable for this building
+                var buildingCraftable = townBuilding.ParentCraftable;
+                buildingCraftable.Id = Guid.Empty; // TODO: CHECK THIS OUT
+                buildingCraftable = await CraftableRepository.CreateAsync(buildingCraftable);
+                // Create the building
+                townBuilding.Id = Guid.Empty;
+                townBuilding.ParentCraftable = buildingCraftable;
+                townBuilding.Town = town;
+                townBuilding = await BuildingRepository.CreateAsync(townBuilding);
+                townBuildings.Add(townBuilding);
+            }
+
+            // Create upgradeable
+            upgradeable.Town = town;
+            upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
+
+            // Update and return the town
+            town.Buildings = townBuildings;
+            town.Upgradeable = upgradeable;
+            return town;
         }
 
         public async Task ResetAsync(Guid id)

@@ -23,7 +23,7 @@ namespace Domain.Template
             },
             new Building()
             {
-                Name = "Vault Storage",
+                Name = "Vault",
                 BuildingType = BuildingType.Storage
 
             }
@@ -55,7 +55,6 @@ namespace Domain.Template
         {
             var townUpgradeable = BaseTemplate.GenerateUpgradeable(timeToUpgradeTown, townUpgradeMultiplier, townUpgradeCost);
             var town = BaseTemplate.GenerateTown(townUpgradeable, buildings);
-
             return town;
 
         }

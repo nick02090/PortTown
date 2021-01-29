@@ -12,13 +12,15 @@ namespace WebAPI.Services
         private readonly ICraftableRepository CraftableRepository;
         private readonly IResourceBatchRepository ResourceBatchRepository;
         private readonly IItemRepository ItemRepository;
+        private readonly ISellableRepository SellableRepository;
 
         public ItemService(ICraftableRepository craftableRepository, IResourceBatchRepository resourceBatchRepository,
-            IItemRepository itemRepository)
+            IItemRepository itemRepository, ISellableRepository sellableRepository)
         {
             CraftableRepository = craftableRepository;
             ResourceBatchRepository = resourceBatchRepository;
             ItemRepository = itemRepository;
+            SellableRepository = sellableRepository;
         }
 
         #region Template
@@ -38,9 +40,14 @@ namespace WebAPI.Services
                 craftableCost.Craftable = craftable;
                 await ResourceBatchRepository.CreateAsync(craftableCost);
             }
+            // Save the sellable for the item for later usage
+            var sellable = item.Sellable;
+            item.Sellable = null;
             // Create the item entity
-            await ItemRepository.CreateAsync(item);
-
+            item = await ItemRepository.CreateAsync(item);
+            // Update and create the sellable
+            sellable.Item = item;
+            await SellableRepository.CreateAsync(sellable);
         }
 
         public async Task AddInitialTemplateData()

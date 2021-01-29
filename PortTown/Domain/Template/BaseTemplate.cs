@@ -28,14 +28,22 @@ namespace Domain.Template
             };
         }
 
+        public static Sellable GenerateSellable(int price)
+        {
+            return new Sellable()
+            {
+                Price = price
+            };
+        }
+
         public static Item GenerateItem(Craftable parentCraftable, string name,
-            int value)
+            Sellable sellable)
         {
             return new Item
             {
                 ParentCraftable = parentCraftable,
                 Name = name,
-                Value = value
+                Sellable = sellable
             };
         }
 

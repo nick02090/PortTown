@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Template;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -83,12 +84,10 @@ namespace WebAPI.Services
         public async Task<User> CreateUserWithTown(User user, string townName)
         {
             var userdb = await UserRepository.CreateAsync(user);
-            var town = new Town
-            {
-                Name = townName,
-                User = userdb
-            };
-            town = await TownRepository.CreateAsync(town);
+            var town = TownTemplate.Template();
+            town.Name = townName;
+            town.User = userdb;
+            town = await TownService.CreateFromTemplate(town);
             userdb.Town = town;
             return userdb;
         }

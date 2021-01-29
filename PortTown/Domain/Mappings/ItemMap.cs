@@ -14,7 +14,6 @@ namespace Domain.Mappings
 
             // Properties
             Map(x => x.Name);
-            Map(x => x.Value);
             Map(x => x.Quality);
 
             // Relations

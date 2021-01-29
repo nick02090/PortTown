@@ -28,6 +28,7 @@ namespace WebAPI.Configuration
             container.RegisterType<IStorageRepository, StorageRespository>();
             container.RegisterType<IUserRepository, UserRespository>();
             container.RegisterType<IUpgradeableRepository, UpgradeableRepository>();
+            container.RegisterType<ISellableRepository, SellableRepository>();
             #endregion
             #region Services
             container.RegisterType<IUserService, UserService>();

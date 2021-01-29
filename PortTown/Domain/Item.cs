@@ -10,7 +10,6 @@ namespace Domain
         [Required]
         public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
-        public virtual int Value { get; set; }
         public virtual ItemQuality Quality { get; set; }
         public virtual Town Town { get; set; }
         public virtual Sellable Sellable { get; set; }

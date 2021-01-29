@@ -14,6 +14,30 @@ namespace WebAPI.Services
             CraftableRepository = craftableRepository;
         }
 
+        public async Task<Craftable> Craft(Craftable craftable)
+        {
+            // Update the craftable properties
+            craftable.IsFinishedCrafting = false;
+            // Store the cost for later purpose
+            var craftingCost = craftable.RequiredResources;
+            //craftable.RequiredResources = null; // TODO CHECK THIS OUT
+            await CraftableRepository.UpdateAsync(craftable);
+            craftable.RequiredResources = craftingCost;
+            return craftable;
+        }
+
+        public async Task<Craftable> StartCraft(Craftable craftable)
+        {
+            // Set the time for the craft
+            craftable.TimeUntilCrafted = new DateTime(DateTime.UtcNow.Ticks + craftable.TimeToBuild.Ticks);
+            // Store the cost for later purpose
+            var craftableCost = craftable.RequiredResources;
+            //craftable.RequiredResources = null; TODO: CHECK THIS OUT
+            await CraftableRepository.UpdateAsync(craftable);
+            craftable.RequiredResources = craftableCost;
+            return craftable;
+        }
+
         public async Task<Craftable> UpdateJobs(Craftable craftable)
         {
             if (craftable.TimeUntilCrafted.HasValue)

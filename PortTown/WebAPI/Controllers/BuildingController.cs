@@ -69,6 +69,51 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        #region Crafting
+        [Route("api/building/craft/{id}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> CraftAsync([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            if (!building.ParentCraftable.IsFinishedCrafting)
+            {
+                var error = new JSONErrorFormatter("The building hasn't finished crafting!", building.ParentCraftable.IsFinishedCrafting,
+                    "ParentCraftable.IsFinishedCrafting", "POST", $"api/building/craft/{id}",
+                    "BuildingController.CraftAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            building = await _service.CraftBuilding(building);
+            return Request.CreateResponse(HttpStatusCode.OK, building);
+        }
+
+        [Route("api/building/start-craft/{townId}/{templateId}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> StartCraftAsync([FromUri] Guid townId, [FromUri] Guid templateId)
+        {
+            var building = await _repository.GetTemplateAsync(templateId);
+            var canCraft = await _service.CanCraftBuilding(building, townId);
+            if (!(bool)canCraft["CanCraft"])
+            {
+                var error = new JSONErrorFormatter("The building cannot be crafted due to unsufficient funds!",
+                    building.Name, "Name", "POST", $"api/building/start-craft/{townId}/{templateId}",
+                    "BuildingController.StartCraftAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            building = await _service.StartCraftBuilding(building, townId);
+            return Request.CreateResponse(HttpStatusCode.OK, building);
+        }
+
+        [Route("api/building/can-craft/{townId}/{templateId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> CanCraftAsync([FromUri] Guid townId, [FromUri] Guid templateId)
+        {
+            var building = await _repository.GetTemplateAsync(templateId);
+            var canCraft = await _service.CanCraftBuilding(building, townId);
+            return Request.CreateResponse(HttpStatusCode.OK, canCraft);
+        }
+        #endregion
+
+        #region Upgrades
         [Route("api/building/upgrade/{id}")]
         [HttpPost]
         public async Task<HttpResponseMessage> UpgradeAsync([FromUri] Guid id)
@@ -110,6 +155,7 @@ namespace WebAPI.Controllers
             var canUpgrade = await _service.CanUpgradeLevel(building);
             return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
         }
+        #endregion
 
         #region Template
         [Route("api/building/check-initial-template-data")]

@@ -36,6 +36,7 @@ namespace WebAPI.Configuration
             container.RegisterType<IItemService, ItemService>();
             container.RegisterType<IUpgradeableService, UpgradeableService>();
             container.RegisterType<ICraftableService, CraftableService>();
+            container.RegisterType<IProductionBuildingService, ProductionBuildingService>();
             #endregion
             #region Settings
             container.RegisterSingleton<IAppSettings, AppSettings>();

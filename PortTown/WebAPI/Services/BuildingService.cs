@@ -22,12 +22,13 @@ namespace WebAPI.Services
         private readonly ITownService TownService;
         private readonly IUpgradeableService UpgradeableService;
         private readonly ICraftableService CraftableService;
+        private readonly IProductionBuildingService ProductionBuildingService;
 
         public BuildingService(IBuildingRepository buildingRepository,
             ICraftableRepository craftableRepository, IResourceBatchRepository resourceBatchRepository, 
             IProductionBuildingRepository productionBuildingRepository, IStorageRepository storageRepository, 
             ITownService townService, IUpgradeableService upgradeableService,
-            ICraftableService craftableService)
+            ICraftableService craftableService, IProductionBuildingService productionBuildingService)
         {
             // Repositories
             BuildingRepository = buildingRepository;
@@ -40,6 +41,7 @@ namespace WebAPI.Services
             TownService = townService;
             UpgradeableService = upgradeableService;
             CraftableService = craftableService;
+            ProductionBuildingService = productionBuildingService;
         }
 
         public async Task<Building> GetBuilding(Guid id)
@@ -68,93 +70,6 @@ namespace WebAPI.Services
             building.ParentCraftable = craftable;
             building.Upgradeable = upgradeable;
             return building;
-        }
-
-        public async Task<Building> UpgradeLevel(Building building)
-        {
-            var upgradeable = building.Upgradeable;
-            // NOTE: This check is also made in controller (just in case)
-            if (upgradeable.IsFinishedUpgrading)
-            {
-                upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
-                // Update the building level
-                building.Level += 1;
-                building.Capacity = CalculateNewCapacity(building.Capacity, upgradeable.UpgradeMultiplier);
-                if (building.BuildingType == BuildingType.Production)
-                {
-                    // TODO: Move this to the Production Building Service!!!!
-                    var productionBuilding = building.ChildProductionBuilding;
-                    productionBuilding.ProductionRate = CalculateNewProductionRate(productionBuilding.ProductionRate, upgradeable.UpgradeMultiplier);
-                    await ProductionBuildingRepository.UpdateAsync(productionBuilding);
-                }
-                //building.Upgradeable = null; TODO: CHECK THIS OUT
-                await BuildingRepository.UpdateAsync(building);
-            }
-            building.Upgradeable = upgradeable;
-            return building;
-        }
-
-        private float CalculateNewProductionRate(float productionRate, float upgradeMultiplier)
-        {
-            var newProductionRate = productionRate * upgradeMultiplier;
-            return newProductionRate;
-        }
-
-        private int CalculateNewCapacity(int capacity, float upgradeMultiplier)
-        {
-            var newCapacity = capacity * upgradeMultiplier;
-            return (int)newCapacity;
-        }
-
-        public async Task<Building> StartUpgradeLevel(Building building)
-        {
-            // NOTE: This check is also made in controller (just in case)
-            var canUpgradeLevel = await CanUpgradeLevel(building);
-            if ((bool)canUpgradeLevel["CanUpgrade"])
-            {
-                // Remove resources (payment)
-                building = await PayForLevelUpgrade(building);
-                // Update the upgradable to start the upgrade process
-                var upgradeable = await UpgradeableService.StartUpgradeLevel(building.Upgradeable);
-                building.Upgradeable = upgradeable;
-            }
-            return building;
-        }
-
-        private async Task<Building> PayForLevelUpgrade(Building building)
-        {
-            var town = await TownService.GetTown(building.Town.Id);
-            var upgradeable = building.Upgradeable;
-            foreach (var cost in upgradeable.RequiredResources)
-            {
-                await GatherPaymentFromBuildings(cost, town.Buildings, true);
-                town.Buildings = (ICollection<Building>)await BuildingRepository.GetByTownAsync(town.Id);
-            }
-            return building;
-        }
-
-        public async Task<JSONFormatter> CanUpgradeLevel(Building building)
-        {
-            var upgradeable = new JSONFormatter();
-            upgradeable.AddField("CanUpgrade", true);
-            var town = await TownService.GetTown(building.Town.Id);
-            if (!TownService.DoesTownAllowUpgrade(town, building.Level + 1))
-            {
-                upgradeable["CanUpgrade"] = false;
-                // NOTE: this is an early return to avoid the computational heavy cost calculation
-                return upgradeable;
-            }
-            var upgradeCosts = building.Upgradeable.RequiredResources;
-            foreach (var cost in upgradeCosts)
-            {
-                var remainingCost = await GatherPaymentFromBuildings(cost, town.Buildings);
-                if (remainingCost > 0)
-                {
-                    upgradeable["CanUpgrade"] = false;
-                    break;
-                }
-            }
-            return upgradeable;
         }
 
         /// <summary>
@@ -220,6 +135,177 @@ namespace WebAPI.Services
             }
             return remainingCost;
         }
+
+        private async Task PayForAction(ICollection<ResourceBatch> requiredResources, Guid townId)
+        {
+            var town = await TownService.GetTown(townId);
+            foreach (var cost in requiredResources)
+            {
+                await GatherPaymentFromBuildings(cost, town.Buildings, true);
+                town.Buildings = (ICollection<Building>)await BuildingRepository.GetByTownAsync(townId);
+            }
+        }
+
+        #region Crafting
+        public async Task<Building> CraftBuilding(Building building)
+        {
+            var craftable = building.ParentCraftable;
+            if (craftable.IsFinishedCrafting)
+            {
+                craftable = await CraftableService.Craft(craftable);
+            }
+            building.ParentCraftable = craftable;
+            return building;
+        }
+
+        public async Task<Building> StartCraftBuilding(Building building, Guid townId)
+        {
+            // NOTE: This check is also made in controller (just in case)
+            var canCraft = await CanCraftBuilding(building, townId);
+            if ((bool)canCraft["CanCraft"])
+            {
+                // Remove resources (payment)
+                await PayForAction(building.ParentCraftable.RequiredResources, townId);
+                // Create the building based on the template and start the crafting process
+                building = await AddBuildingToTown(building, townId);
+                var craftable = await CraftableService.StartCraft(building.ParentCraftable);
+                building.ParentCraftable = craftable;
+            }
+            return building;
+        }
+
+        private async Task<Building> AddBuildingToTown(Building building, Guid townId)
+        {
+            // Remove the template id
+            building.Id = Guid.Empty; // TODO: CHECK THIS OUT
+            // Get the craftable parent and remove unnecessary attributes
+            var craftable = building.ParentCraftable;
+            craftable.RequiredResources = null;
+            craftable.Id = Guid.Empty;
+            // Create the craftable entity and update the building
+            craftable = await CraftableRepository.CreateAsync(craftable);
+            building.ParentCraftable = craftable;
+
+            // Get the town entity and update the building
+            var town = await TownService.GetTown(townId);
+            building.Town = town;
+
+            // Production building
+            if (building.BuildingType == BuildingType.Production)
+            {
+                // Save the child for later usage
+                var child = building.ChildProductionBuilding;
+                // Create the building entity
+                building = await BuildingRepository.CreateAsync(building);
+                // Update and create the production building
+                child.ParentBuilding = building;
+                child.Id = Guid.Empty;
+                child = await ProductionBuildingRepository.CreateAsync(child);
+                building.ChildProductionBuilding = child;
+            }
+            // Storage
+            else
+            {
+                // Save the child for later usage
+                var child = building.ChildStorage;
+                // Create the building entity
+                building = await BuildingRepository.CreateAsync(building);
+                // Update and create the production building
+                child.ParentBuilding = building;
+                child.Id = Guid.Empty;
+                await StorageRepository.CreateAsync(child);
+                building.ChildStorage = child;
+            }
+            return building;
+        }
+
+        public async Task<JSONFormatter> CanCraftBuilding(Building building, Guid townId)
+        {
+            var craftable = new JSONFormatter();
+            craftable.AddField("CanCraft", true);
+            var town = await TownService.GetTown(townId);
+            var craftCosts = building.ParentCraftable.RequiredResources;
+            foreach (var cost in craftCosts)
+            {
+                var remainingCost = await GatherPaymentFromBuildings(cost, town.Buildings);
+                if (remainingCost > 0)
+                {
+                    craftable["CanCraft"] = false;
+                    break;
+                }
+            }
+            return craftable;
+        }
+        #endregion
+
+        #region Upgrades
+        public async Task<Building> UpgradeLevel(Building building)
+        {
+            var upgradeable = building.Upgradeable;
+            // NOTE: This check is also made in controller (just in case)
+            if (upgradeable.IsFinishedUpgrading)
+            {
+                upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
+                // Update the building level
+                building.Level += 1;
+                building.Capacity = CalculateNewCapacity(building.Capacity, upgradeable.UpgradeMultiplier);
+                if (building.BuildingType == BuildingType.Production)
+                {
+                    building.ChildProductionBuilding = await ProductionBuildingService.UpgradeLevel(
+                        building.ChildProductionBuilding, upgradeable.UpgradeMultiplier);
+                }
+                //building.Upgradeable = null; TODO: CHECK THIS OUT
+                await BuildingRepository.UpdateAsync(building);
+            }
+            building.Upgradeable = upgradeable;
+            return building;
+        }
+
+        private int CalculateNewCapacity(int capacity, float upgradeMultiplier)
+        {
+            var newCapacity = capacity * upgradeMultiplier;
+            return (int)newCapacity;
+        }
+
+        public async Task<Building> StartUpgradeLevel(Building building)
+        {
+            // NOTE: This check is also made in controller (just in case)
+            var canUpgradeLevel = await CanUpgradeLevel(building);
+            if ((bool)canUpgradeLevel["CanUpgrade"])
+            {
+                // Remove resources (payment)
+                await PayForAction(building.Upgradeable.RequiredResources, building.Town.Id);
+                // Update the upgradable to start the upgrade process
+                var upgradeable = await UpgradeableService.StartUpgradeLevel(building.Upgradeable);
+                building.Upgradeable = upgradeable;
+            }
+            return building;
+        }
+
+        public async Task<JSONFormatter> CanUpgradeLevel(Building building)
+        {
+            var upgradeable = new JSONFormatter();
+            upgradeable.AddField("CanUpgrade", true);
+            var town = await TownService.GetTown(building.Town.Id);
+            if (!TownService.DoesTownAllowUpgrade(town, building.Level + 1))
+            {
+                upgradeable["CanUpgrade"] = false;
+                // NOTE: this is an early return to avoid the computational heavy cost calculation
+                return upgradeable;
+            }
+            var upgradeCosts = building.Upgradeable.RequiredResources;
+            foreach (var cost in upgradeCosts)
+            {
+                var remainingCost = await GatherPaymentFromBuildings(cost, town.Buildings);
+                if (remainingCost > 0)
+                {
+                    upgradeable["CanUpgrade"] = false;
+                    break;
+                }
+            }
+            return upgradeable;
+        }
+        #endregion
 
         #region Template
         public async Task AddDataToTemplate(Building building)

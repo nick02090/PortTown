@@ -23,7 +23,7 @@ namespace WebAPI.Services
             upgradeable.TimeUntilUpgraded = new DateTime(DateTime.UtcNow.Ticks + upgradeable.TimeToUpgrade.Ticks);
             // Store the cost for later purpose
             var upgradeableCost = upgradeable.RequiredResources;
-            upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
+            //upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
             // Update the upgradeable and return the reference to the costs
             await UpgradeableRepository.UpdateAsync(upgradeable);
             upgradeable.RequiredResources = upgradeableCost;
@@ -62,7 +62,7 @@ namespace WebAPI.Services
             upgradeable.TimeToUpgrade = CalculateNewUpgradeTime(upgradeable.TimeToUpgrade, upgradeable.UpgradeMultiplier);
             // Store the cost for later purpose
             var upgradeableCost = upgradeable.RequiredResources;
-            upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
+            //upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
             // Update the upgradeable and return the reference to the costs
             await UpgradeableRepository.UpdateAsync(upgradeable);
             upgradeable.RequiredResources = upgradeableCost;

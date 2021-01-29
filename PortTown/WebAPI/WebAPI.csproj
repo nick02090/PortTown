@@ -153,6 +153,7 @@
     <Compile Include="Interfaces\IItemRepository.cs" />
     <Compile Include="Interfaces\IItemService.cs" />
     <Compile Include="Interfaces\IProductionBuildingRepository.cs" />
+    <Compile Include="Interfaces\IProductionBuildingService.cs" />
     <Compile Include="Interfaces\IResourceBatchRepository.cs" />
     <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ITownRepository.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Services\BuildingService.cs" />
     <Compile Include="Services\CraftableService.cs" />
     <Compile Include="Services\ItemService.cs" />
+    <Compile Include="Services\ProductionBuildingService.cs" />
     <Compile Include="Services\TownService.cs" />
     <Compile Include="Services\UpgradeableService.cs" />
     <Compile Include="Services\UserService.cs" />

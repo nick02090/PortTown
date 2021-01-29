@@ -1,0 +1,65 @@
+﻿@model WebApp.Models.TownViewModels.TownBuildingsViewModel
+
+@{
+    ViewBag.Title = "View";
+}
+
+<h4>Storage</h4>
+
+
+<div>
+    @for (int i = 0; i < Model.BuildingsList.Count; i += 3)
+    {
+        <div class="row">
+            @for (int j = 0; j < 3 && i + j < Model.BuildingsList.Count; ++j)
+            {
+                var item = Model.BuildingsList[i + j];
+                if (item is WebApp.Models.Buildings.StorageBuilding)
+                {
+                    WebApp.Models.Buildings.StorageBuilding storageBuilding = (WebApp.Models.Buildings.StorageBuilding)item;
+                    <div class="col-md-4 col-sm-4">
+                        <a href="@Url.Content("/town/storagebuildingdetails?Name="+item.Name)" style="text-decoration: none; color: black">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="row">
+                                        <div class="col">
+                                            <img class="rounded-circle" src="@Url.Content(@Html.Encode(item.ImagePath))" alt="Generic placeholder image" width="200" height="200" />
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="font-weight-bold">@Html.Encode(item.Name)</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p>Level: @Html.Encode(item.Level)</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            @foreach(var res in storageBuilding.StoredResources)
+                                            {
+                                                <dl>
+                                                    <dt>
+                                                        @Html.Encode(res.Type.ToString())
+                                                    </dt>
+                                                    <dl>
+                                                        @Html.Encode(res.Value)
+                                                    </dl>
+                                                </dl>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+

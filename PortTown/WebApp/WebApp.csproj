@@ -95,6 +95,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\img\bg.jfif" />
+    <Content Include="Content\img\Coal mine.jpg" />
+    <Content Include="Content\img\Farm.jpg" />
+    <Content Include="Content\img\Gold mine.jpg" />
+    <Content Include="Content\img\market.jpg" />
+    <Content Include="Content\img\Quarry.jpg" />
+    <Content Include="Content\img\Sawmill.jpg" />
+    <Content Include="Content\img\town.jpg" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -103,18 +111,28 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MarketplaceController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\TownController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Buildings\Building.cs" />
-    <Compile Include="Models\Buildings\Buildings.cs" />
+    <Compile Include="Models\Buildings\Palace.cs" />
+    <Compile Include="Models\Buildings\Workshop.cs" />
+    <Compile Include="Models\Items\Item.cs" />
+    <Compile Include="Models\Items\ItemType.cs" />
+    <Compile Include="Models\Resources\ResourceType.cs" />
+    <Compile Include="Models\Town.cs" />
+    <Compile Include="Models\TownViewModels\TownBuildingsViewModel.cs" />
     <Compile Include="Models\Buildings\ProductionBuilding.cs" />
     <Compile Include="Models\Buildings\StorageBuilding.cs" />
     <Compile Include="Models\Resources\Resource.cs" />
+    <Compile Include="Models\TownViewModels\TownItemsViewModel.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserViewModel\UserTownViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\BuildingsInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -125,9 +143,15 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Register\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Town\Buildings.cshtml" />
+    <Content Include="Views\Town\ProductionBuildings.cshtml" />
     <Content Include="Views\Town\Build.cshtml" />
-    <Content Include="Views\Town\Building.cshtml" />
+    <Content Include="Views\Town\StorageBuildings.cshtml" />
+    <Content Include="Views\Town\ProductionBuildingDetails.cshtml" />
+    <Content Include="Views\Town\Items.cshtml" />
+    <Content Include="Views\Town\StorageBuildingDetails.cshtml" />
+    <Content Include="Views\Marketplace\BuyList.cshtml" />
+    <Content Include="Views\Marketplace\SellList.cshtml" />
+    <Content Include="Views\Marketplace\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -137,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="assets\" />
     <Folder Include="Services\" />
     <Folder Include="Views\User\" />
   </ItemGroup>

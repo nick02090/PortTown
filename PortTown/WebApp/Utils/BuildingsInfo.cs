@@ -5,8 +5,9 @@ using System.Web;
 
 namespace WebApp.Utils
 {
-    public class BuilingsInfo
+    public class BuildingsInfo
     {
+
         public static readonly string FARM_INFO = "Ovo je farma. Tu ima krmadi koja ce se poslje klat.";
         public static readonly string WORKSHOP_INFO = "Ovo je radionica.";
         public static readonly string GOLD_MINE_INFO = "Rudnik zlata";
@@ -17,5 +18,19 @@ namespace WebApp.Utils
         public static readonly string IRON_MINE = "Aj pogodi sta je ovo jbt";
         public static readonly string SAMWILL_INFO = "Nisam uspio nac bolje ime za pilanu, al mocno zvuci (reci 100 puta u sebi samwill)";
         public static readonly string PALACE_INFO = "Ovo je palaca. Ovde se organiziraju orgije";
+
+        public static readonly Dictionary<string, string> NameToInfo = new Dictionary<string, string>
+        {
+            {"Farm", FARM_INFO },
+            {"Workshop", WORKSHOP_INFO },
+            {"Gold mine", GOLD_MINE_INFO },
+            {"Silo", SILO_INFO },
+            {"Warehouse", WAREHOUSE_INFO },
+            {"Quarry", QUARRY_INFO },
+            {"Coal mine", COAL_MINE },
+            {"Iron mine", IRON_MINE },
+            {"Sawmill", SAMWILL_INFO },
+            {"Palace", PALACE_INFO }
+        };
     }
 }

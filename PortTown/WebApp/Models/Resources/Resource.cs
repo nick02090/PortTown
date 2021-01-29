@@ -7,7 +7,19 @@ namespace WebApp.Models.Resources
 {
     public class Resource
     {
-        public string Name { get; set; }
+        public ResourceType Type { get; set; }
         public int Value { get; set; }
+
+        public Resource(ResourceType Type, int Value)
+        {
+            this.Type = Type;
+            this.Value = Value;
+        }
+
+        public Resource(ResourceType Type)
+        {
+            this.Type = Type;
+            this.Value = 0;
+        }
     }
 }

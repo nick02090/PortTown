@@ -1,9 +1,8 @@
-﻿@model Domain.Town
+﻿@model WebApp.Models.Town
 
 @{
     ViewBag.Title = "Index";
 }
-
 
 <h2>
     @Html.DisplayFor(model => model.Name)
@@ -11,13 +10,23 @@
 
 <div>
     <div>
-        <p>@Html.DisplayNameFor(model => model.Level): @Html.DisplayFor(model => model.Level) </p>
+        <h4>@Html.DisplayNameFor(model => model.Level): @Html.DisplayFor(model => model.Level) </h4>
     </div>
     <br />
 
     <div>
-        <h4>Buildings</h4>
+        <h3>Buildings</h3>
 
-        @{Html.RenderAction("Buildings");}
+        @{ Html.RenderAction("ProductionBuildings");}
+        @{ Html.RenderAction("StorageBuildings");}
+    </div>
+    <br />
+    <div>
+        <a href="town/build" class="btn btn-primary">New building</a>
+    </div>
+    <br />
+    <div>
+        <h3>Items</h3>
+        @{ Html.RenderAction("Items"); }
     </div>
 </div>

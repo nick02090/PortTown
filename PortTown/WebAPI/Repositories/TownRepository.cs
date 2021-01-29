@@ -1,0 +1,162 @@
+﻿using Domain;
+using Domain.Helper;
+using NHibernate;
+using NHibernate.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebAPI.Interfaces;
+
+namespace WebAPI.Repositories
+{
+    public class TownRepository : ITownRepository
+    {
+        public async Task<Town> CreateAsync(Town entity)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.SaveAsync(entity);
+
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return entity;
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var entity = await GetAsync(id);
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.DeleteAsync(entity);
+
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return;
+        }
+
+        public async Task<IEnumerable<Town>> GetAsync()
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<Town> towns = new List<Town>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    towns = await session
+                        .Query<Town>()
+                        .Select(x => new Town
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            Buildings = x.Buildings.Select(y => new Building
+                            {
+                                Id = y.Id
+                            }).ToList(),
+                            User = new User
+                            {
+                                Id = x.User.Id,
+                                Username = x.User.Username,
+                                Email = x.User.Email
+                            }
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return towns;
+        }
+
+        public async Task<Town> GetAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Town town = new Town();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    town = await session
+                        .Query<Town>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Town
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Level = x.Level,
+                            Buildings = x.Buildings.Select(y => new Building
+                            {
+                                Id = y.Id
+                            }).ToList(),
+                            User = new User
+                            {
+                                Id = x.User.Id,
+                                Username = x.User.Username,
+                                Email = x.User.Email
+                            }
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return town;
+        }
+
+        public async Task<Town> UpdateAsync(Town entity)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+
+                    await session.UpdateAsync(entity);
+                
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+
+            return entity;
+        }
+    }
+}

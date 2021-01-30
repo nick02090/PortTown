@@ -320,7 +320,6 @@ namespace WebAPI.Services
 
             // Create the upgradeable entity and update the building
             upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
-            building.Upgradeable = upgradeable;
             // Create the upgradeable costs
             foreach (var upgradeableCost in upgradeableCosts)
             {
@@ -368,7 +367,6 @@ namespace WebAPI.Services
                 upgradeable.Building = building;
                 // Create the upgradeable entity and update the building
                 upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
-                building.Upgradeable = upgradeable;
                 // Create the upgradeable costs
                 foreach (var upgradeableCost in upgradeableCosts)
                 {
@@ -420,7 +418,6 @@ namespace WebAPI.Services
                 upgradeable.Building = building;
                 // Create the upgradeable entity and update the building
                 upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
-                building.Upgradeable = upgradeable;
                 // Create the upgradeable costs
                 foreach (var upgradeableCost in upgradeableCosts)
                 {

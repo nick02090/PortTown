@@ -73,6 +73,7 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        #region Upgrade
         [Route("api/town/upgrade/{id}")]
         [HttpPost]
         public async Task<HttpResponseMessage> UpgradeAsync([FromUri] Guid id)
@@ -114,5 +115,6 @@ namespace WebAPI.Controllers
             var canUpgrade = await _service.CanUpgradeLevel(town);
             return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
         }
+        #endregion
     }
 }

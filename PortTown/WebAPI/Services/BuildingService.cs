@@ -412,6 +412,27 @@ namespace WebAPI.Services
             }
             return hasData;
         }
+
+        public async Task<ICollection<JSONFormatter>> FilterTemplateForTown(Guid townId)
+        {
+            var result = new List<JSONFormatter>();
+            var template = await BuildingRepository.GetTemplateAsync();
+            foreach (var buildingTemplate in template)
+            {
+                var canCraft = await CanCraftBuilding(buildingTemplate, townId);
+                var isCraftable = canCraft["CanCraft"];
+                var craftCosts = await ResourceBatchRepository.GetByCraftableAsync(buildingTemplate.ParentCraftable.Id);
+
+                var templateResult = new JSONFormatter();
+                templateResult.AddField("CanCraft", isCraftable);
+                templateResult.AddField("TemplateId", buildingTemplate.Id);
+                templateResult.AddField("Name", buildingTemplate.Name);
+                templateResult.AddField("BuildingType", buildingTemplate.BuildingType);
+                templateResult.AddField("RequiredResources", craftCosts);
+                result.Add(templateResult);
+            }
+            return result;
+        }
         #endregion
     }
 }

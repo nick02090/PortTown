@@ -60,6 +60,10 @@ namespace WebAPI.Services
             foreach (var building in buildings)
             {
                 var newBuilding = await UpdateJobs(building);
+                var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(newBuilding.ParentCraftable.Id);
+                newBuilding.ParentCraftable.RequiredResources = craftableCosts.ToList();
+                var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(newBuilding.Upgradeable.Id);
+                newBuilding.Upgradeable.RequiredResources = upgradeableCosts.ToList();
                 if (newBuilding.BuildingType == BuildingType.Production)
                 {
                     // get production child

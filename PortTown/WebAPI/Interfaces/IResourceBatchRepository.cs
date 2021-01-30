@@ -9,5 +9,7 @@ namespace WebAPI.Interfaces
     {
         Task<ResourceBatch> GetTemplateAsync(Guid id);
         Task<IEnumerable<ResourceBatch>> GetTemplateAsync();
+        Task<IEnumerable<ResourceBatch>> GetByCraftableAsync(Guid craftableId);
+        Task<IEnumerable<ResourceBatch>> GetByUpgradeableAsync(Guid upgradeableId);
     }
 }

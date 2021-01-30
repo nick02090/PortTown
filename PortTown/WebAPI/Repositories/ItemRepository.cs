@@ -73,6 +73,14 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id,
+                                User = new User
+                                {
+                                    Id = x.Town.User.Id
+                                }
+                            },
                             ParentCraftable = new Craftable
                             {
                                 Id = x.ParentCraftable.Id,
@@ -120,6 +128,14 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id,
+                                User = new User
+                                {
+                                    Id = x.Town.User.Id
+                                }
+                            },
                             ParentCraftable = new Craftable
                             {
                                 Id = x.ParentCraftable.Id,
@@ -150,6 +166,61 @@ namespace WebAPI.Repositories
                 NHibernateHelper.CloseSession();
             }
             return item;
+        }
+
+        public async Task<ICollection<Item>> GetByUserAsync(Guid userId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<Item> items = new List<Item>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    items = await session
+                        .Query<Item>()
+                        .Where(x => x.Town.User.Id == userId)
+                        .Select(x => new Item
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Town = new Town
+                            {
+                                Id = x.Town.Id,
+                                User = new User
+                                {
+                                    Id = x.Town.User.Id
+                                }
+                            },
+                            ParentCraftable = new Craftable
+                            {
+                                Id = x.ParentCraftable.Id,
+                                IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
+                                TimeToBuild = x.ParentCraftable.TimeToBuild,
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
+                                CraftableType = x.ParentCraftable.CraftableType,
+                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    ResourceType = y.ResourceType,
+                                    Quantity = y.Quantity
+                                }).ToList()
+                            },
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
+                            }
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return items;
         }
 
         public async Task<IEnumerable<Item>> GetTemplateAsync()

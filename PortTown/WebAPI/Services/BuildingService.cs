@@ -433,6 +433,31 @@ namespace WebAPI.Services
             }
             return result;
         }
+
+        public async Task<ICollection<Building>> GetTemplateBuildings()
+        {
+            var templateBuildings = await BuildingRepository.GetTemplateAsync();
+            foreach (var templateBuilding in templateBuildings)
+            {
+                // Get craftable costs
+                var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(templateBuilding.ParentCraftable.Id);
+                templateBuilding.ParentCraftable.RequiredResources = craftableCosts.ToList();
+                // Get upgradeable costs
+                var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(templateBuilding.Upgradeable.Id);
+                templateBuilding.Upgradeable.RequiredResources = upgradeableCosts.ToList();
+                if (templateBuilding.BuildingType == BuildingType.Production)
+                {
+                    // Get the production properties
+                    templateBuilding.ChildProductionBuilding = await ProductionBuildingRepository.GetByBuildingAsync(templateBuilding.Id);
+                }
+                else
+                {
+                    // Get the storage properties
+                    templateBuilding.ChildStorage = await StorageRepository.GetByBuildingAsync(templateBuilding.Id);
+                }
+            }
+            return templateBuildings.ToList();
+        }
         #endregion
     }
 }

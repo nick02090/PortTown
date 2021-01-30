@@ -380,7 +380,7 @@ namespace DesktopApp
             dr[3] = building.ParentCraftable.TimeToBuild;
             string resources = "";
             var resourceList = building.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
-            for (int i = 0; i < building.ParentCraftable.RequiredResources.Count; i++)
+            for (int i = 0; i < resourceList.Count; i++)
             {
                 resources += resourceList[i].ResourceType + ", ";
             }
@@ -391,7 +391,7 @@ namespace DesktopApp
 
             resources = "";
             resourceList = building.Upgradeable.RequiredResources.ToList<ResourceBatch>();
-            for (int i = 0; i < building.Upgradeable.RequiredResources.Count; i++)
+            for (int i = 0; i < resourceList.Count; i++)
             {
                 resources += resourceList[i].ResourceType + ", ";
             }
@@ -402,12 +402,20 @@ namespace DesktopApp
 
             if (building.BuildingType == 0)
             {
-                //dr[5] = building.ChildProductionBuilding.ProductionRate;
-                //dr[6] = building.ChildProductionBuilding.ResourceProduced;
+                dr[6] = building.ChildProductionBuilding.ProductionRate;
+                dr[7] = building.ChildProductionBuilding.ResourceProduced;
             }
             else
             {
-                //dr[5] = building.ChildStorage.StoredResources;
+                resourceList = building.ChildStorage.StoredResources.ToList<ResourceBatch>();
+                for (int i = 0; i < resourceList.Count; i++)
+                {
+                    resources += resourceList[i].ResourceType + ", ";
+                }
+                //Console.WriteLine(resources);
+                if (resources.Length > 2)
+                    resources = resources.Remove(resources.Length - 2, 2);
+                dr[6] = resources;
             }
 
             activeTable.Rows.Add(dr);
@@ -421,10 +429,6 @@ namespace DesktopApp
             dr[0] = item.Id;
             dr[1] = item.Name;
             dr[2] = item.Quality;
-            //if(building.BuildingType == 0)
-            //    dr[2] = "Production";
-            //else
-            //    dr[2] = "Storage";
             string resources = "    ";
             var resourceList = item.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
             for (int i = 0; i < item.ParentCraftable.RequiredResources.Count; i++)
@@ -441,9 +445,10 @@ namespace DesktopApp
             return;
         }
 
-        public async void EditUser(User user, string townName)
+        public async void EditUser(Guid id)
         {
 
+            User user = FindUserById(id);
             HttpClient client = new HttpClient
             {
                 BaseAddress = new Uri(Baseurl)
@@ -780,6 +785,16 @@ namespace DesktopApp
                 AddItemToTable(item);
             }
             return items;
+        }
+
+        private User FindUserById(Guid id)
+        {
+            foreach (var user in users)
+            {
+                if (user.Id.Equals(id))
+                    return user;
+            }
+            return null;
         }
     }
 }

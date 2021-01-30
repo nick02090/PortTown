@@ -20,6 +20,7 @@ namespace DesktopApp
     /// </summary>
     public partial class EditUserWindow : Window
     {
+        public Guid userId;
         public EditUserWindow()
         {
             InitializeComponent();
@@ -29,6 +30,7 @@ namespace DesktopApp
         {
             var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).UserTable)[0].Row;
 
+            userId = (Guid)selectedRow[0];
             textbox1.Text = selectedRow[1].ToString();
             textbox2.Text = selectedRow[2].ToString();
             //textbox3.Text = selectedRow[3].ToString();
@@ -38,7 +40,7 @@ namespace DesktopApp
 
         private void EditUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditUser(new User(textbox1.Text, textbox2.Text, textbox3.Text), textbox4.Text);
+            (Application.Current.MainWindow as AdminWindow).EditUser(userId);
             this.Hide();
         }
     }

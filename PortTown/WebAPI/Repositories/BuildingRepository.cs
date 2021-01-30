@@ -99,15 +99,15 @@ namespace WebAPI.Repositories
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
                                 {
                                     Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
                                 }).ToList()
                             }
                         })
@@ -163,15 +163,15 @@ namespace WebAPI.Repositories
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
                                 {
                                     Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
                                 }).ToList()
                             }
                         })
@@ -222,6 +222,20 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
+                                }).ToList()
                             }
                         })
                         .ToListAsync();
@@ -271,15 +285,15 @@ namespace WebAPI.Repositories
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
                                 {
                                     Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
                                 }).ToList()
                             }
                         })
@@ -327,6 +341,20 @@ namespace WebAPI.Repositories
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
                                 }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
+                                }).ToList()
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -372,6 +400,20 @@ namespace WebAPI.Repositories
                                     Id = y.Id,
                                     ResourceType = y.ResourceType,
                                     Quantity = y.Quantity
+                                }).ToList()
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
+                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
+                                {
+                                    Id = y.Id,
+                                    Quantity = y.Quantity,
+                                    ResourceType = y.ResourceType
                                 }).ToList()
                             }
                         })

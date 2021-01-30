@@ -69,6 +69,14 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        [Route("api/building/town/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByTownAsync([FromUri] Guid id)
+        {
+            var buildings = await _service.GetBuildingsByTown(id);
+            return Request.CreateResponse(HttpStatusCode.OK, buildings);
+        }
+
         #region Crafting
         [Route("api/building/craft/{id}")]
         [HttpPost]

@@ -73,7 +73,12 @@ namespace WebAPI.Repositories
                         .Select(x => new Storage
                         {
                             Id = x.Id,
-                            StoredResources = x.StoredResources
+                            StoredResources = x.StoredResources.Select(y => new ResourceBatch
+                            {
+                                Id = y.Id,
+                                Quantity = y.Quantity,
+                                ResourceType = y.ResourceType
+                            }).ToList()
                         })
                         .ToListAsync();
 
@@ -98,10 +103,48 @@ namespace WebAPI.Repositories
                     storage = await session
                         .Query<Storage>()
                         .Where(x => x.Id == id)
-                        .Select(x => new Storage   // todo: vjj fali capacity
+                        .Select(x => new Storage
                         {
                             Id = x.Id,
-                            StoredResources = x.StoredResources
+                            StoredResources = x.StoredResources.Select(y => new ResourceBatch
+                            {
+                                Id = y.Id,
+                                Quantity = y.Quantity,
+                                ResourceType = y.ResourceType
+                            }).ToList()
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return storage;
+        }
+
+        public async Task<Storage> GetByBuildingAsync(Guid buildingId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Storage storage = new Storage();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    storage = await session
+                        .Query<Storage>()
+                        .Where(x => x.ParentBuilding.Id == buildingId)
+                        .Select(x => new Storage
+                        {
+                            Id = x.Id,
+                            StoredResources = x.StoredResources.Select(y => new ResourceBatch
+                            {
+                                Id = y.Id,
+                                Quantity = y.Quantity,
+                                ResourceType = y.ResourceType
+                            }).ToList()
                         })
                         .SingleOrDefaultAsync();
 

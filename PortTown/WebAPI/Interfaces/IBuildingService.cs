@@ -1,5 +1,4 @@
 ﻿using Domain;
-using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,6 +8,7 @@ namespace WebAPI.Interfaces
 {
     public interface IBuildingService
     {
+        Task<ICollection<Building>> GetBuildingsByTown(Guid townId);
         Task<Building> GetBuilding(Guid id);
         Task<ICollection<Building>> GetBuildings();
         #region Upgrades

@@ -13,11 +13,15 @@ namespace WebAPI.Controllers
     {
         private readonly ITownRepository _repository;
         private readonly ITownService _service;
+        private readonly IBuildingService _buildingService;
 
-        public TownController(ITownRepository repository, ITownService service)
+        public TownController(ITownRepository repository, ITownService service,
+            IBuildingService buildingService)
         {
             _repository = repository;
             _service = service;
+
+            _buildingService = buildingService;
         }
 
         // GET api/<controller>
@@ -95,7 +99,8 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> StartUpgradeAsync([FromUri] Guid id)
         {
             var town = await _service.GetTown(id);
-            var canUpgradeLevel = await _service.CanUpgradeLevel(town);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            var canUpgradeLevel = await _service.CanUpgradeLevel(town, townBuildings);
             if (!(bool)canUpgradeLevel["CanUpgrade"])
             {
                 var error = new JSONErrorFormatter("The town level cannot be upgraded due to unsufficient funds!", 
@@ -112,8 +117,18 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> CanUpgradeAsync([FromUri] Guid id)
         {
             var town = await _service.GetTown(id);
-            var canUpgrade = await _service.CanUpgradeLevel(town);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            var canUpgrade = await _service.CanUpgradeLevel(town, townBuildings);
             return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
+        }
+
+        [Route("api/town/craft-info/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTownWithCraftInfo([FromUri] Guid id)
+        {
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            var result = await _service.GetTownWithCraftInfo(id, townBuildings);
+            return Request.CreateResponse(HttpStatusCode.OK, result.Result);
         }
         #endregion
     }

@@ -454,9 +454,9 @@ namespace DesktopApp
 
             var userJson = JsonConvert.SerializeObject(user);
             var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
-            Console.WriteLine(userJson);
+            //Console.WriteLine(userJson);
 
-            HttpResponseMessage response = await client.PutAsync("api/user/" + user.Id, userStringContent);
+            HttpResponseMessage response = await client.PutAsync($"api/user/{user.Id}", userStringContent);
 
             if (response.IsSuccessStatusCode)
             {

@@ -117,7 +117,7 @@ namespace WebAPI.Controllers
         {
             var building = await _repository.GetTemplateAsync(templateId);
             var canCraft = await _service.CanCraftBuilding(building, townId);
-            return Request.CreateResponse(HttpStatusCode.OK, canCraft);
+            return Request.CreateResponse(HttpStatusCode.OK, canCraft.Result);
         }
         #endregion
 
@@ -161,7 +161,7 @@ namespace WebAPI.Controllers
         {
             var building = await _service.GetBuilding(id);
             var canUpgrade = await _service.CanUpgradeLevel(building);
-            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
+            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade.Result);
         }
         #endregion
 

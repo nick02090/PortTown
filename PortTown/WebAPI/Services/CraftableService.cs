@@ -18,11 +18,7 @@ namespace WebAPI.Services
         {
             // Update the craftable properties
             craftable.IsFinishedCrafting = false;
-            // Store the cost for later purpose
-            var craftingCost = craftable.RequiredResources;
-            //craftable.RequiredResources = null; // TODO CHECK THIS OUT
             await CraftableRepository.UpdateAsync(craftable);
-            craftable.RequiredResources = craftingCost;
             return craftable;
         }
 
@@ -30,11 +26,7 @@ namespace WebAPI.Services
         {
             // Set the time for the craft
             craftable.TimeUntilCrafted = new DateTime(DateTime.UtcNow.Ticks + craftable.TimeToBuild.Ticks);
-            // Store the cost for later purpose
-            var craftableCost = craftable.RequiredResources;
-            //craftable.RequiredResources = null; TODO: CHECK THIS OUT
             await CraftableRepository.UpdateAsync(craftable);
-            craftable.RequiredResources = craftableCost;
             return craftable;
         }
 
@@ -47,12 +39,8 @@ namespace WebAPI.Services
                 {
                     craftable.TimeUntilCrafted = null;
                     craftable.IsFinishedCrafting = true;
-                    // Store the cost for the later purpose
-                    var craftableCost = craftable.RequiredResources;
-                    //craftable.RequiredResources = null; TODO: CHECK THIS OUT
-                    // Update the craftable and return the reference to the costs
+                    // Update the craftable
                     await CraftableRepository.UpdateAsync(craftable);
-                    craftable.RequiredResources = craftableCost;
                 }
             }
             return craftable;

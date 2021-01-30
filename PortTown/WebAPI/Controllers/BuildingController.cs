@@ -187,7 +187,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetTemplateDataAsync()
         {
-            var template = await _repository.GetTemplateAsync();
+            var template = await _service.GetTemplateBuildings();
             return Request.CreateResponse(HttpStatusCode.OK, template);
         }
 

@@ -86,7 +86,7 @@ namespace WebApp.Controllers
                     
                 }
                 //returning the town info to view
-                return View(town);
+                return View("Index", town);
             }
         }
 
@@ -125,15 +125,19 @@ namespace WebApp.Controllers
             }
         }
 
-        public ActionResult StorageBuildingDetails(Guid id)
+        public async Task<ActionResult> StorageBuildingDetails(Guid id)
         {
-            List<Resource> FoodStored = new List<Resource>
+            using(var client = new HttpClient())
             {
-                new Resource(ResourceType.Food, 420),
-                new Resource(ResourceType.Coal, 69)
-            };
-            return View();
-            //return View(new StorageBuilding(Guid.NewGuid(), Name, 0, BuildingsInfo.NameToInfo[Name], "~/Content/img/Farm.jpg", FoodStored));
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.GetAsync($"api/building/{id}");
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                StorageBuilding pb = JsonConvert.DeserializeObject<StorageBuilding>(responseResult);
+                return View(pb);
+            }
         }
 
         [ChildActionOnly]

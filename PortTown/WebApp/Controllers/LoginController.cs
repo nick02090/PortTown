@@ -32,15 +32,18 @@ namespace WebApp.Controllers
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var emailJSON = JsonConvert.SerializeObject(user);
-                var stringContent = new StringContent(emailJSON, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync("check-availability", stringContent);
-                string responseResult = response.Content.ReadAsStringAsync().Result;
-                var isAvailable = JObject.Parse(responseResult);
-                if (isAvailable.Property("Availability").Value.ToObject<bool>())
+                var userJSON = JsonConvert.SerializeObject(user);
+                var userStringContent = new StringContent(userJSON, Encoding.UTF8, "application/json");
+                var loginResponse = await client.PostAsync("authenticate/", userStringContent);
+                if (loginResponse.IsSuccessStatusCode)
                 {
-                    return View("~/Views/Town/Index.cshtml");
+                    var resultResponse = loginResponse.Content.ReadAsStringAsync().Result;
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultResponse);
+                    Dictionary<string, object> townDict = ((JObject)dict["Town"]).ToObject<Dictionary<string, object>>();
+                    Guid townId = Guid.Parse((string)townDict["Id"]);
+                    Session["userId"] = Guid.Parse((string)dict["Id"]);
+                    Session["townId"] = townId;
+                    return RedirectToAction("Index", "Town", new { townID = townId });
                 }
             }
             return View("Index");

@@ -18,13 +18,16 @@ namespace WebAPI.Services
         private readonly IResourceBatchRepository ResourceBatchRepository;
         private readonly IUpgradeableRepository UpgradeableRepository;
         private readonly ICraftableRepository CraftableRepository;
+        private readonly IStorageRepository StorageRepository;
+        private readonly IProductionBuildingRepository ProductionBuildingRepository;
 
         private readonly IUpgradeableService UpgradeableService;
 
         public TownService(ITownRepository townRepository,
             IBuildingRepository buildingRepository, IItemRepository itemRepository,
             IResourceBatchRepository resourceBatchRepository, IUpgradeableRepository upgradeableRepository,
-            ICraftableRepository craftableRepository, IUpgradeableService upgradeableService)
+            ICraftableRepository craftableRepository, IUpgradeableService upgradeableService,
+            IStorageRepository storageRepository, IProductionBuildingRepository productionBuildingRepository)
         {
             // Repositories
             TownRepository = townRepository;
@@ -33,6 +36,8 @@ namespace WebAPI.Services
             ResourceBatchRepository = resourceBatchRepository;
             UpgradeableRepository = upgradeableRepository;
             CraftableRepository = craftableRepository;
+            StorageRepository = storageRepository;
+            ProductionBuildingRepository = productionBuildingRepository;
 
             // Services
             UpgradeableService = upgradeableService;
@@ -56,6 +61,72 @@ namespace WebAPI.Services
             }
             return updatedTowns;
         }
+
+        public async Task<Building> AddBuildingToTown(Building building, Town town, bool isTemplate = false)
+        {
+            var buildingTemplate = await BuildingRepository.GetTemplateAsync(building.BuildingType, building.Name);
+            var templateId = buildingTemplate.Id;
+            // Create craftable for this building
+            var buildingCraftable = buildingTemplate.ParentCraftable;
+            var buildingCraftableCosts = await ResourceBatchRepository.GetByCraftableAsync(buildingCraftable.Id);
+            buildingCraftable.Id = Guid.Empty;
+            buildingCraftable = await CraftableRepository.CreateAsync(buildingCraftable);
+            // Create resources for the craftable
+            foreach (var craftableCost in buildingCraftableCosts)
+            {
+                craftableCost.Id = Guid.Empty;
+                craftableCost.Craftable = buildingCraftable;
+                await ResourceBatchRepository.CreateAsync(craftableCost);
+            }
+            // Create the building
+            buildingTemplate.Id = Guid.Empty;
+            buildingTemplate.ParentCraftable = buildingCraftable;
+            buildingTemplate.Town = town;
+            buildingTemplate = await BuildingRepository.CreateAsync(buildingTemplate);
+            // Create the upgradable for this building
+            var buildingUpgradeable = buildingTemplate.Upgradeable;
+            var buildingUpgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(buildingUpgradeable.Id);
+            buildingUpgradeable.Id = Guid.Empty;
+            buildingUpgradeable.Building = buildingTemplate;
+            buildingUpgradeable = await UpgradeableRepository.CreateAsync(buildingUpgradeable);
+            // Create resources for the upgradeable
+            foreach (var upgradeableCost in buildingUpgradeableCosts)
+            {
+                upgradeableCost.Id = Guid.Empty;
+                upgradeableCost.Upgradeable = buildingUpgradeable;
+                await ResourceBatchRepository.CreateAsync(upgradeableCost);
+            }
+            if (buildingTemplate.BuildingType == BuildingType.Production)
+            {
+                // Create the production for this building
+                var productionBuilding = await ProductionBuildingRepository.GetByBuildingAsync(templateId);
+                productionBuilding.Id = Guid.Empty;
+                productionBuilding.ParentBuilding = buildingTemplate;
+                await ProductionBuildingRepository.CreateAsync(productionBuilding);
+            }
+            else
+            {
+                // Create the storage for this building
+                var storage = await StorageRepository.GetByBuildingAsync(templateId);
+                storage.Id = Guid.Empty;
+                var storageResources = storage.StoredResources;
+                storage.StoredResources = null;
+                storage.ParentBuilding = buildingTemplate;
+                storage = await StorageRepository.CreateAsync(storage);
+                foreach (var storageResource in storageResources)
+                {
+                    storageResource.Id = Guid.Empty;
+                    storageResource.Storage = storage;
+                    if (isTemplate)
+                    {
+                        storageResource.Quantity = buildingTemplate.Capacity;
+                    }
+                    await ResourceBatchRepository.CreateAsync(storageResource);
+                }
+            }
+            return buildingTemplate;
+        }
+
         public async Task<Town> CreateFromTemplate(Town template)
         {
             // Save buildings and upgradeable for later usage
@@ -70,17 +141,7 @@ namespace WebAPI.Services
             var townBuildings = new List<Building>();
             foreach (var building in buildings)
             {
-                var townBuilding = await BuildingRepository.GetTemplateAsync(building.BuildingType, building.Name);
-                // Create craftable for this building
-                var buildingCraftable = townBuilding.ParentCraftable;
-                buildingCraftable.Id = Guid.Empty; // TODO: CHECK THIS OUT
-                buildingCraftable = await CraftableRepository.CreateAsync(buildingCraftable);
-                // Create the building
-                townBuilding.Id = Guid.Empty;
-                townBuilding.ParentCraftable = buildingCraftable;
-                townBuilding.Town = town;
-                townBuilding = await BuildingRepository.CreateAsync(townBuilding);
-                townBuildings.Add(townBuilding);
+                townBuildings.Add(await AddBuildingToTown(building, town, true));
             }
 
             // Create upgradeable
@@ -135,7 +196,6 @@ namespace WebAPI.Services
                 upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
                 // Update the town level
                 town.Level += 1;
-                //town.Upgradeable = null; TODO: CHECK THIS OUT
                 await TownRepository.UpdateAsync(town);
             }
             town.Upgradeable = upgradeable;
@@ -268,6 +328,7 @@ namespace WebAPI.Services
                     resource.Quantity = newQuantity;
                     if (shouldUpdateDb)
                     {
+                        resource.Storage = storage;
                         await ResourceBatchRepository.UpdateAsync(resource);
                     }
                     var diff = quantity - newQuantity;

@@ -66,6 +66,14 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        [Route("api/item/user/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByUserAsync([FromUri] Guid id)
+        {
+            var items = await _repository.GetByUserAsync(id);
+            return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
+
         #region Template
         [Route("api/item/check-initial-template-data")]
         [HttpGet]

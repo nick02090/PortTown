@@ -73,7 +73,16 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             ResourceProduced = x.ResourceProduced,
-                            LastHarvestTime = x.LastHarvestTime
+                            LastHarvestTime = x.LastHarvestTime,
+                            ProductionRate = x.ProductionRate,
+                            ParentBuilding = new Building
+                            {
+                                Id = x.ParentBuilding.Id,
+                                Capacity = x.ParentBuilding.Capacity,
+                                BuildingType = x.ParentBuilding.BuildingType,
+                                Level = x.ParentBuilding.Level,
+                                Name = x.ParentBuilding.Name
+                            }
                         })
                         .ToListAsync();
 
@@ -102,7 +111,46 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             ResourceProduced = x.ResourceProduced,
-                            LastHarvestTime = x.LastHarvestTime
+                            LastHarvestTime = x.LastHarvestTime,
+                            ProductionRate = x.ProductionRate,
+                            ParentBuilding = new Building
+                            {
+                                Id = x.ParentBuilding.Id,
+                                Capacity = x.ParentBuilding.Capacity,
+                                BuildingType = x.ParentBuilding.BuildingType,
+                                Level = x.ParentBuilding.Level,
+                                Name = x.ParentBuilding.Name
+                            }
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return productionBuilding;
+        }
+
+        public async Task<ProductionBuilding> GetByBuildingAsync(Guid buildingId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            ProductionBuilding productionBuilding = new ProductionBuilding();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    productionBuilding = await session
+                        .Query<ProductionBuilding>()
+                        .Where(x => x.ParentBuilding.Id == buildingId)
+                        .Select(x => new ProductionBuilding
+                        {
+                            Id = x.Id,
+                            ResourceProduced = x.ResourceProduced,
+                            LastHarvestTime = x.LastHarvestTime,
+                            ProductionRate = x.ProductionRate
                         })
                         .SingleOrDefaultAsync();
 

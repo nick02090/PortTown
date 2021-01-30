@@ -76,7 +76,11 @@ namespace WebAPI.Repositories
                             Level = x.Level,
                             Buildings = x.Buildings.Select(y => new Building
                             {
-                                Id = y.Id
+                                Id = y.Id,
+                                Name = y.Name,
+                                BuildingType = y.BuildingType,
+                                Capacity = y.Capacity,
+                                Level = y.Level
                             }).ToList(),
                             User = new User
                             {
@@ -89,12 +93,6 @@ namespace WebAPI.Repositories
                                 Id = x.Upgradeable.Id,
                                 UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
-                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList(),
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded
                             }
@@ -129,7 +127,11 @@ namespace WebAPI.Repositories
                             Level = x.Level,
                             Buildings = x.Buildings.Select(y => new Building
                             {
-                                Id = y.Id
+                                Id = y.Id,
+                                Name = y.Name,
+                                BuildingType = y.BuildingType,
+                                Capacity = y.Capacity,
+                                Level = y.Level
                             }).ToList(),
                             User = new User
                             {
@@ -142,12 +144,6 @@ namespace WebAPI.Repositories
                                 Id = x.Upgradeable.Id,
                                 UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
-                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList(),
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded
                             }

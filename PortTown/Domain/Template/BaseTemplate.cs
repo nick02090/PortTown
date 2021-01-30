@@ -45,6 +45,16 @@ namespace Domain.Template
             };
         }
 
+        public static ResourceBatch GenerateResourceBatch(Sellable sellable, ResourceType resourceType)
+        {
+            return new ResourceBatch()
+            {
+                Quantity = 1,
+                Sellable = sellable,
+                ResourceType = resourceType
+            };
+        }
+
         public static Item GenerateItem(Craftable parentCraftable, string name,
             Sellable sellable)
         {

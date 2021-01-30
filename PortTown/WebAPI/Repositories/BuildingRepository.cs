@@ -88,27 +88,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch 
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
                             },
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
-                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .ToListAsync();
@@ -152,27 +140,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
                             },
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
-                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -215,13 +191,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .ToListAsync();
@@ -260,27 +238,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
                             },
                             Upgradeable = new Upgradeable
                             {
                                 Id = x.Upgradeable.Id,
-                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier,
                                 IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
                                 TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
                                 TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
-                                RequiredResources = x.Upgradeable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .ToListAsync();
@@ -320,13 +286,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -366,13 +334,15 @@ namespace WebAPI.Repositories
                                 CraftableType = x.ParentCraftable.CraftableType,
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
-                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted
+                            },
+                            Upgradeable = new Upgradeable
+                            {
+                                Id = x.Upgradeable.Id,
+                                IsFinishedUpgrading = x.Upgradeable.IsFinishedUpgrading,
+                                TimeToUpgrade = x.Upgradeable.TimeToUpgrade,
+                                TimeUntilUpgraded = x.Upgradeable.TimeUntilUpgraded,
+                                UpgradeMultiplier = x.Upgradeable.UpgradeMultiplier
                             }
                         })
                         .SingleOrDefaultAsync();

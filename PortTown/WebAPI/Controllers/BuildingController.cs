@@ -69,6 +69,14 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
+        [Route("api/building/town/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetByTownAsync([FromUri] Guid id)
+        {
+            var buildings = await _service.GetBuildingsByTown(id);
+            return Request.CreateResponse(HttpStatusCode.OK, buildings);
+        }
+
         #region Crafting
         [Route("api/building/craft/{id}")]
         [HttpPost]
@@ -109,7 +117,7 @@ namespace WebAPI.Controllers
         {
             var building = await _repository.GetTemplateAsync(templateId);
             var canCraft = await _service.CanCraftBuilding(building, townId);
-            return Request.CreateResponse(HttpStatusCode.OK, canCraft);
+            return Request.CreateResponse(HttpStatusCode.OK, canCraft.Result);
         }
         #endregion
 
@@ -153,7 +161,7 @@ namespace WebAPI.Controllers
         {
             var building = await _service.GetBuilding(id);
             var canUpgrade = await _service.CanUpgradeLevel(building);
-            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade);
+            return Request.CreateResponse(HttpStatusCode.OK, canUpgrade.Result);
         }
         #endregion
 

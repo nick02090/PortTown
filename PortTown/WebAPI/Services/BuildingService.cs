@@ -49,6 +49,16 @@ namespace WebAPI.Services
         public async Task<Building> GetBuilding(Guid id)
         {
             var building = await BuildingRepository.GetAsync(id);
+            if (building.BuildingType == BuildingType.Production)
+            {
+                // Get the production properties
+                building.ChildProductionBuilding = await ProductionBuildingRepository.GetByBuildingAsync(building.Id);
+            }
+            else
+            {
+                // Get the storage properties
+                building.ChildStorage = await StorageRepository.GetByBuildingAsync(building.Id);
+            }
             building = await UpdateJobs(building);
             return building;
         }
@@ -209,12 +219,12 @@ namespace WebAPI.Services
             var upgradeable = new JSONFormatter();
             upgradeable.AddField("CanUpgrade", true);
             var town = await TownService.GetTown(building.Town.Id);
-            //if (!TownService.DoesTownAllowUpgrade(town, building.Level + 1))
-            //{
-            //    upgradeable["CanUpgrade"] = false;
-            //    // NOTE: this is an early return to avoid the computational heavy cost calculation
-            //    return upgradeable;
-            //}
+            if (!TownService.DoesTownAllowUpgrade(town, building.Level + 1))
+            {
+                upgradeable["CanUpgrade"] = false;
+                // NOTE: this is an early return to avoid the computational heavy cost calculation
+                return upgradeable;
+            }
             var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
             var townBuildings = await GetBuildingsByTown(town.Id);
             foreach (var cost in upgradeCosts)

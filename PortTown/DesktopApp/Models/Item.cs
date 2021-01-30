@@ -9,17 +9,25 @@ namespace DesktopApp.Models
 {
     public class Item: TableAddable
     {
+        
         public Guid Id { get; set; }
-        public string Name;
-        public int Value;
-        public ItemQuality itemQuality;
+        public string Name { get; set; }
+        public ItemQuality Quality { get; set; }
+        public Town Town { get; set; }
+        public Sellable Sellable { get; set; }
 
-        public Guid townId;
+        // Reference to parent
+        public Craftable ParentCraftable { get; set; }
 
-        public Item(string name, int value)
+        public Item()
         {
-            Name = name;
-            Value = value;
+            // TODO: Serialize Name
+            // TODO: Serialize Value
+        }
+
+        public Item(Craftable parentCraftable) : base()
+        {
+            ParentCraftable = parentCraftable;
         }
     }
 }

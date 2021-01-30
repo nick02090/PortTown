@@ -36,7 +36,7 @@ namespace DesktopApp
 
         private void EditItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new Item(textbox1.Text, Int32.Parse(textbox2.Text)));
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new Item());
             this.Hide();
         }
     }

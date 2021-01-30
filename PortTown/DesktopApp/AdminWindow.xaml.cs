@@ -41,15 +41,19 @@ namespace DesktopApp
         public DataTable itemTable { get; set; }
         public DataTable resourceTable { get; set; }
         public DataTable marketTable { get; set; }
-
-        private void AdminWindow_Loaded(object sender, RoutedEventArgs e)
+        public List<User> users = null;
+        public List<Building> buildings = null;
+        public List<Item> items = null;
+        private async void AdminWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
+            DataColumn dc1, dc2, dc3, dc4, dc5, dc6, dc7, dc8, dc9, dc10;
             userTable = new DataTable("users");
-            DataColumn dc1 = new DataColumn("Id", typeof(Guid));
-            DataColumn dc2 = new DataColumn("Username", typeof(string));
-            DataColumn dc3 = new DataColumn("Email", typeof(string));
-            DataColumn dc4 = new DataColumn("Password", typeof(string));
-            DataColumn dc5 = new DataColumn("Town", typeof(string));
+            dc1 = new DataColumn("Id", typeof(Guid));
+            dc2 = new DataColumn("Username", typeof(string));
+            dc3 = new DataColumn("Email", typeof(string));
+            dc4 = new DataColumn("Password", typeof(string));
+            dc5 = new DataColumn("Town", typeof(string));
             userTable.Columns.Add(dc1);
             userTable.Columns.Add(dc2);
             userTable.Columns.Add(dc3);
@@ -60,32 +64,44 @@ namespace DesktopApp
             productionBuildingTable = new DataTable("productionBuildings");
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Name", typeof(string));
-            //dc3 = new DataColumn("Building Type", typeof(string));
-            dc3 = new DataColumn("Required Resources", typeof(string));
-            //dc4 = new DataColumn("Password", typeof(string));
+            dc3 = new DataColumn("Capacity", typeof(int));
+            dc4 = new DataColumn("Time To Build", typeof(DateTime));
+            dc5 = new DataColumn("Resources To Build", typeof(string));
+            dc6 = new DataColumn("Resources To Upgrade", typeof(string));
+            dc7 = new DataColumn("Production Rate", typeof(float));
+            dc8 = new DataColumn("Produces", typeof(string));
             productionBuildingTable.Columns.Add(dc1);
             productionBuildingTable.Columns.Add(dc2);
             productionBuildingTable.Columns.Add(dc3);
-            //productionBuildingTable.Columns.Add(dc4);
+            productionBuildingTable.Columns.Add(dc4);
+            productionBuildingTable.Columns.Add(dc5);
+            productionBuildingTable.Columns.Add(dc6);
+            productionBuildingTable.Columns.Add(dc7);
+            productionBuildingTable.Columns.Add(dc8);
             ProductionBuildingTable.ItemsSource = productionBuildingTable.DefaultView;
 
             storageBuildingTable = new DataTable("storageBuildings");
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Name", typeof(string));
-            //dc3 = new DataColumn("Building Type", typeof(string));
-            dc3 = new DataColumn("Required Resources", typeof(string));
-            //dc4 = new DataColumn("Password", typeof(string));
+            dc3 = new DataColumn("Capacity", typeof(int));
+            dc4 = new DataColumn("Time To Build", typeof(DateTime));
+            dc5 = new DataColumn("Resources To Build", typeof(string));
+            dc6 = new DataColumn("Resources To Upgrade", typeof(string));
+            dc7 = new DataColumn("Stores", typeof(string));
             storageBuildingTable.Columns.Add(dc1);
             storageBuildingTable.Columns.Add(dc2);
             storageBuildingTable.Columns.Add(dc3);
-            //storageBuildingTable.Columns.Add(dc4);
+            storageBuildingTable.Columns.Add(dc4);
+            storageBuildingTable.Columns.Add(dc5);
+            storageBuildingTable.Columns.Add(dc6);
+            storageBuildingTable.Columns.Add(dc7);
             StorageBuildingTable.ItemsSource = storageBuildingTable.DefaultView;
 
             itemTable = new DataTable("items");
             dc1 = new DataColumn("Id", typeof(Guid));
-            dc2 = new DataColumn("Username", typeof(string));
-            dc3 = new DataColumn("Email", typeof(string));
-            dc4 = new DataColumn("Password", typeof(string));
+            dc2 = new DataColumn("Name", typeof(string));
+            dc3 = new DataColumn("Quality", typeof(string));
+            dc4 = new DataColumn("Required Resources", typeof(string));
             itemTable.Columns.Add(dc1);
             itemTable.Columns.Add(dc2);
             itemTable.Columns.Add(dc3);
@@ -127,9 +143,27 @@ namespace DesktopApp
             removeMarketButton.IsEnabled = false;
             editMarketButton.IsEnabled = false;
 
-            var users = GetUsers();
-            var buildings = GetBuildingTemplates();
+            users = await GetUsers();
+            buildings = await GetBuildingTemplates();
+            items = await GetItemTemplates();
+        }
 
+        private async void UserTabItemClick(object sender, RoutedEventArgs e)
+        {
+            if (users is null)
+                users = await GetUsers();
+        }
+
+        private async void BuildingTabItemClick(object sender, RoutedEventArgs e)
+        {
+            if (buildings is null)
+                buildings = await GetBuildingTemplates();
+        }
+
+        private async void ItemTabItemClick(object sender, RoutedEventArgs e)
+        {
+            if (items is null)
+                items = await GetItemTemplates();
         }
 
         private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -315,15 +349,11 @@ namespace DesktopApp
         public void AddUserToTable(User user)
         {
             DataRow dr = userTable.NewRow();
-            Console.WriteLine(user.Username);
-            PropertyInfo[] properties = user.GetType().GetProperties();
-            for (int i = 0; i < properties.Length; i++)
-            {
-                if (properties[i].GetValue(user) is Town)
-                    dr[i] = ((Town)properties[i].GetValue(user)).Name;
-                else
-                    dr[i] = properties[i].GetValue(user);
-            }
+            dr[0] = user.Id;
+            dr[1] = user.Username;
+            dr[2] = user.Email;
+            dr[3] = "*********";
+            dr[4] = user.Town.Name;
             userTable.Rows.Add(dr);
             UserTable.ItemsSource = userTable.DefaultView;
         }
@@ -346,19 +376,64 @@ namespace DesktopApp
             dr = activeTable.NewRow();
             dr[0] = building.Id;
             dr[1] = building.Name;
-            //if(building.BuildingType == 0)
-            //    dr[2] = "Production";
-            //else
-            //    dr[2] = "Storage";
-            string resources = "    ";
+            dr[2] = building.Capacity;
+            dr[3] = building.ParentCraftable.TimeToBuild;
+            string resources = "";
             var resourceList = building.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
             for (int i = 0; i < building.ParentCraftable.RequiredResources.Count; i++)
             {
                 resources += resourceList[i].ResourceType + ", ";
             }
-            dr[2] = resources.Remove(resources.Length - 2, 2);
+            //Console.WriteLine(resources);
+            if(resources.Length > 2)
+                resources = resources.Remove(resources.Length - 2, 2);
+            dr[4] = resources;
+
+            resources = "";
+            resourceList = building.Upgradeable.RequiredResources.ToList<ResourceBatch>();
+            for (int i = 0; i < building.Upgradeable.RequiredResources.Count; i++)
+            {
+                resources += resourceList[i].ResourceType + ", ";
+            }
+            //Console.WriteLine(resources);
+            if (resources.Length > 2)
+                resources = resources.Remove(resources.Length - 2, 2);
+            dr[5] = resources;
+
+            if (building.BuildingType == 0)
+            {
+                //dr[5] = building.ChildProductionBuilding.ProductionRate;
+                //dr[6] = building.ChildProductionBuilding.ResourceProduced;
+            }
+            else
+            {
+                //dr[5] = building.ChildStorage.StoredResources;
+            }
+
             activeTable.Rows.Add(dr);
             activeGrid.ItemsSource = activeTable.DefaultView;
+        }
+
+        public void AddItemToTable(Item item)
+        {
+            
+            DataRow dr = itemTable.NewRow();
+            dr[0] = item.Id;
+            dr[1] = item.Name;
+            dr[2] = item.Quality;
+            //if(building.BuildingType == 0)
+            //    dr[2] = "Production";
+            //else
+            //    dr[2] = "Storage";
+            string resources = "    ";
+            var resourceList = item.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
+            for (int i = 0; i < item.ParentCraftable.RequiredResources.Count; i++)
+            {
+                resources += resourceList[i].ResourceType + ", ";
+            }
+            dr[3] = resources.Remove(resources.Length - 2, 2);
+            itemTable.Rows.Add(dr);
+            ItemTable.ItemsSource = itemTable.DefaultView;
         }
 
         public void EditAddable(TableAddable ta)
@@ -660,11 +735,51 @@ namespace DesktopApp
             {
                 System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
             }
+            productionBuildingTable.Clear();
+            ProductionBuildingTable.ItemsSource = productionBuildingTable.DefaultView;
+            storageBuildingTable.Clear();
+            StorageBuildingTable.ItemsSource = storageBuildingTable.DefaultView;
             foreach (var building in buildings)
             {
                 AddBuildingToTable(building);
             }
             return buildings;
+        }
+
+        private async Task<List<Item>> GetItemTemplates()
+        {
+            List<Item> items = null;
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = await client.GetAsync("api/item/template");
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                //Deserializing the response recieved from web api and storing into the Town  
+                items = JsonConvert.DeserializeObject<List<Item>>(responseResult);
+
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+            itemTable.Clear();
+            ItemTable.ItemsSource = itemTable.DefaultView;
+            foreach (var item in items)
+            {
+                AddItemToTable(item);
+            }
+            return items;
         }
     }
 }

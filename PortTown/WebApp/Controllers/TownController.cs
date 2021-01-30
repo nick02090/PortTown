@@ -46,18 +46,26 @@ namespace WebApp.Controllers
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
                     string townName = (string)dict["Name"];
                     int townLevel = Convert.ToInt32((long)dict["Level"]);
-                    var Buildings = ((Newtonsoft.Json.Linq.JArray)dict["Buildings"]);
                     Town town = new Town(townID, townName, townLevel);
-                    foreach(var building in Buildings)
+
+                    HttpResponseMessage buildingsHttpResponse = await client.GetAsync($"api/builings/town/{townID}");
+                    if(buildingsHttpResponse.IsSuccessStatusCode)
                     {
-                        Dictionary<string, object> buildingDict = building.ToObject<Dictionary<string, object>>();
-                        int buildingType = Convert.ToInt32((long)buildingDict["BuildingType"]);
-                        Guid buildingID = Guid.Parse((string)buildingDict["Id"]);
-                        string buildingName = (string)buildingDict["Name"];
-                        int buildingLevel = Convert.ToInt32((long)buildingDict["Level"]);
-                        string imgPath = "~/Content/img"
-                        Building b = buildingType == 0 ? new ProductionBuilding(buildingID, buildingLevel, BuildingsInfo.NameToInfo[buildingName])
+                        var builingsResponseResult = buildingsHttpResponse.Content.ReadAsStringAsync().Result;
+                        var buildingsJSONDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(builingsResponseResult);
+                        var Buildings = ((Newtonsoft.Json.Linq.JArray)buildingsJSONDict["Buildings"]);
+                        foreach (var building in Buildings)
+                        {
+                            Dictionary<string, object> buildingDict = building.ToObject<Dictionary<string, object>>();
+                            int buildingType = Convert.ToInt32((long)buildingDict["BuildingType"]);
+                            Guid buildingID = Guid.Parse((string)buildingDict["Id"]);
+                            string buildingName = (string)buildingDict["Name"];
+                            int buildingLevel = Convert.ToInt32((long)buildingDict["Level"]);
+                            string imgPath = "~/Content/img/" + buildingName + ".jpg";
+                            //Building b = buildingType == 0 ? new ProductionBuilding(buildingID, buildingLevel, BuildingsInfo.NameToInfo[buildingName])
+                        }
                     }
+                    
                 }
                 //returning the town info to view
                 return View();
@@ -65,7 +73,7 @@ namespace WebApp.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult ProductionBuildings()
+        public ActionResult ProductionBuildings(Town town)
         {
             TownBuildingsViewModel buildings = new TownBuildingsViewModel();
 
@@ -78,7 +86,7 @@ namespace WebApp.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult StorageBuildings()
+        public ActionResult StorageBuildings(Town town)
         {
             TownBuildingsViewModel buidlings = new TownBuildingsViewModel();
             List<Resource> FoodStored = new List<Resource>
@@ -90,19 +98,30 @@ namespace WebApp.Controllers
             return PartialView("StorageBuildings", buidlings);
         }
 
-        public ActionResult ProductionBuildingDetails(string Name)
+        public async Task<ActionResult> ProductionBuildingDetails(Guid id)
         {
-            return View(new ProductionBuilding(Guid.NewGuid(), Name, 0, BuildingsInfo.NameToInfo[Name], "~/Content/img/Farm.jpg", new Resource(ResourceType.FOOD)));
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.GetAsync($"api/building/{id}");
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                ProductionBuilding pb = JsonConvert.DeserializeObject<ProductionBuilding>(responseResult);
+                return View();
+            }
         }
 
-        public ActionResult StorageBuildingDetails(string Name)
+        public ActionResult StorageBuildingDetails(Guid id)
         {
             List<Resource> FoodStored = new List<Resource>
             {
                 new Resource(ResourceType.FOOD, 420),
                 new Resource(ResourceType.COAL, 69)
             };
-            return View(new StorageBuilding(Guid.NewGuid(), Name, 0, BuildingsInfo.NameToInfo[Name], "~/Content/img/Farm.jpg", FoodStored));
+            return View();
+            //return View(new StorageBuilding(Guid.NewGuid(), Name, 0, BuildingsInfo.NameToInfo[Name], "~/Content/img/Farm.jpg", FoodStored));
         }
 
         [ChildActionOnly]

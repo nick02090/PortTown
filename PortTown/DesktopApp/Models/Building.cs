@@ -10,22 +10,29 @@ namespace DesktopApp.Models
     public class Building: TableAddable
     {
         public Guid Id { get; set; }
-        public string Name;
-        public int Capacity;
-        public BuildingType BuildingType;
-        public int Level;
+        public string Name { get; set; }
+        public int Level { get; set; }
+        public int Capacity { get; set; }
+        public BuildingType BuildingType { get; set; }
+        public Town Town { get; set; }
+        public Upgradeable Upgradeable { get; set; }
 
-        public Guid townId;
+        // Reference to parent
+        public Craftable ParentCraftable { get; set; }
+        // References to children
+        public Storage ChildStorage { get; set; }
+        public ProductionBuilding ChildProductionBuilding { get; set; }
 
-        //public Craftable craftable;
-        public Building(string name, int capacity, int level)
+        public Building()
         {
-            // TODO: Remove this when connected to API
-            Id = Guid.NewGuid();
+            // TODO: Serialize Name
+            Level = 1;
+            // TODO: Serialize Capacity
+        }
 
-            Name = name;
-            Capacity = capacity;
-            Level = level;
+        public Building(Craftable parentCraftable) : base()
+        {
+            ParentCraftable = parentCraftable;
         }
     }
 }

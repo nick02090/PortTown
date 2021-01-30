@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DesktopApp.Models;
 
 namespace DesktopApp.Models
 {
@@ -12,17 +13,16 @@ namespace DesktopApp.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string TownName { get; set; }
+        //public string TownName { get; set; }
+        public Town Town { get; set; }
 
-        public User(string username, string email, string password, string townName)
+        public User(string username, string email, string password)
         {
-            // TODO: Remove this when connected to API
-            Id = Guid.NewGuid();
-
             Username = username;
             Email = email;
             Password = password;
-            TownName = townName;
+            Town = new Town();
+            //TownName = townName;
         }
     }
 }

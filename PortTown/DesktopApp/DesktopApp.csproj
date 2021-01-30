@@ -146,13 +146,21 @@
       <DependentUpon>EditUserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums\BuildingType.cs" />
+    <Compile Include="Enums\CraftableType.cs" />
     <Compile Include="Enums\ItemQuality.cs" />
+    <Compile Include="Enums\ResourceType.cs" />
     <Compile Include="Models\Building.cs" />
+    <Compile Include="Models\Craftable.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\MarketItem.cs" />
+    <Compile Include="Models\ProductionBuilding.cs" />
     <Compile Include="Models\Resource.cs" />
+    <Compile Include="Models\ResourceBatch.cs" />
+    <Compile Include="Models\Sellable.cs" />
+    <Compile Include="Models\Storage.cs" />
     <Compile Include="Models\TableAddable.cs" />
     <Compile Include="Models\Town.cs" />
+    <Compile Include="Models\Upgradeable.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="NewBuildingWindow.xaml.cs">
       <DependentUpon>NewBuildingWindow.xaml</DependentUpon>

@@ -36,7 +36,7 @@ namespace DesktopApp
 
         private void EditMarketItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new MarketItem(textbox1.Text), (Application.Current.MainWindow as AdminWindow).marketTable, (Application.Current.MainWindow as AdminWindow).MarketTable);
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new MarketItem(textbox1.Text));
             this.Hide();
         }
     }

@@ -36,7 +36,7 @@ namespace DesktopApp
 
         private void EditResourceClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new Resource(textbox1.Text), (Application.Current.MainWindow as AdminWindow).resourceTable, (Application.Current.MainWindow as AdminWindow).ResourceTable);
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new Resource(textbox1.Text));
             this.Hide();
         }
     }

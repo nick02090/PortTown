@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void AddBuildingClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new Building(textbox1.Text, Int32.Parse(textbox2.Text), Int32.Parse(textbox3.Text)), (Application.Current.MainWindow as AdminWindow).buildingTable, (Application.Current.MainWindow as AdminWindow).BuildingTable);
+            (Application.Current.MainWindow as AdminWindow).AddBuilding(new Building());
             this.Hide();
         }
     }

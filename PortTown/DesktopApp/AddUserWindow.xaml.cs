@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
 namespace DesktopApp
 {
     /// <summary>
@@ -27,7 +26,7 @@ namespace DesktopApp
 
         private void AddUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).AddAddable(new User(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text), (Application.Current.MainWindow as AdminWindow).userTable, (Application.Current.MainWindow as AdminWindow).UserTable);
+            (Application.Current.MainWindow as AdminWindow).AddUser(new User(textbox1.Text, textbox2.Text, textbox3.Text), textbox4.Text);
             this.Hide();
         }
     }

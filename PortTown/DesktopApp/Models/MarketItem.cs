@@ -18,9 +18,6 @@ namespace DesktopApp.Models
         //public Craftable craftable;
         public MarketItem(string name)
         {
-            // TODO: Remove this when connected to API
-            Id = Guid.NewGuid();
-
             Name = name;
         }
     }

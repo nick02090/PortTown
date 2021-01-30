@@ -27,7 +27,7 @@ namespace DesktopApp
 
         private void EditBuildingWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).BuildingTable)[0].Row;
+            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).ProductionBuildingTable)[0].Row;
 
             textbox1.Text = selectedRow[1].ToString();
             textbox2.Text = selectedRow[2].ToString();
@@ -36,7 +36,7 @@ namespace DesktopApp
 
         private void EditBuildingClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new Building(textbox1.Text, Int32.Parse(textbox2.Text), Int32.Parse(textbox3.Text)), (Application.Current.MainWindow as AdminWindow).buildingTable, (Application.Current.MainWindow as AdminWindow).BuildingTable);
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new Building());
             this.Hide();
         }
     }

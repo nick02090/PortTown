@@ -36,7 +36,8 @@ namespace DesktopApp
         const string Baseurl = "https://localhost:44366/";
 
         public DataTable userTable { get; set; }
-        public DataTable buildingTable { get; set; }
+        public DataTable productionBuildingTable { get; set; }
+        public DataTable storageBuildingTable { get; set; }
         public DataTable itemTable { get; set; }
         public DataTable resourceTable { get; set; }
         public DataTable marketTable { get; set; }
@@ -56,16 +57,29 @@ namespace DesktopApp
             userTable.Columns.Add(dc5);
             UserTable.ItemsSource = userTable.DefaultView;
 
-            buildingTable = new DataTable("buildings");
+            productionBuildingTable = new DataTable("productionBuildings");
             dc1 = new DataColumn("Id", typeof(Guid));
-            dc2 = new DataColumn("Username", typeof(string));
-            dc3 = new DataColumn("Email", typeof(string));
-            dc4 = new DataColumn("Password", typeof(string));
-            buildingTable.Columns.Add(dc1);
-            buildingTable.Columns.Add(dc2);
-            buildingTable.Columns.Add(dc3);
-            buildingTable.Columns.Add(dc4);
-            BuildingTable.ItemsSource = userTable.DefaultView;
+            dc2 = new DataColumn("Name", typeof(string));
+            //dc3 = new DataColumn("Building Type", typeof(string));
+            dc3 = new DataColumn("Required Resources", typeof(string));
+            //dc4 = new DataColumn("Password", typeof(string));
+            productionBuildingTable.Columns.Add(dc1);
+            productionBuildingTable.Columns.Add(dc2);
+            productionBuildingTable.Columns.Add(dc3);
+            //productionBuildingTable.Columns.Add(dc4);
+            ProductionBuildingTable.ItemsSource = productionBuildingTable.DefaultView;
+
+            storageBuildingTable = new DataTable("storageBuildings");
+            dc1 = new DataColumn("Id", typeof(Guid));
+            dc2 = new DataColumn("Name", typeof(string));
+            //dc3 = new DataColumn("Building Type", typeof(string));
+            dc3 = new DataColumn("Required Resources", typeof(string));
+            //dc4 = new DataColumn("Password", typeof(string));
+            storageBuildingTable.Columns.Add(dc1);
+            storageBuildingTable.Columns.Add(dc2);
+            storageBuildingTable.Columns.Add(dc3);
+            //storageBuildingTable.Columns.Add(dc4);
+            StorageBuildingTable.ItemsSource = storageBuildingTable.DefaultView;
 
             itemTable = new DataTable("items");
             dc1 = new DataColumn("Id", typeof(Guid));
@@ -102,8 +116,10 @@ namespace DesktopApp
 
             removeUserButton.IsEnabled = false;
             editUserButton.IsEnabled = false;
-            removeBuildingButton.IsEnabled = false;
-            editBuildingButton.IsEnabled = false;
+            removeProductionBuildingButton.IsEnabled = false;
+            editProductionBuildingButton.IsEnabled = false;
+            removeStorageBuildingButton.IsEnabled = false;
+            editStorageBuildingButton.IsEnabled = false;
             removeItemButton.IsEnabled = false;
             editItemButton.IsEnabled = false;
             removeResourceButton.IsEnabled = false;
@@ -112,10 +128,7 @@ namespace DesktopApp
             editMarketButton.IsEnabled = false;
 
             var users = GetUsers();
-            if (users != null)
-            {
-            AddListToTable(users);
-            }
+            var buildings = GetBuildingTemplates();
 
         }
 
@@ -132,11 +145,17 @@ namespace DesktopApp
                     activeEditButton = editUserButton;
                     activeRemoveButton = removeUserButton;
                     break;
-                case "BuildingTable":
+                case "ProductionBuildingTable":
                     //Console.WriteLine("addBuildingButton");
-                    activeGrid = BuildingTable;
-                    activeEditButton = editBuildingButton;
-                    activeRemoveButton = removeBuildingButton;
+                    activeGrid = ProductionBuildingTable;
+                    activeEditButton = editProductionBuildingButton;
+                    activeRemoveButton = removeProductionBuildingButton;
+                    break;
+                case "StorageBuildingTable":
+                    //Console.WriteLine("addBuildingButton");
+                    activeGrid = StorageBuildingTable;
+                    activeEditButton = editStorageBuildingButton;
+                    activeRemoveButton = removeStorageBuildingButton;
                     break;
                 case "ItemTable":
                     //Console.WriteLine("addItemButton");
@@ -171,52 +190,52 @@ namespace DesktopApp
             switch (((System.Windows.Controls.Button)sender).Name)
             {
                 case "addUserButton":
-                    Console.WriteLine("addUserButton");
+                    //.WriteLine("addUserButton");
                     AddUserWindow addUserWindow = new AddUserWindow();
                     addUserWindow.Show();
                     break;
                 case "addBuildingButton":
-                    Console.WriteLine("addBuildingButton");
+                    //Console.WriteLine("addBuildingButton");
                     AddBuildingWindow addBuildingWindow = new AddBuildingWindow();
                     addBuildingWindow.Show();
                     break;
                 case "addItemButton":
-                    Console.WriteLine("addItemButton");
+                    //Console.WriteLine("addItemButton");
                     AddItemWindow addItemWindow = new AddItemWindow();
                     addItemWindow.Show();
                     break;
                 case "addResourceButton":
-                    Console.WriteLine("editResourceButton");
+                    //Console.WriteLine("editResourceButton");
                     AddResourceWindow addResourceWindow = new AddResourceWindow();
                     addResourceWindow.Show();
                     break;
                 case "addMarketButton":
-                    Console.WriteLine("editResourceButton");
+                    //Console.WriteLine("editResourceButton");
                     AddMarketItemWindow addMarketItemWindow = new AddMarketItemWindow();
                     addMarketItemWindow.Show();
                     break;
                 case "editUserButton":
-                    Console.WriteLine("editUserButton");
+                    //Console.WriteLine("editUserButton");
                     EditUserWindow editUserWindow = new EditUserWindow();
                     editUserWindow.Show();
                     break;
                 case "editBuildingButton":
-                    Console.WriteLine("editBuildingButton");
+                    //Console.WriteLine("editBuildingButton");
                     EditBuildingWindow editBuildingWindow = new EditBuildingWindow();
                     editBuildingWindow.Show();
                     break;
                 case "editItemButton":
-                    Console.WriteLine("editItemButton");
+                    //Console.WriteLine("editItemButton");
                     EditItemWindow editItemWindow = new EditItemWindow();
                     editItemWindow.Show();
                     break;
                 case "editResourceButton":
-                    Console.WriteLine("editResourceButton");
+                    //Console.WriteLine("editResourceButton");
                     EditResourceWindow editResourceWindow = new EditResourceWindow();
                     editResourceWindow.Show();
                     break;
                 case "editMarketButton":
-                    Console.WriteLine("editMarketButton");
+                    //Console.WriteLine("editMarketButton");
                     EditMarketItemWindow editMarketItemWindow = new EditMarketItemWindow();
                     editMarketItemWindow.Show();
                     break;
@@ -232,45 +251,54 @@ namespace DesktopApp
             switch (((System.Windows.Controls.Button)sender).Name)
             {
                 case "removeUserButton":
-                    Console.WriteLine("removeUserButton");
+                    //Console.WriteLine("removeUserButton");
                     activeGrid = UserTable;
                     activeTable = userTable;
                     activeRemoveButton = removeUserButton;
                     activeEditButton = editUserButton;
                     break;
-                case "removeBuildingButton":
-                    Console.WriteLine("removeBuildingButton");
-                    activeGrid = BuildingTable;
-                    activeTable = buildingTable;
-                    activeRemoveButton = removeBuildingButton;
-                    activeEditButton = editBuildingButton;
+                case "removeProductionBuildingButton":
+                    //Console.WriteLine("removeBuildingButton");
+                    activeGrid = ProductionBuildingTable;
+                    activeTable = productionBuildingTable;
+                    activeRemoveButton = removeProductionBuildingButton;
+                    activeEditButton = editProductionBuildingButton;
+                    break;
+                case "removeStorageBuildingButton":
+                    //Console.WriteLine("removeBuildingButton");
+                    activeGrid = StorageBuildingTable;
+                    activeTable = storageBuildingTable;
+                    activeRemoveButton = removeStorageBuildingButton;
+                    activeEditButton = editStorageBuildingButton;
                     break;
                 case "removeItemButton":
                     activeGrid = ItemTable;
                     activeTable = itemTable;
                     activeRemoveButton = removeItemButton;
                     activeEditButton = editItemButton;
-                    Console.WriteLine("removeItemButton");
+                    //Console.WriteLine("removeItemButton");
                     break;
                 case "removeResourceButton":
                     activeGrid = ResourceTable;
                     activeTable = resourceTable;
                     activeRemoveButton = removeResourceButton;
                     activeEditButton = editResourceButton;
-                    Console.WriteLine("removeResourceButton");
+                    //Console.WriteLine("removeResourceButton");
                     break;
                 case "removeMarketButton":
                     activeGrid = MarketTable;
                     activeTable = marketTable;
                     activeRemoveButton = removeMarketButton;
                     activeEditButton = editMarketButton;
-                    Console.WriteLine("removeMarketButton");
+                    //Console.WriteLine("removeMarketButton");
                     break;
             }
             var rows = activeGrid.SelectedItems.Cast<DataRowView>().ToList();
             foreach (var dr in rows)
             {
+                DeleteUser((Guid)dr.Row[0]);
                 activeTable.Rows.Remove(dr.Row);
+                
             }
             if (activeGrid.SelectedItems.Count > 0)
             {
@@ -284,36 +312,61 @@ namespace DesktopApp
             activeGrid.ItemsSource = activeTable.DefaultView;
         }
 
-        public void AddAddable(TableAddable addableObject, DataTable dataTable, System.Windows.Controls.DataGrid dataGrid)
+        public void AddUserToTable(User user)
         {
-            AddUserToDB((User)addableObject);
-            DataRow dr = dataTable.NewRow();
-            PropertyInfo[] properties = addableObject.GetType().GetProperties();
+            DataRow dr = userTable.NewRow();
+            Console.WriteLine(user.Username);
+            PropertyInfo[] properties = user.GetType().GetProperties();
             for (int i = 0; i < properties.Length; i++)
             {
-                dr[i] = properties[i].GetValue(addableObject);
+                if (properties[i].GetValue(user) is Town)
+                    dr[i] = ((Town)properties[i].GetValue(user)).Name;
+                else
+                    dr[i] = properties[i].GetValue(user);
             }
-            dataTable.Rows.Add(dr);
-            dataGrid.ItemsSource = dataTable.DefaultView;
+            userTable.Rows.Add(dr);
+            UserTable.ItemsSource = userTable.DefaultView;
         }
 
-        public void EditAddable(TableAddable addableObject, DataTable dataTable, System.Windows.Controls.DataGrid dataGrid)
+        public void AddBuildingToTable(Building building)
         {
-            DataRow row = GetSelectedRows(dataGrid)[0].Row;
-            PropertyInfo[] properties = addableObject.GetType().GetProperties();
-            for(int i = 0; i < properties.Length; i++)
+            DataRow dr;
+            DataTable activeTable;
+            System.Windows.Controls.DataGrid activeGrid;
+            if (building.BuildingType == 0)
             {
-                row[i] = properties[i].GetValue(addableObject);
+                activeTable = productionBuildingTable;
+                activeGrid = ProductionBuildingTable;
             }
-            dataGrid.ItemsSource = dataTable.DefaultView;
+            else
+            {
+                activeTable = storageBuildingTable;
+                activeGrid = StorageBuildingTable;
+            }
+            dr = activeTable.NewRow();
+            dr[0] = building.Id;
+            dr[1] = building.Name;
+            //if(building.BuildingType == 0)
+            //    dr[2] = "Production";
+            //else
+            //    dr[2] = "Storage";
+            string resources = "    ";
+            var resourceList = building.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
+            for (int i = 0; i < building.ParentCraftable.RequiredResources.Count; i++)
+            {
+                resources += resourceList[i].ResourceType + ", ";
+            }
+            dr[2] = resources.Remove(resources.Length - 2, 2);
+            activeTable.Rows.Add(dr);
+            activeGrid.ItemsSource = activeTable.DefaultView;
         }
 
-        public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)
+        public void EditAddable(TableAddable ta)
         {
-            return grid.SelectedItems.Cast<DataRowView>().ToList();
+            return;
         }
 
-        private void AddUserToDB(User user)
+        public async void EditUser(User user, string townName)
         {
 
             HttpClient client = new HttpClient
@@ -326,13 +379,15 @@ namespace DesktopApp
 
             var userJson = JsonConvert.SerializeObject(user);
             var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+            Console.WriteLine(userJson);
 
-            HttpResponseMessage response = client.PostAsync("api/user/register/" + user.TownName, userStringContent).Result;
+            HttpResponseMessage response = await client.PutAsync("api/user/" + user.Id, userStringContent);
 
             if (response.IsSuccessStatusCode)
             {
                 //Storing the response details recieved from web api   
                 var responseResult = response.Content.ReadAsStringAsync().Result;
+                await GetUsers();
             }
             else
             {
@@ -340,7 +395,177 @@ namespace DesktopApp
             }
         }
 
-        private List<User> GetUsers()
+        public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)
+        {
+            return grid.SelectedItems.Cast<DataRowView>().ToList();
+        }
+
+        public async void AddUser(User user, string townName)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var userJson = JsonConvert.SerializeObject(user);
+            var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+            Console.WriteLine(userJson);
+
+            HttpResponseMessage response = await client.PostAsync("api/user/register/" + townName, userStringContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                await GetUsers();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        public async void DeleteUser(Guid id)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage response = await client.DeleteAsync("api/user/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                await GetUsers();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        public async void AddBuilding(Building building)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var buildingJson = JsonConvert.SerializeObject(building);
+            var buildingStringContent = new StringContent(buildingJson, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync("api/building/template", buildingStringContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                await GetBuildingTemplates();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        public async void AddMarketItem(MarketItem marketItem)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var marketItemJson = JsonConvert.SerializeObject(marketItem);
+            var marketItemStringContent = new StringContent(marketItemJson, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync("api/building/template", marketItemStringContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        public async void AddItem(Item item)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var itemJson = JsonConvert.SerializeObject(item);
+            var itemStringContent = new StringContent(itemJson, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync("api/item/template", itemStringContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                //GetItems();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        public async void AddResource(Resource resource)
+        {
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var resourceJson = JsonConvert.SerializeObject(resource);
+            var resourceStringContent = new StringContent(resourceJson, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync("api/resource/template", resourceStringContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                //GetResources();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+        }
+
+        private async Task<List<User>> GetUsers()
         {
             List<User> users = null;
 
@@ -352,7 +577,7 @@ namespace DesktopApp
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            HttpResponseMessage response = client.GetAsync("api/town").Result;
+            HttpResponseMessage response = await client.GetAsync("api/user");
 
             if (response.IsSuccessStatusCode)
             {
@@ -366,16 +591,80 @@ namespace DesktopApp
             {
                 System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
             }
-
+            userTable.Clear();
+            UserTable.ItemsSource = userTable.DefaultView;
+            foreach (var user in users)
+            {
+                user.Town = await GetTownAsync(user.Town.Id);
+                AddUserToTable(user);
+            }
             return users;
         }
 
-        private void AddListToTable(List<User> itemList)
+        private async Task<Town> GetTownAsync(Guid id)
         {
-            foreach (var item in itemList)
+            Town town = null;
+
+            using (HttpClient client = new HttpClient())
             {
-                AddAddable(item, userTable, UserTable);
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                // Add an Accept header for JSON format.
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.GetAsync($"api/town/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api   
+                    var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                    //Deserializing the response recieved from web api and storing into the Town  
+                    town = JsonConvert.DeserializeObject<Town>(responseResult);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+                }
+                return town;
             }
+
+            
+        }
+
+        private async Task<List<Building>> GetBuildingTemplates()
+        {
+            List<Building> buildings = null;
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = await client.GetAsync("api/building/template");
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                //Deserializing the response recieved from web api and storing into the Town  
+                buildings = JsonConvert.DeserializeObject<List<Building>>(responseResult);
+                
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+            foreach (var building in buildings)
+            {
+                AddBuildingToTable(building);
+            }
+            return buildings;
         }
     }
 }

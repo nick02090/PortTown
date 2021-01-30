@@ -69,15 +69,12 @@ namespace WebAPI.Repositories
                 {
                     resourceBatches = await session
                         .Query<ResourceBatch>()
+                        .Where(x => x.Sellable.Id == null)
                         .Select(x => new ResourceBatch
                         {
                             Id = x.Id,
                             ResourceType = x.ResourceType,
-                            Quantity = x.Quantity,
-                            Craftable = new Craftable
-                            {
-                                Id = x.Craftable.Id
-                            }
+                            Quantity = x.Quantity
                         })
                         .ToListAsync();
 
@@ -102,6 +99,36 @@ namespace WebAPI.Repositories
                     resourceBatch = await session
                         .Query<ResourceBatch>()
                         .Where(x => x.Id == id)
+                        .Where(x => x.Sellable.Id == null)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id,
+                            ResourceType = x.ResourceType,
+                            Quantity = x.Quantity
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatch;
+        }
+
+        public async Task<IEnumerable<ResourceBatch>> GetByCraftableAsync(Guid craftableId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<ResourceBatch> resourceBatches = new List<ResourceBatch>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatches = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Craftable.Id == craftableId)
                         .Select(x => new ResourceBatch
                         {
                             Id = x.Id,
@@ -110,6 +137,70 @@ namespace WebAPI.Repositories
                             Craftable = new Craftable
                             {
                                 Id = x.Craftable.Id
+                            }
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatches;
+        }
+
+        public async Task<IEnumerable<ResourceBatch>> GetByUpgradeableAsync(Guid upgradeableId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<ResourceBatch> resourceBatches = new List<ResourceBatch>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatches = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Upgradeable.Id == upgradeableId)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id,
+                            ResourceType = x.ResourceType,
+                            Quantity = x.Quantity
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatches;
+        }
+
+        public async Task<ResourceBatch> GetTemplateAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var resourceBatch = new ResourceBatch();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatch = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Id == id)
+                        .Where(x => x.Sellable.Id != null)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id,
+                            ResourceType = x.ResourceType,
+                            Quantity = x.Quantity,
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
                             }
                         })
                         .SingleOrDefaultAsync();
@@ -122,6 +213,40 @@ namespace WebAPI.Repositories
                 NHibernateHelper.CloseSession();
             }
             return resourceBatch;
+        }
+
+        public async Task<IEnumerable<ResourceBatch>> GetTemplateAsync()
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<ResourceBatch> resourceBatches = new List<ResourceBatch>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatches = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Sellable.Id != null)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id,
+                            ResourceType = x.ResourceType,
+                            Quantity = x.Quantity,
+                            Sellable = new Sellable
+                            {
+                                Id = x.Sellable.Id,
+                                Price = x.Sellable.Price
+                            }
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatches;
         }
 
         public async Task<ResourceBatch> UpdateAsync(ResourceBatch entity)

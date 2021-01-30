@@ -20,5 +20,6 @@ namespace WebAPI.Interfaces
         Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);
         ICollection<Storage> FilterStorages(ResourceType resourceType, ICollection<Building> buildings);
         Task<Town> CreateFromTemplate(Town template);
+        Task<Building> AddBuildingToTown(Building building, Town town, bool isTemplate = false);
     }
 }

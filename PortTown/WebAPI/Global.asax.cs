@@ -30,6 +30,15 @@ namespace WebAPI
                     await WebAPIConfig.CreateInitialItemsAsync();
                 }
             });
+
+            WebAPIConfig.CheckForInitialResourceBatchesAsync().ContinueWith(async result =>
+            {
+                var hasData = await result;
+                if (!hasData)
+                {
+                    await WebAPIConfig.CreateInitialResourceBatchesAsync();
+                }
+            });
         }
 
         protected void Session_Start(object sender, EventArgs e)

@@ -136,6 +136,19 @@ namespace WebApp.Controllers
                 HttpResponseMessage response = await client.GetAsync($"api/building/{id}");
                 var responseResult = response.Content.ReadAsStringAsync().Result;
                 StorageBuilding pb = JsonConvert.DeserializeObject<StorageBuilding>(responseResult);
+
+                var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
+                Dictionary<string, object> childDict = ((JObject)dict["ChildStorage"]).ToObject<Dictionary<string, object>>();
+                JArray resources = (JArray)childDict["StoredResources"];
+                List<Resource> StoredResources = new List<Resource>();
+                foreach (var res in resources)
+                {
+                    var resDict = res.ToObject<Dictionary<string, object>>();
+                    Resource r = new Resource((ResourceType)((int)((long)resDict["ResourceType"])), Convert.ToInt32((long)resDict["Quantity"]));
+                    StoredResources.Add(r);
+                }
+                pb.StoredResources = StoredResources;
+
                 return View(pb);
             }
         }

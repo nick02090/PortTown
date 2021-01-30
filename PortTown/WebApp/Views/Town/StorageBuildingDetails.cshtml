@@ -25,6 +25,17 @@
         <dd>
             @Html.DisplayFor(model => model.Info)
         </dd>
+
+        <dt>
+            @Html.Label("Stored resources")
+        </dt>
+
+        @foreach(var res in Model.StoredResources)
+        {
+            <dd>
+                @Html.Encode(res.Type.ToString()): @Html.Encode(res.Value)
+            </dd>
+        }
     </dl>
 </div>
 <p>

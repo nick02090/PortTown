@@ -7,7 +7,7 @@ namespace WebApp.Models.Buildings
 {
     public class Palace : Building
     {
-        public Palace(string Name, int Level, string Info, string ImagePath) : base(Name, Level, Info, ImagePath)
+        public Palace(Guid Id, string Name, int Level, string Info, string ImagePath) : base(Id, Name, Level, Info, ImagePath)
         {
         }
     }

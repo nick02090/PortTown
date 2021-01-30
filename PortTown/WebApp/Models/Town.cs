@@ -7,25 +7,33 @@ namespace WebApp.Models
 {
     public class Town
     {
+        public Guid Id;
         public string Name { get; set; }
         public int Level { get; set; }
-        public Dictionary<Guid, Buildings.Building> BuiltBuildings { get; set; }
-        public Dictionary<Guid, Buildings.Building> ToBuildBuildings { get; set; }
+        public ICollection<Buildings.Building> Buildings { get; set; }
 
-        public Town(string Name, int Level)
+        public Town(Guid Id, string Name, int Level, ICollection<Buildings.Building> Buildings)
         {
+            this.Id = Id;
             this.Name = Name;
             this.Level = Level;
-            this.ToBuildBuildings = new Dictionary<Guid, Buildings.Building>();
-            this.BuiltBuildings = new Dictionary<Guid, Buildings.Building>();
+            this.Buildings =Buildings;
+        }
+
+        public Town(Guid Id, string Name, int Level)
+        {
+            this.Id = Id;
+            this.Name = Name;
+            this.Level = Level;
+            this.Buildings = new List<Buildings.Building>();
         }
 
         public Town()
         {
+            this.Id = Guid.NewGuid();
             this.Name = "";
             this.Level = -1;
-            this.ToBuildBuildings = new Dictionary<Guid, Buildings.Building>();
-            this.BuiltBuildings = new Dictionary<Guid, Buildings.Building>();
+            this.Buildings = new List<Buildings.Building>();
         }
     }
 }

@@ -44,10 +44,10 @@ namespace WebApp.Controllers
                 {
                     var userJSON = JsonConvert.SerializeObject(user);
                     var userStringContent = new StringContent(userJSON, Encoding.UTF8, "application/json");
-                    var registerResponse = await client.PostAsync("register/" + user.TownsName, userStringContent);
+                    var registerResponse = await client.PostAsync("register/" + user.Town.Name, userStringContent);
                     if(registerResponse.IsSuccessStatusCode)
                     {
-                        return View("Index", "Town");
+                        return View("~/Views/Town/Index");
                     }
                 }
             }

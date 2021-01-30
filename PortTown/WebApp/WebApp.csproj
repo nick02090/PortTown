@@ -122,6 +122,7 @@
     <Compile Include="Models\Buildings\Workshop.cs" />
     <Compile Include="Models\Items\Item.cs" />
     <Compile Include="Models\Items\ItemType.cs" />
+    <Compile Include="Models\List.cs" />
     <Compile Include="Models\Resources\ResourceType.cs" />
     <Compile Include="Models\Town.cs" />
     <Compile Include="Models\TownViewModels\TownBuildingsViewModel.cs" />

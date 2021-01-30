@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebApp.Models.Resources;
 
 namespace WebApp.Utils
 {
@@ -31,6 +32,17 @@ namespace WebApp.Utils
             {"Iron mine", IRON_MINE },
             {"Sawmill", SAMWILL_INFO },
             {"Palace", PALACE_INFO }
+        };
+
+        public static readonly Dictionary<string, ResourceType> NameToResourceType = new Dictionary<string, ResourceType>
+        {
+            {"Farm", ResourceType.FOOD },
+            {"Gold mine", ResourceType.GOLD },
+            {"Stone storage", ResourceType.STONE },
+            {"Quarry", ResourceType.STONE },
+            {"Coal mine", ResourceType.COAL },
+            {"Iron mine", ResourceType.IRON},
+            {"Sawmill", ResourceType.WOOD },
         };
     }
 }

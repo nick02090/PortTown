@@ -10,7 +10,7 @@ namespace WebApp.Models.Buildings
     {
         public Resource Resource { get; set; }
 
-        public ProductionBuilding(string Name, int Level, string Info, string ImagePath, Resource Resource) : base(Name, Level, Info, ImagePath)
+        public ProductionBuilding(Guid Id, string Name, int Level, string Info, string ImagePath, Resource Resource) : base(Id, Name, Level, Info, ImagePath)
         {
             this.Resource = Resource;
         }

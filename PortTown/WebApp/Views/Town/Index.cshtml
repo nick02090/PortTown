@@ -17,8 +17,8 @@
     <div>
         <h3>Buildings</h3>
 
-        @{ Html.RenderAction("ProductionBuildings");}
-        @{ Html.RenderAction("StorageBuildings");}
+        @{ Html.RenderAction("ProductionBuildings", new { town = Model });}
+        @{ Html.RenderAction("StorageBuildings", new { town = Model });}
     </div>
     <br />
     <div>

@@ -23,6 +23,7 @@ namespace WebApp.Controllers
 
         public async Task<ActionResult> Index(Guid townID)
         {
+            Town town = null;
             using (var client = new HttpClient())
             {
                 //Passing service base url  
@@ -46,14 +47,13 @@ namespace WebApp.Controllers
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
                     string townName = (string)dict["Name"];
                     int townLevel = Convert.ToInt32((long)dict["Level"]);
-                    Town town = new Town(townID, townName, townLevel);
+                    town = new Town(townID, townName, townLevel);
 
-                    HttpResponseMessage buildingsHttpResponse = await client.GetAsync($"api/builings/town/{townID}");
+                    HttpResponseMessage buildingsHttpResponse = await client.GetAsync($"api/building/town/{townID}");
                     if(buildingsHttpResponse.IsSuccessStatusCode)
                     {
-                        var builingsResponseResult = buildingsHttpResponse.Content.ReadAsStringAsync().Result;
-                        var buildingsJSONDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(builingsResponseResult);
-                        var Buildings = ((Newtonsoft.Json.Linq.JArray)buildingsJSONDict["Buildings"]);
+                        string builingsResponseResult = buildingsHttpResponse.Content.ReadAsStringAsync().Result;
+                        JArray Buildings = JsonConvert.DeserializeObject<JArray>(builingsResponseResult);
                         foreach (var building in Buildings)
                         {
                             Dictionary<string, object> buildingDict = building.ToObject<Dictionary<string, object>>();
@@ -62,13 +62,31 @@ namespace WebApp.Controllers
                             string buildingName = (string)buildingDict["Name"];
                             int buildingLevel = Convert.ToInt32((long)buildingDict["Level"]);
                             string imgPath = "~/Content/img/" + buildingName + ".jpg";
-                            //Building b = buildingType == 0 ? new ProductionBuilding(buildingID, buildingLevel, BuildingsInfo.NameToInfo[buildingName])
+                            string childBuilding = buildingType == 0 ? "ChildProductionBuilding" : "ChildStorage";
+                            Dictionary<string, object> childDict = ((JObject)buildingDict[childBuilding]).ToObject<Dictionary<string, object>>();
+                            if(buildingType == 1)
+                            {
+                                JArray resources = (JArray)childDict["StoredResources"];
+                                List<Resource> StoredResources = new List<Resource>();
+                                foreach(var res in resources)
+                                {
+                                    var resDict = res.ToObject<Dictionary<string, object>>();
+                                    Resource r = new Resource((ResourceType)((int)((long)resDict["ResourceType"])), Convert.ToInt32((long)resDict["Quantity"]));
+                                    StoredResources.Add(r);
+                                }
+                                StorageBuilding sb = new StorageBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, StoredResources);
+                                town.Buildings.Add(sb);
+                            } else
+                            {
+
+                            }
+
                         }
                     }
                     
                 }
                 //returning the town info to view
-                return View();
+                return View(town);
             }
         }
 
@@ -77,10 +95,7 @@ namespace WebApp.Controllers
         {
             TownBuildingsViewModel buildings = new TownBuildingsViewModel();
 
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Quarry", 1, BuildingsInfo.QUARRY_INFO, "~/Content/img/Quarry.jpg", new Resource(ResourceType.STONE)));
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Coal mine", 1, BuildingsInfo.COAL_MINE, "~/Content/img/Coal mine.jpg", new Resource(ResourceType.COAL)));
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Iron mine", 1, BuildingsInfo.IRON_MINE, "~/Content/img/Gold mine.jpg", new Resource(ResourceType.IRON)));
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Sawmill", 1, BuildingsInfo.SAMWILL_INFO, "~/Content/img/Sawmill.jpg", new Resource(ResourceType.WOOD)));
+            buildings.BuildingsList = town.Buildings;
             
             return PartialView("ProductionBuildings", buildings);
         }
@@ -88,14 +103,11 @@ namespace WebApp.Controllers
         [ChildActionOnly]
         public ActionResult StorageBuildings(Town town)
         {
-            TownBuildingsViewModel buidlings = new TownBuildingsViewModel();
-            List<Resource> FoodStored = new List<Resource>
-            {
-                new Resource(ResourceType.FOOD, 420),
-                new Resource(ResourceType.COAL, 69)
-            };
-            buidlings.BuildingsList.Add(new StorageBuilding(Guid.NewGuid(), "Warehouse", 1, BuildingsInfo.FARM_INFO, "~/Content/img/Farm.jpg", FoodStored));
-            return PartialView("StorageBuildings", buidlings);
+            TownBuildingsViewModel buildings = new TownBuildingsViewModel();
+
+            buildings.BuildingsList = town.Buildings;
+
+            return PartialView("StorageBuildings", buildings);
         }
 
         public async Task<ActionResult> ProductionBuildingDetails(Guid id)
@@ -117,8 +129,8 @@ namespace WebApp.Controllers
         {
             List<Resource> FoodStored = new List<Resource>
             {
-                new Resource(ResourceType.FOOD, 420),
-                new Resource(ResourceType.COAL, 69)
+                new Resource(ResourceType.Food, 420),
+                new Resource(ResourceType.Coal, 69)
             };
             return View();
             //return View(new StorageBuilding(Guid.NewGuid(), Name, 0, BuildingsInfo.NameToInfo[Name], "~/Content/img/Farm.jpg", FoodStored));
@@ -129,8 +141,8 @@ namespace WebApp.Controllers
         {
             List<Resource> FoodStored = new List<Resource>
             {
-                new Resource(ResourceType.FOOD, 420),
-                new Resource(ResourceType.COAL, 69)
+                new Resource(ResourceType.Food, 420),
+                new Resource(ResourceType.Coal, 69)
             };
             TownItemsViewModel items = new TownItemsViewModel();
             items.Items.Add(new Models.Items.Item(Models.Items.ItemType.JEWELRY, 5, FoodStored));
@@ -141,9 +153,9 @@ namespace WebApp.Controllers
         public ActionResult Build()
         {
             TownBuildingsViewModel buildings = new TownBuildingsViewModel();
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Farm", 1, "~/Content/img/Farm.jpg", BuildingsInfo.FARM_INFO, new Resource(ResourceType.FOOD)));
+            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Farm", 1, "~/Content/img/Farm.jpg", BuildingsInfo.FARM_INFO, new Resource(ResourceType.Food)));
             // buildings.BuildingsList.Add(new ProductionBuilding("Silo", 1, BuildingsInfo.SILO_INFO));
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Sawmill", 1,"~/Content/img/Farm.jpg", BuildingsInfo.SAMWILL_INFO, new Resource(ResourceType.WOOD)));
+            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Sawmill", 1,"~/Content/img/Farm.jpg", BuildingsInfo.SAMWILL_INFO, new Resource(ResourceType.Wood)));
             return View("Build", buildings);
         }
     }

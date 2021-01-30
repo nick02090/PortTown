@@ -18,7 +18,7 @@
                 {
                     WebApp.Models.Buildings.StorageBuilding storageBuilding = (WebApp.Models.Buildings.StorageBuilding)item;
                     <div class="col-md-4 col-sm-4">
-                        <a href="@Url.Content("/town/storagebuildingdetails?Name="+item.Name)" style="text-decoration: none; color: black">
+                        <a href="@Url.Content($"/town/storagebuildingdetails?id={item.Id}")" style="text-decoration: none; color: black">
                             <div class="card">
                                 <div class="card-body text-center">
                                     <div class="row">

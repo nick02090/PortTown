@@ -36,13 +36,13 @@ namespace WebApp.Utils
 
         public static readonly Dictionary<string, ResourceType> NameToResourceType = new Dictionary<string, ResourceType>
         {
-            {"Farm", ResourceType.FOOD },
-            {"Gold mine", ResourceType.GOLD },
-            {"Stone storage", ResourceType.STONE },
-            {"Quarry", ResourceType.STONE },
-            {"Coal mine", ResourceType.COAL },
-            {"Iron mine", ResourceType.IRON},
-            {"Sawmill", ResourceType.WOOD },
+            {"Farm", ResourceType.Food },
+            {"Gold mine", ResourceType.Gold },
+            {"Stone storage", ResourceType.Stone },
+            {"Quarry", ResourceType.Stone },
+            {"Coal mine", ResourceType.Coal },
+            {"Iron mine", ResourceType.Iron},
+            {"Sawmill", ResourceType.Wood },
         };
     }
 }

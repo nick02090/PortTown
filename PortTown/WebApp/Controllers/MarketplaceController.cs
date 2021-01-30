@@ -21,8 +21,8 @@ namespace WebApp.Controllers
         {
             List<Resource> FoodStored = new List<Resource>
             {
-                new Resource(ResourceType.FOOD, 420),
-                new Resource(ResourceType.COAL, 69)
+                new Resource(ResourceType.Food, 420),
+                new Resource(ResourceType.Coal, 69)
             };
             TownItemsViewModel items = new TownItemsViewModel();
             var item1 = new Models.Items.Item(Models.Items.ItemType.JEWELRY, 5, FoodStored);
@@ -39,8 +39,8 @@ namespace WebApp.Controllers
         {
             List<Resource> FoodStored = new List<Resource>
             {
-                new Resource(ResourceType.FOOD, 420),
-                new Resource(ResourceType.COAL, 69)
+                new Resource(ResourceType.Food, 420),
+                new Resource(ResourceType.Coal, 69)
             };
             TownItemsViewModel items = new TownItemsViewModel();
             var item1 = new Models.Items.Item(Models.Items.ItemType.JEWELRY, 5, FoodStored);

@@ -10,9 +10,9 @@ namespace WebApp.Models
         public Guid Id;
         public string Name { get; set; }
         public int Level { get; set; }
-        public ICollection<Buildings.Building> Buildings { get; set; }
+        public List<Buildings.Building> Buildings { get; set; }
 
-        public Town(Guid Id, string Name, int Level, ICollection<Buildings.Building> Buildings)
+        public Town(Guid Id, string Name, int Level, List<Buildings.Building> Buildings)
         {
             this.Id = Id;
             this.Name = Name;

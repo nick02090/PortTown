@@ -64,12 +64,12 @@ namespace WebAPI.Services
             return user;
         }
 
-        public async Task<JSONFormatter> CheckAvailability(string email)
+        public async Task<JSONFormatter> CheckAvailability(string email, Guid userId)
         {
             var availability = new JSONFormatter();
             var user = await UserRepository.GetByEmailAsync(email);
 
-            if (user == null)
+            if (user == null || user.Id == userId)
             {
                 availability.AddField("Availability", true);
             }

@@ -49,6 +49,16 @@ namespace WebAPI.Services
         public async Task<Building> GetBuilding(Guid id)
         {
             var building = await BuildingRepository.GetAsync(id);
+            if (building.BuildingType == BuildingType.Production)
+            {
+                // Get the production properties
+                building.ChildProductionBuilding = await ProductionBuildingRepository.GetByBuildingAsync(building.Id);
+            }
+            else
+            {
+                // Get the storage properties
+                building.ChildStorage = await StorageRepository.GetByBuildingAsync(building.Id);
+            }
             building = await UpdateJobs(building);
             return building;
         }
@@ -167,21 +177,21 @@ namespace WebAPI.Services
         public async Task<Building> UpgradeLevel(Building building)
         {
             var upgradeable = building.Upgradeable;
-            // NOTE: This check is also made in controller (just in case)
-            if (upgradeable.IsFinishedUpgrading)
+            upgradeable.Building = building;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(upgradeable.Id);
+            upgradeable.RequiredResources = upgradeCosts.ToList();
+            upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
+            // Update the building level
+            building.Level += 1;
+            building.Capacity = CalculateNewCapacity(building.Capacity, upgradeable.UpgradeMultiplier);
+            if (building.BuildingType == BuildingType.Production)
             {
-                upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
-                // Update the building level
-                building.Level += 1;
-                building.Capacity = CalculateNewCapacity(building.Capacity, upgradeable.UpgradeMultiplier);
-                if (building.BuildingType == BuildingType.Production)
-                {
-                    building.ChildProductionBuilding = await ProductionBuildingService.UpgradeLevel(
-                        building.ChildProductionBuilding, upgradeable.UpgradeMultiplier);
-                }
-                //building.Upgradeable = null; TODO: CHECK THIS OUT
-                await BuildingRepository.UpdateAsync(building);
+                building.ChildProductionBuilding = await ProductionBuildingRepository.GetByBuildingAsync(building.Id);
+                building.ChildProductionBuilding.ParentBuilding = building;
+                building.ChildProductionBuilding = await ProductionBuildingService.UpgradeLevel(
+                    building.ChildProductionBuilding, upgradeable.UpgradeMultiplier);
             }
+            await BuildingRepository.UpdateAsync(building);
             building.Upgradeable = upgradeable;
             return building;
         }
@@ -194,16 +204,13 @@ namespace WebAPI.Services
 
         public async Task<Building> StartUpgradeLevel(Building building)
         {
-            // NOTE: This check is also made in controller (just in case)
-            var canUpgradeLevel = await CanUpgradeLevel(building);
-            if ((bool)canUpgradeLevel["CanUpgrade"])
-            {
-                // Remove resources (payment)
-                await PayForAction(building.Upgradeable.RequiredResources, building.Town.Id);
-                // Update the upgradable to start the upgrade process
-                var upgradeable = await UpgradeableService.StartUpgradeLevel(building.Upgradeable);
-                building.Upgradeable = upgradeable;
-            }
+            // Remove resources (payment)
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
+            await PayForAction(upgradeCosts.ToList(), building.Town.Id);
+            // Update the upgradable to start the upgrade process
+            building.Upgradeable.Building = building;
+            var upgradeable = await UpgradeableService.StartUpgradeLevel(building.Upgradeable);
+            building.Upgradeable = upgradeable;
             return building;
         }
 
@@ -218,10 +225,11 @@ namespace WebAPI.Services
                 // NOTE: this is an early return to avoid the computational heavy cost calculation
                 return upgradeable;
             }
-            var upgradeCosts = building.Upgradeable.RequiredResources;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
+            var townBuildings = await GetBuildingsByTown(town.Id);
             foreach (var cost in upgradeCosts)
             {
-                var remainingCost = await TownService.GatherPaymentFromBuildings(cost, town.Buildings);
+                var remainingCost = await TownService.GatherPaymentFromBuildings(cost, townBuildings);
                 if (remainingCost > 0)
                 {
                     upgradeable["CanUpgrade"] = false;
@@ -403,6 +411,27 @@ namespace WebAPI.Services
                 hasData.AddField("HasData", false);
             }
             return hasData;
+        }
+
+        public async Task<ICollection<JSONFormatter>> FilterTemplateForTown(Guid townId)
+        {
+            var result = new List<JSONFormatter>();
+            var template = await BuildingRepository.GetTemplateAsync();
+            foreach (var buildingTemplate in template)
+            {
+                var canCraft = await CanCraftBuilding(buildingTemplate, townId);
+                var isCraftable = canCraft["CanCraft"];
+                var craftCosts = await ResourceBatchRepository.GetByCraftableAsync(buildingTemplate.ParentCraftable.Id);
+
+                var templateResult = new JSONFormatter();
+                templateResult.AddField("CanCraft", isCraftable);
+                templateResult.AddField("TemplateId", buildingTemplate.Id);
+                templateResult.AddField("Name", buildingTemplate.Name);
+                templateResult.AddField("BuildingType", buildingTemplate.BuildingType);
+                templateResult.AddField("RequiredResources", craftCosts);
+                result.Add(templateResult);
+            }
+            return result;
         }
         #endregion
     }

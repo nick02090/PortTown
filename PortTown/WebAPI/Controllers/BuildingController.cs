@@ -1,5 +1,6 @@
 ﻿using Domain;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetAsync(Guid id)
         {
-            var entity = await _repository.GetAsync(id);
+            var entity = await _service.GetBuilding(id);
             return Request.CreateResponse(HttpStatusCode.OK, entity);
         }
 
@@ -188,6 +189,19 @@ namespace WebAPI.Controllers
         {
             var template = await _repository.GetTemplateAsync();
             return Request.CreateResponse(HttpStatusCode.OK, template);
+        }
+
+        [Route("api/building/template/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTemplateForTown([FromUri] Guid id)
+        {
+            var townTemplate = await _service.FilterTemplateForTown(id);
+            var result = new List<Dictionary<string, object>>();
+            foreach (var template in townTemplate)
+            {
+                result.Add(template.Result);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [Route("api/building/template")]

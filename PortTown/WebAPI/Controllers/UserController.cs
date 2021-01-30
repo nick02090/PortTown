@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
         {
             var originalPassword = entity.Password;
             // Check email availability
-            var isAvailable = await _service.CheckAvailability(entity.Email);
+            var isAvailable = await _service.CheckAvailability(entity.Email, Guid.Empty);
             if (!(bool)isAvailable["Availability"])
             {
                 var error = new JSONErrorFormatter("User with that email already exists!",
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             entitydb.Username = entity.Username;
             entitydb.Email = entity.Email;
             // Check updated email availability
-            var isAvailable = await _service.CheckAvailability(entity.Email);
+            var isAvailable = await _service.CheckAvailability(entity.Email, id);
             if (!(bool)isAvailable["Availability"])
             {
                 var error = new JSONErrorFormatter("User with that email already exists!",
@@ -133,7 +133,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> CheckAvailabilityAsync([FromBody] User entity)
         {
-            var availability = await _service.CheckAvailability(entity.Email);
+            var availability = await _service.CheckAvailability(entity.Email, Guid.Empty);
             return Request.CreateResponse(HttpStatusCode.OK, availability.Result);
         }
 

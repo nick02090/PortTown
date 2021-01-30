@@ -21,12 +21,8 @@ namespace WebAPI.Services
         {
             // Set the time for the upgrade
             upgradeable.TimeUntilUpgraded = new DateTime(DateTime.UtcNow.Ticks + upgradeable.TimeToUpgrade.Ticks);
-            // Store the cost for later purpose
-            var upgradeableCost = upgradeable.RequiredResources;
-            //upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
-            // Update the upgradeable and return the reference to the costs
+            // Update the upgradeable
             await UpgradeableRepository.UpdateAsync(upgradeable);
-            upgradeable.RequiredResources = upgradeableCost;
             return upgradeable;
         }
 
@@ -56,16 +52,13 @@ namespace WebAPI.Services
             upgradeable.IsFinishedUpgrading = false;
             foreach (var cost in upgradeable.RequiredResources)
             {
+                cost.Upgradeable = upgradeable;
                 cost.Quantity = CalculateNewCost(cost.Quantity, upgradeable.UpgradeMultiplier);
                 await ResourceBatchRepository.UpdateAsync(cost);
             }
             upgradeable.TimeToUpgrade = CalculateNewUpgradeTime(upgradeable.TimeToUpgrade, upgradeable.UpgradeMultiplier);
-            // Store the cost for later purpose
-            var upgradeableCost = upgradeable.RequiredResources;
-            //upgradeable.RequiredResources = null; // TODO: CHECK THIS OUT
             // Update the upgradeable and return the reference to the costs
             await UpgradeableRepository.UpdateAsync(upgradeable);
-            upgradeable.RequiredResources = upgradeableCost;
             return upgradeable;
         }
 

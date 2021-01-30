@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetAsync(Guid id)
         {
-            var entity = await _repository.GetAsync(id);
+            var entity = await _service.GetBuilding(id);
             return Request.CreateResponse(HttpStatusCode.OK, entity);
         }
 

@@ -53,6 +53,30 @@ namespace WebAPI.Services
             return building;
         }
 
+        public async Task<ICollection<Building>> GetBuildingsByTown(Guid townId)
+        {
+            var buildings = await BuildingRepository.GetByTownAsync(townId);
+            var newBuildings = new List<Building>();
+            foreach (var building in buildings)
+            {
+                var newBuilding = await UpdateJobs(building);
+                if (newBuilding.BuildingType == BuildingType.Production)
+                {
+                    // get production child
+                    var productionChild = await ProductionBuildingRepository.GetByBuildingAsync(newBuilding.Id);
+                    newBuilding.ChildProductionBuilding = productionChild;
+                }
+                else
+                {
+                    // get storage child
+                    var storageChild = await StorageRepository.GetByBuildingAsync(newBuilding.Id);
+                    newBuilding.ChildStorage = storageChild;
+                }
+                newBuildings.Add(newBuilding);
+            }
+            return newBuildings;
+        }
+
         public async Task<ICollection<Building>> GetBuildings()
         {
             var buildings = await BuildingRepository.GetAsync();

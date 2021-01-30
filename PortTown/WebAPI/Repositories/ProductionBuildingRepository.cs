@@ -134,6 +134,36 @@ namespace WebAPI.Repositories
             return productionBuilding;
         }
 
+        public async Task<ProductionBuilding> GetByBuildingAsync(Guid buildingId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            ProductionBuilding productionBuilding = new ProductionBuilding();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    productionBuilding = await session
+                        .Query<ProductionBuilding>()
+                        .Where(x => x.ParentBuilding.Id == buildingId)
+                        .Select(x => new ProductionBuilding
+                        {
+                            Id = x.Id,
+                            ResourceProduced = x.ResourceProduced,
+                            LastHarvestTime = x.LastHarvestTime,
+                            ProductionRate = x.ProductionRate
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return productionBuilding;
+        }
+
         public async Task<ProductionBuilding> UpdateAsync(ProductionBuilding entity)
         {
             ISession session = NHibernateHelper.GetCurrentSession();

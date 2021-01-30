@@ -1,6 +1,7 @@
 ﻿using Domain;
 using System;
-using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using WebAPI.Interfaces;
@@ -10,28 +11,36 @@ namespace WebAPI.Controllers
     public class ResourceBatchController : ApiController
     {
         private readonly IResourceBatchRepository _repository;
+        private readonly IResourceBatchService _service;
 
-        public ResourceBatchController(IResourceBatchRepository repository)
+        public ResourceBatchController(IResourceBatchRepository repository, IResourceBatchService service)
         {
             _repository = repository;
+            _service = service;
         }
 
-        // GET api/<controller>
-        public async Task<IEnumerable<ResourceBatch>> GetAsync()
+        [Route("api/resourcebatch/check-initial-template-data")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> CheckInitialDataAsync()
         {
-            return await _repository.GetAsync();
+            var hasData = await _service.CheckInitialTemplateData();
+            return Request.CreateResponse(HttpStatusCode.OK, hasData.Result);
         }
 
-        // GET api/<controller>/5
-        public async Task<ResourceBatch> GetAsync(Guid id)
+        [Route("api/resourcebatch/add-initial-template-data")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddInitialTemplateDataAsync()
         {
-            return await _repository.GetAsync(id);
+            await _service.AddInitialTemplateData();
+            return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
-        // POST api/<controller>
-        public async Task<ResourceBatch> CreateAsync([FromBody] ResourceBatch entity)
+        [Route("api/resourcebatch/template")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTemplateDataAsync()
         {
-            return await _repository.CreateAsync(entity);
+            var template = await _repository.GetTemplateAsync();
+            return Request.CreateResponse(HttpStatusCode.OK, template);
         }
 
         // PUT api/<controller>/5

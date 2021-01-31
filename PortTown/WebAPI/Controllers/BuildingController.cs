@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -15,11 +16,15 @@ namespace WebAPI.Controllers
 
         private readonly IBuildingRepository _repository;
         private readonly IBuildingService _service;
+        private readonly IProductionBuildingService _productionBuildingService;
 
-        public BuildingController(IBuildingRepository repository, IBuildingService service)
+        public BuildingController(IBuildingRepository repository, IBuildingService service,
+            IProductionBuildingService productionBuildingService)
         {
             _repository = repository;
             _service = service;
+
+            _productionBuildingService = productionBuildingService;
         }
 
 
@@ -77,6 +82,33 @@ namespace WebAPI.Controllers
         {
             var buildings = await _service.GetBuildingsByTown(id);
             return Request.CreateResponse(HttpStatusCode.OK, buildings);
+        }
+
+        [Route("api/building/production-info/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetWithProductionInfo([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            if (building.BuildingType != BuildingType.Production)
+            {
+                var error = new JSONErrorFormatter("The building isn't of type production building!", building.BuildingType,
+                    "BuildingType", "GET", $"api/building/production-info/{id}",
+                    "BuildingController.GetWithProductionInfo");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
+            var result = new JSONFormatter();
+            result.AddField("Id", building.Id);
+            result.AddField("Name", building.Name);
+            result.AddField("Level", building.Level);
+            result.AddField("Capacity", building.Capacity);
+            result.AddField("BuildingType", building.BuildingType);
+            result.AddField("Town", building.Town);
+            result.AddField("ParentCraftable", building.ParentCraftable);
+            result.AddField("Upgradeable", building.Upgradeable);
+            result.AddField("ChildProductionBuilding", building.ChildProductionBuilding);
+            result.AddField("AccumulatedResources", accumulatedResources["AccumulatedResources"]);
+            return Request.CreateResponse(HttpStatusCode.OK, result.Result);
         }
 
         #region Crafting

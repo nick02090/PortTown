@@ -10,5 +10,6 @@ namespace WebAPI.Interfaces
         Task<JSONFormatter> CanHarvest(Guid id);
         Task<JSONFormatter> Harvest(Guid id);
         Task<ProductionBuilding> UpgradeLevel(ProductionBuilding productionBuilding, float upgradeMultiplier);
+        Task<JSONFormatter> GetCurrentResources(Guid id);
     }
 }

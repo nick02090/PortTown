@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Utilities;
 using System;
 using System.Threading.Tasks;
 using WebAPI.Helpers;
@@ -20,23 +21,33 @@ namespace WebAPI.Services
             throw new NotImplementedException();
         }
 
+        public async Task<JSONFormatter> GetCurrentResources(Guid id)
+        {
+            var result = new JSONFormatter();
+            var currentHarvestValue = await CalculateHarvest(id);
+            result.AddField("AccumulatedResources", currentHarvestValue["Harvest"]);
+            return result;
+        }
+
         public Task<JSONFormatter> Harvest(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        //public async Task<JSONFormatter> CanHarvest(Guid id)
-        //{
-        //    var productionBuilding = await ProductionBuildingRepository.GetAsync(id);
-
-        //}
-
-        //public async Task<JSONFormatter> Harvest(Guid id)
-        //{
-        //    // Create the harvest value (based on previous harvest time) and clamp it with the building capacity
-        //    var productionBuilding = await ProductionBuildingRepository.GetAsync(id);
-        //    var building = productionBuilding.ParentBuilding;
-        //}
+        private async Task<JSONFormatter> CalculateHarvest(Guid id)
+        {
+            var productionBuilding = await ProductionBuildingRepository.GetAsync(id);
+            // Create the harvest value (based on previous harvest time) and clamp it with the building capacity
+            var maxCapacity = productionBuilding.ParentBuilding.Capacity;
+            var productionRate = productionBuilding.ProductionRate;
+            var now = DateTime.UtcNow;
+            var lastHarvest = productionBuilding.LastHarvestTime;
+            var diffSeconds = (now - lastHarvest).TotalSeconds;
+            var createdResources = MathUtility.Clamp((int)(productionRate * diffSeconds), 0, maxCapacity);
+            var harvest = new JSONFormatter();
+            harvest.AddField("Harvest", createdResources);
+            return harvest;
+        }
 
         public async Task<ProductionBuilding> UpgradeLevel(ProductionBuilding productionBuilding, float upgradeMultiplier)
         {

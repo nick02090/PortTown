@@ -8,7 +8,7 @@ namespace WebAPI.Interfaces
     public interface IUserService
     {
         Task<User> Authenticate(User user, string password);
-        Task<JSONFormatter> CheckAvailability(string email);
+        Task<JSONFormatter> CheckAvailability(string email, Guid userId);
         Task<User> CreateUserWithTown(User user, string townName);
         Task Logout(string token);
 

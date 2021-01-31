@@ -59,6 +59,10 @@ namespace WebAPI.Services
                 // Get the storage properties
                 building.ChildStorage = await StorageRepository.GetByBuildingAsync(building.Id);
             }
+            var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(building.ParentCraftable.Id);
+            building.ParentCraftable.RequiredResources = craftableCosts.ToList();
+            var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
+            building.Upgradeable.RequiredResources = upgradeableCosts.ToList();
             building = await UpdateJobs(building);
             return building;
         }
@@ -130,6 +134,13 @@ namespace WebAPI.Services
             if (craftable.IsFinishedCrafting)
             {
                 craftable = await CraftableService.Craft(craftable);
+                if (building.BuildingType == BuildingType.Production)
+                {
+                    var productionBuilding = building.ChildProductionBuilding;
+                    productionBuilding.ParentBuilding = building;
+                    productionBuilding.LastHarvestTime = DateTime.UtcNow;
+                    await ProductionBuildingRepository.UpdateAsync(productionBuilding);
+                }
             }
             building.ParentCraftable = craftable;
             return building;
@@ -429,6 +440,7 @@ namespace WebAPI.Services
                 templateResult.AddField("Name", buildingTemplate.Name);
                 templateResult.AddField("BuildingType", buildingTemplate.BuildingType);
                 templateResult.AddField("RequiredResources", craftCosts);
+                templateResult.AddField("TimeToBuild", buildingTemplate.ParentCraftable.TimeToBuild);
                 result.Add(templateResult);
             }
             return result;

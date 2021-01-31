@@ -8,14 +8,16 @@
 
 
 <div>
-    @for (int i = 0; i < Model.BuildingsList.Count; i += 3)
+    @for (int i = 0; i < Model.BuildingsList.Count;)
     {
         <div class="row">
-            @for (int j = 0; j < 3 && i + j < Model.BuildingsList.Count; ++j)
+            @{ int j = 0; }
+            @for (int cnt = 0; cnt < 3 && i + j < Model.BuildingsList.Count; ++j)
             {
                 var item = Model.BuildingsList[i + j];
                 if (item is WebApp.Models.Buildings.StorageBuilding)
                 {
+                    ++cnt;
                     WebApp.Models.Buildings.StorageBuilding storageBuilding = (WebApp.Models.Buildings.StorageBuilding)item;
                     <div class="col-md-4 col-sm-4">
                         <a href="@Url.Content($"/town/storagebuildingdetails?id={item.Id}")" style="text-decoration: none; color: black">
@@ -45,9 +47,9 @@
                                                     <dt>
                                                         @Html.Encode(res.Type.ToString())
                                                     </dt>
-                                                    <dl>
+                                                    <dd>
                                                         @Html.Encode(res.Value)
-                                                    </dl>
+                                                    </dd>
                                                 </dl>
                                             }
                                         </div>
@@ -58,6 +60,7 @@
                     </div>
                 }
             }
+            @{ i += j; }
         </div>
     }
 </div>

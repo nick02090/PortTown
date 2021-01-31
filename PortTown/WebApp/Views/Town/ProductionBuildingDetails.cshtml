@@ -37,6 +37,18 @@
             @Html.DisplayFor(model => model.Resource.Value)
         </dd>
     </dl>
+    @if(Model.TimeUntilUpgraded != null) 
+    {
+        <dl class="row">
+            <dt class="col-md-4 col-sm-4">
+                @Html.Encode("Time to upgrade")
+            </dt>
+            <dt class="col-md-4 col-sm-4">
+                @{ var time = Model.TimeUntilUpgraded - DateTime.UtcNow; }
+                @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
+            </dt>
+        </dl>
+    }
 </div>
 
 <div class="row">
@@ -44,9 +56,9 @@
         <a class="btn btn-primary" href="#">Collect</a>
     </div>
     <div class="col-sm-1">
-        <a class="btn btn-primary" href="/town">Upgrade</a>
+        <a class="btn btn-primary" href="@Url.Content("/town/upgradebuilding?id=" + Model.Id)">Upgrade</a>
     </div>
     <div class="col-sm-1">
-        <a class="btn btn-danger" href="/town">Back</a>
+        <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>
     </div>
 </div>

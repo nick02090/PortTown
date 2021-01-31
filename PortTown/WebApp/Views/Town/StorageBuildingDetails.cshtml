@@ -9,35 +9,54 @@
 <div>
     <h4>StorageBuilding</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
             @Html.DisplayNameFor(model => model.Level)
         </dt>
 
-        <dd>
+        <dd class="col-md-4 col-sm-4">
             @Html.DisplayFor(model => model.Level)
         </dd>
-
-        <dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
             @Html.DisplayNameFor(model => model.Info)
         </dt>
 
-        <dd>
+        <dd class="col-md-4 col-sm-4">
             @Html.DisplayFor(model => model.Info)
         </dd>
-
-        <dt>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
             @Html.Label("Stored resources")
         </dt>
 
-        @foreach(var res in Model.StoredResources)
+        @foreach (var res in Model.StoredResources)
         {
-            <dd>
+            <dd class="col-md-4 col-sm-4">
                 @Html.Encode(res.Type.ToString()): @Html.Encode(res.Value)
             </dd>
         }
     </dl>
+    @if (Model.TimeUntilUpgraded != null)
+    {
+        <dl class="row">
+            <dt class="col-md-4 col-sm-4">
+                @Html.Encode("Time to upgrade")
+            </dt>
+            <dt class="col-md-4 col-sm-4">
+                @{ var time = Model.TimeUntilUpgraded - DateTime.UtcNow; }
+                @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
+            </dt>
+        </dl>
+    }
 </div>
-<p>
-    @Html.ActionLink("Back to my town", "Index", new { townID = Session["townId"] })
-</p>
+<div class="row">
+    <div class="col-sm-1">
+        <a class="btn btn-primary" href="@Url.Content("/town/upgradebuilding?id=" + Model.Id)">Upgrade</a>
+    </div>
+    <div class="col-sm-1">
+        <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>
+    </div>
+</div>

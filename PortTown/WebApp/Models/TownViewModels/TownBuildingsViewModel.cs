@@ -10,9 +10,11 @@ namespace WebApp.Models.TownViewModels
     public class TownBuildingsViewModel
     {
         public List<Building> BuildingsList { get; set; }
+        public List<CraftingBuilding> CraftingBuildings { get; set; }
 
         public TownBuildingsViewModel()
         {
+            CraftingBuildings = new List<CraftingBuilding>();
             BuildingsList = new List<Building>();
         }
     }

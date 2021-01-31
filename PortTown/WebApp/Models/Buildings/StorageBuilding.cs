@@ -10,7 +10,8 @@ namespace WebApp.Models.Buildings
     {
         public List<Resource> StoredResources { get; set; }
 
-        public StorageBuilding(Guid Id, string Name, int Level, string Info, string ImagePath, List<Resource> StoredResources) : base(Id, Name, Level, Info, ImagePath)
+        public StorageBuilding(Guid Id, string Name, int Level, string Info, string ImagePath, bool CanUpgrade, List<Resource> StoredResources) : 
+            base(Id, Name, Level, Info, ImagePath, CanUpgrade)
         {
             this.StoredResources = StoredResources;
         }

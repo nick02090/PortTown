@@ -43,7 +43,7 @@ namespace WebApp.Controllers
                     Guid townId = Guid.Parse((string)townDict["Id"]);
                     Session["userId"] = Guid.Parse((string)dict["Id"]);
                     Session["townId"] = townId;
-                    return RedirectToAction("Index", "Town", new { townID = townId });
+                    return RedirectToAction("Index", "Home");
                 }
             }
             return View("Index");

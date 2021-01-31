@@ -11,6 +11,7 @@ namespace WebApp.Models
         public string Name { get; set; }
         public int Level { get; set; }
         public List<Buildings.Building> Buildings { get; set; }
+        public List<Buildings.CraftingBuilding> CraftingBuildings { get;set; }
 
         public Town(Guid Id, string Name, int Level, List<Buildings.Building> Buildings)
         {
@@ -26,6 +27,7 @@ namespace WebApp.Models
             this.Name = Name;
             this.Level = Level;
             this.Buildings = new List<Buildings.Building>();
+            this.CraftingBuildings = new List<Buildings.CraftingBuilding>();
         }
 
         public Town()
@@ -34,6 +36,7 @@ namespace WebApp.Models
             this.Name = "";
             this.Level = -1;
             this.Buildings = new List<Buildings.Building>();
+            this.CraftingBuildings = new List<Buildings.CraftingBuilding>();
         }
     }
 }

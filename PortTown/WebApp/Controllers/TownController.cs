@@ -47,6 +47,7 @@ namespace WebApp.Controllers
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
                     string townName = (string)dict["Name"];
                     int townLevel = Convert.ToInt32((long)dict["Level"]);
+                    Session["townLevel"] = townLevel;
                     town = new Town(townID, townName, townLevel);
 
                     HttpResponseMessage buildingsHttpResponse = await client.GetAsync($"api/building/town/{townID}");
@@ -64,6 +65,7 @@ namespace WebApp.Controllers
                             string imgPath = "~/Content/img/" + buildingName + ".jpg";
                             string childBuilding = buildingType == 0 ? "ChildProductionBuilding" : "ChildStorage";
                             Dictionary<string, object> childDict = ((JObject)buildingDict[childBuilding]).ToObject<Dictionary<string, object>>();
+                            Building b = null;
                             if(buildingType == 1)
                             {
                                 JArray resources = (JArray)childDict["StoredResources"];
@@ -74,20 +76,62 @@ namespace WebApp.Controllers
                                     Resource r = new Resource((ResourceType)((int)((long)resDict["ResourceType"])), Convert.ToInt32((long)resDict["Quantity"]));
                                     StoredResources.Add(r);
                                 }
-                                StorageBuilding sb = new StorageBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, StoredResources);
-                                town.Buildings.Add(sb);
+                                b = new StorageBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, false, StoredResources);
                             } else
                             {
-
+                                Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
+                                b = new ProductionBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, false, r);
                             }
+                            town.Buildings.Add(b);
+                            Dictionary<string, object> craftDict = ((JObject)buildingDict["ParentCraftable"]).ToObject<Dictionary<string, object>>();
+                            if(craftDict["TimeUntilCrafted"] != null)
+                            {
+                                DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
+                                town.CraftingBuildings.Add(new CraftingBuilding(b, time));
 
+                            } 
+                            Console.WriteLine();
                         }
                     }
-                    
                 }
                 //returning the town info to view
                 return View("Index", town);
             }
+        }
+
+        public async Task<ActionResult> UpgradeBuilding(Guid id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/building/start-upgrade/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
+        public async Task<ActionResult> BuildBuilding(Guid id)
+        {
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/building/start-craft/{Session["townId"]}/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
+        public ActionResult CraftingBuildings(Town town)
+        {
+            TownBuildingsViewModel buildings = new TownBuildingsViewModel();
+
+            buildings.CraftingBuildings = town.CraftingBuildings;
+
+            return PartialView("CraftingBuildings", buildings);
         }
 
         [ChildActionOnly]
@@ -121,7 +165,20 @@ namespace WebApp.Controllers
                 HttpResponseMessage response = await client.GetAsync($"api/building/{id}");
                 var responseResult = response.Content.ReadAsStringAsync().Result;
                 ProductionBuilding pb = JsonConvert.DeserializeObject<ProductionBuilding>(responseResult);
-                return View();
+
+                var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
+                Dictionary<string, object> childDict = ((JObject)dict["ChildProductionBuilding"]).ToObject<Dictionary<string, object>>();
+                Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
+                pb.Resource = r;
+                pb.Info = "INFO";
+
+                Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
+                if (craftDict["TimeUntilUpgraded"] != null)
+                {
+                    DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
+                    pb.TimeUntilUpgraded = time;
+                }
+                return View(pb);
             }
         }
 
@@ -148,6 +205,14 @@ namespace WebApp.Controllers
                     StoredResources.Add(r);
                 }
                 pb.StoredResources = StoredResources;
+                pb.Info = "INFO";
+
+                Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
+                if (craftDict["TimeUntilUpgraded"] != null)
+                {
+                    DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
+                    pb.TimeUntilUpgraded = time;
+                }
 
                 return View(pb);
             }
@@ -167,13 +232,47 @@ namespace WebApp.Controllers
             return PartialView("Items", items);
         }
 
-        public ActionResult Build()
+        public async Task<ActionResult> Build()
         {
-            TownBuildingsViewModel buildings = new TownBuildingsViewModel();
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Farm", 1, "~/Content/img/Farm.jpg", BuildingsInfo.FARM_INFO, new Resource(ResourceType.Food)));
-            // buildings.BuildingsList.Add(new ProductionBuilding("Silo", 1, BuildingsInfo.SILO_INFO));
-            buildings.BuildingsList.Add(new ProductionBuilding(Guid.NewGuid(), "Sawmill", 1,"~/Content/img/Farm.jpg", BuildingsInfo.SAMWILL_INFO, new Resource(ResourceType.Wood)));
-            return View("Build", buildings);
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.GetAsync($"api/building/template/{Session["townId"]}");
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                JArray craftablesJSON = JsonConvert.DeserializeObject<JArray>(responseResult);
+                List<Craftable> craftables = new List<Craftable>();
+                foreach(var craftable in craftablesJSON)
+                {
+                    var craftDict = craftable.ToObject<Dictionary<string, object>>();
+                    bool CanCraft = (bool)craftDict["CanCraft"];
+                    string Name = (string)craftDict["Name"];
+                    Guid id = Guid.Parse((string)craftDict["TemplateId"]);
+                    string imgPath = "~/Content/img/" + Name + ".jpg";
+                    int level = 0;
+                    int type = ((int)((long)craftDict["BuildingType"]));
+                    Building b;
+                    if (type == 0) b = new ProductionBuilding(id, Name, level, "INFO", imgPath, CanCraft, null);
+                    else b = new StorageBuilding(id, Name, level, "INFO", imgPath, CanCraft, null);
+                    Craftable c = new Craftable(CanCraft, b);
+                    JArray resourcesJSON = (JArray)craftDict["RequiredResources"];
+                    List<Resource> resources = new List<Resource>();
+                    foreach(var res in resourcesJSON)
+                    {
+                        var resDict = res.ToObject<Dictionary<string, object>>();
+                        Resource r = new Resource((ResourceType)((int)((long)resDict["ResourceType"])), Convert.ToInt32((long)resDict["Quantity"]));
+                        resources.Add(r);
+                    }
+                    c.RequiredResources = resources;
+                    craftables.Add(c);
+                }
+                BuildViewModel model = new BuildViewModel();
+                model.Craftables = craftables;
+
+                return View("Build", model);
+            }
         }
     }
 }

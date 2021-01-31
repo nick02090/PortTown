@@ -225,13 +225,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Buildings\Building.cs" />
-    <Compile Include="Models\Buildings\Palace.cs" />
+    <Compile Include="Models\Buildings\CraftingBuilding.cs" />
     <Compile Include="Models\Buildings\Workshop.cs" />
     <Compile Include="Models\Items\Item.cs" />
     <Compile Include="Models\Items\ItemType.cs" />
     <Compile Include="Models\List.cs" />
     <Compile Include="Models\Resources\ResourceType.cs" />
     <Compile Include="Models\Town.cs" />
+    <Compile Include="Models\TownViewModels\BuildViewModel.cs" />
+    <Compile Include="Models\TownViewModels\Craftable.cs" />
     <Compile Include="Models\TownViewModels\TownBuildingsViewModel.cs" />
     <Compile Include="Models\Buildings\ProductionBuilding.cs" />
     <Compile Include="Models\Buildings\StorageBuilding.cs" />
@@ -274,6 +276,7 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Town\CraftingBuildings.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

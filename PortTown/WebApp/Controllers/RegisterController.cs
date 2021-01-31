@@ -51,7 +51,8 @@ namespace WebApp.Controllers
                         var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultResponse);
                         Dictionary<string, object> townDict = ((JObject)dict["Town"]).ToObject<Dictionary<string, object>>();
                         Guid townId = Guid.Parse((string)townDict["Id"]);
-                        return RedirectToAction("Index", "Town", new { townID = townId });
+                        Session["townId"] = townId;
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }

@@ -13,6 +13,14 @@
         <h4>@Html.DisplayNameFor(model => model.Level): @Html.DisplayFor(model => model.Level) </h4>
     </div>
     <br />
+    <div>
+        <button class="btn btn-primary"
+                onclick="location.href='@Url.Action("UpgradeBuilding", "Town", new { id = Model.Id})'"
+                >
+            Upgrade Town!
+        </button>
+    </div>
+    <br />
 
     <div>
         <h3>Buildings</h3>

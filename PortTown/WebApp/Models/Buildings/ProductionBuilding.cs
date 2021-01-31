@@ -9,6 +9,7 @@ namespace WebApp.Models.Buildings
     public class ProductionBuilding : Building
     {
         public Resource Resource { get; set; }
+        public Resource MaxResource { get; set; }
 
         public ProductionBuilding(Guid Id, string Name, int Level, string Info, string ImagePath, bool CanUpgrade, Resource Resource) : 
             base(Id, Name, Level, Info, ImagePath, CanUpgrade)

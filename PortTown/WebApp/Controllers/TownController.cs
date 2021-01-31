@@ -168,10 +168,13 @@ namespace WebApp.Controllers
 
                 var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
                 Dictionary<string, object> childDict = ((JObject)dict["ChildProductionBuilding"]).ToObject<Dictionary<string, object>>();
-                Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
+                Resource maxR = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), (int)((long)dict["Capacity"]));
+                Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), (int)((long)dict["AccumulatedResources"]));
+                pb.MaxResource = maxR;
                 pb.Resource = r;
                 pb.Info = (string)dict["UpgradeMessage"];
                 pb.CanUpgrade = (bool)dict["CanUpgrade"];
+
 
                 Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
                 if (craftDict["TimeUntilUpgraded"] != null)

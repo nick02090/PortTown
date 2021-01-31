@@ -30,6 +30,15 @@
     </dl>
     <dl class="row">
         <dt class="col-md-4 col-sm-4">
+            @Html.Encode("Collect"):
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.HarvestMessage)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
             @Html.DisplayFor(model => model.Resource.Type):
         </dt>
 
@@ -48,12 +57,17 @@
                 @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
             </dt>
         </dl>
-                    }
+    }
 </div>
 
 <div class="row">
     <div class="col-sm-1">
-        <a class="btn btn-primary" href="#">Collect</a>
+        @{ bool isDisabledHarvest = !Model.CanHarvest; }
+        <button class="btn btn-primary"
+                onclick="location.href='@Url.Action("Harvest", "Town", new { id = Model.Id})'"
+                disabled="@isDisabledHarvest">
+            Collect
+        </button>
     </div>
     <div class="col-sm-1">
         @{ bool isDisabled = !Model.CanUpgrade; }

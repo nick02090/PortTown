@@ -91,6 +91,8 @@ namespace WebApp.Controllers
                                 Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
                                 b = new ProductionBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, false, r);
                             }
+                            Dictionary<string, object> craftDict = ((JObject)buildingDict["ParentCraftable"]).ToObject<Dictionary<string, object>>();
+                            bool isFinishedCrafting = (bool)craftDict["IsFinishedCrafting"];
                             Dictionary<string, object> upgDict = ((JObject)buildingDict["Upgradeable"]).ToObject<Dictionary<string, object>>();
                             bool isFinishedUpg = (bool)upgDict["IsFinishedUpgrading"];
                             if (isFinishedUpg || upgDict["TimeUntilUpgraded"] != null)
@@ -101,23 +103,20 @@ namespace WebApp.Controllers
                                     time = (DateTime)upgDict["TimeUntilUpgraded"];
                                 }
                                 town.UpgradeingBuildings.Add(new CraftingBuilding(b, time, isFinishedUpg));
-                            } else
-                            {
-                                town.Buildings.Add(b);
-                            }
-                            Dictionary<string, object> craftDict = ((JObject)buildingDict["ParentCraftable"]).ToObject<Dictionary<string, object>>();
-                            bool isFinishedCrafting = (bool)craftDict["IsFinishedCrafting"];
-                            if (isFinishedCrafting || craftDict["TimeUntilCrafted"] != null)
+                            } else if (isFinishedCrafting || craftDict["TimeUntilCrafted"] != null)
                             {
                                 DateTime time = new DateTime();
-                                if(craftDict["TimeUntilCrafted"] != null)
+                                if (craftDict["TimeUntilCrafted"] != null)
                                 {
                                     time = (DateTime)craftDict["TimeUntilCrafted"];
                                 }
                                 town.CraftingBuildings.Add(new CraftingBuilding(b, time, isFinishedCrafting));
 
                             }
-                            Console.WriteLine();
+                            else
+                            {
+                                town.Buildings.Add(b);
+                            }
                         }
                     }
                 }
@@ -244,6 +243,19 @@ namespace WebApp.Controllers
             return PartialView("StorageBuildings", buildings);
         }
 
+        public async Task<ActionResult> Harvest(Guid id)
+        {
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await client.GetAsync($"/api/building/production/harvest/{id}");
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
         public async Task<ActionResult> ProductionBuildingDetails(Guid id)
         {
             using(var client = new HttpClient())
@@ -264,6 +276,8 @@ namespace WebApp.Controllers
                 pb.Resource = r;
                 pb.Info = (string)dict["UpgradeMessage"];
                 pb.CanUpgrade = (bool)dict["CanUpgrade"];
+                pb.CanHarvest = (bool)dict["CanHarvest"];
+                pb.HarvestMessage = (string)dict["HarvestMessage"];
 
 
                 Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
@@ -290,6 +304,8 @@ namespace WebApp.Controllers
                 StorageBuilding pb = JsonConvert.DeserializeObject<StorageBuilding>(responseResult);
 
                 var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
+                int capacity = (int)(long)dict["Capacity"];
+                pb.Capacity = capacity;
                 Dictionary<string, object> childDict = ((JObject)dict["ChildStorage"]).ToObject<Dictionary<string, object>>();
                 JArray resources = (JArray)childDict["StoredResources"];
                 List<Resource> StoredResources = new List<Resource>();

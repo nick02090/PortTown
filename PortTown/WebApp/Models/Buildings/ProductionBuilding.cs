@@ -10,6 +10,8 @@ namespace WebApp.Models.Buildings
     {
         public Resource Resource { get; set; }
         public Resource MaxResource { get; set; }
+        public bool CanHarvest { get; set; }
+        public string HarvestMessage { get; set; }
 
         public ProductionBuilding(Guid Id, string Name, int Level, string Info, string ImagePath, bool CanUpgrade, Resource Resource) : 
             base(Id, Name, Level, Info, ImagePath, CanUpgrade)

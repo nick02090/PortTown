@@ -35,7 +35,7 @@
         @foreach (var res in Model.StoredResources)
         {
             <dd class="col-md-4 col-sm-4">
-                @Html.Encode(res.Type.ToString()): @Html.Encode(res.Value)
+                @Html.Encode(res.Type.ToString()): @Html.Encode(res.Value) / @Html.Encode(Model.Capacity)
             </dd>
         }
     </dl>

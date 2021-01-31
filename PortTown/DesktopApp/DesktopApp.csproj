@@ -109,23 +109,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditMarketItem.xaml.cs">
+      <DependentUpon>EditMarketItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddMarketItem.xaml.cs">
+      <DependentUpon>AddMarketItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditItemWindow.xaml.cs">
+      <DependentUpon>EditItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddItemWindow.xaml.cs">
+      <DependentUpon>AddItemWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddStorageBuildingWindow.xaml.cs">
       <DependentUpon>AddStorageBuildingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddProductionBuildingWindow.xaml.cs">
       <DependentUpon>AddProductionBuildingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddMarketItemWindow.xaml.cs">
-      <DependentUpon>AddMarketItemWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="AddBuildingWindow.xaml.cs">
       <DependentUpon>AddBuildingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddResourceWindow.xaml.cs">
       <DependentUpon>AddResourceWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AddItemWindow.xaml.cs">
-      <DependentUpon>AddItemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddUserWindow.xaml.cs">
       <DependentUpon>AddUserWindow.xaml</DependentUpon>
@@ -135,12 +141,6 @@
     </Compile>
     <Compile Include="EditBuildingWindow.xaml.cs">
       <DependentUpon>EditBuildingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditItemWindow.xaml.cs">
-      <DependentUpon>EditItemWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditMarketItem.xaml.cs">
-      <DependentUpon>EditMarketItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditUserWindow.xaml.cs">
       <DependentUpon>EditUserWindow.xaml</DependentUpon>
@@ -162,6 +162,22 @@
     <Compile Include="Models\Town.cs" />
     <Compile Include="Models\Upgradeable.cs" />
     <Compile Include="Models\User.cs" />
+    <Page Include="EditMarketItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddMarketItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EditItemWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddItemWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AddStorageBuildingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -170,19 +186,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AddMarketItemWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="AddBuildingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AddResourceWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="AddItemWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -195,14 +203,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditBuildingWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EditItemWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EditMarketItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

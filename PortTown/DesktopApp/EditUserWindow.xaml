@@ -20,7 +20,7 @@
         <Label Content="Town Name" HorizontalAlignment="Left" Margin="35,130,0,0" VerticalAlignment="Top" Height="30"/>
         <Label Content="Town Level" HorizontalAlignment="Left" Margin="35,170,0,0" VerticalAlignment="Top" Height="30"/>
 
-        <Button Click="EditUserClick" Name="EditUserButton" Content="Edit User" HorizontalAlignment="Left" Margin="86,246,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="-0.237,0.467" Height="36"/>
+        <Button Click="EditUserClick" Name="EditUserButton" Content="Edit User" HorizontalAlignment="Left" Margin="129,246,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="-0.237,0.467" Height="36"/>
 
 
     </Grid>

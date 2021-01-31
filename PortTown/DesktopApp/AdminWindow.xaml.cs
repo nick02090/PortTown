@@ -134,8 +134,6 @@ namespace DesktopApp
             editMarketButton.IsEnabled = false;
 
             users = await GetUsers();
-            //buildings = await GetBuildingTemplates();
-            //items = await GetItemTemplates();
         }
 
         private async void UserTabItemClick(object sender, RoutedEventArgs e)
@@ -170,31 +168,26 @@ namespace DesktopApp
             switch (((System.Windows.Controls.DataGrid)sender).Name)
             {
                 case "UserTable":
-                    //Console.WriteLine("addUserButton");
                     activeGrid = UserTable;
                     activeEditButton = editUserButton;
                     activeRemoveButton = removeUserButton;
                     break;
                 case "ProductionBuildingTable":
-                    //Console.WriteLine("addBuildingButton");
                     activeGrid = ProductionBuildingTable;
                     activeEditButton = editProductionBuildingButton;
                     activeRemoveButton = removeProductionBuildingButton;
                     break;
                 case "StorageBuildingTable":
-                    //Console.WriteLine("addBuildingButton");
                     activeGrid = StorageBuildingTable;
                     activeEditButton = editStorageBuildingButton;
                     activeRemoveButton = removeStorageBuildingButton;
                     break;
                 case "ItemTable":
-                    //Console.WriteLine("addItemButton");
                     activeGrid = ItemTable;
                     activeEditButton = editItemButton;
                     activeRemoveButton = removeItemButton;
                     break;
                 case "MarketTable":
-                    //Console.WriteLine("addResourceButton");
                     activeGrid = MarketTable;
                     activeEditButton = editMarketButton;
                     break;
@@ -215,10 +208,6 @@ namespace DesktopApp
                 case "addUserButton":
                     AddUserWindow addUserWindow = new AddUserWindow();
                     addUserWindow.Show();
-                    break;
-                case "addBuildingButton":
-                    AddBuildingWindow addBuildingWindow = new AddBuildingWindow();
-                    addBuildingWindow.Show();
                     break;
                 case "addProductionBuildingButton":
                     AddProductionBuildingWindow addProductionBuildingWindow = new AddProductionBuildingWindow();
@@ -457,9 +446,28 @@ namespace DesktopApp
             return FindUserById(oldUser.Id);
         }
 
-        public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)
+        public async void DeleteUser(Guid id)
         {
-            return grid.SelectedItems.Cast<DataRowView>().ToList();
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage response = await client.DeleteAsync("api/user/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+                await GetUsers();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
         }
 
         public async void AddUser(User user, string townName)
@@ -478,30 +486,6 @@ namespace DesktopApp
             Console.WriteLine(userJson);
 
             HttpResponseMessage response = await client.PostAsync("api/user/register/" + townName, userStringContent);
-
-            if (response.IsSuccessStatusCode)
-            {
-                //Storing the response details recieved from web api   
-                var responseResult = response.Content.ReadAsStringAsync().Result;
-                await GetUsers();
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            }
-        }
-
-        public async void DeleteUser(Guid id)
-        {
-
-            HttpClient client = new HttpClient
-            {
-                BaseAddress = new Uri(Baseurl)
-            };
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = await client.DeleteAsync("api/user/" + id);
 
             if (response.IsSuccessStatusCode)
             {
@@ -785,6 +769,11 @@ namespace DesktopApp
                     return user;
             }
             return null;
+        }
+
+        public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)
+        {
+            return grid.SelectedItems.Cast<DataRowView>().ToList();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DesktopApp.Enums;
+using DesktopApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -12,12 +14,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using DesktopApp.Models;
+
 namespace DesktopApp
 {
-    /// <summary>
-    /// Interaction logic for EditUserWindow.xaml
-    /// </summary>
+    
     public partial class EditMarketItemWindow : Window
     {
         public EditMarketItemWindow()
@@ -25,18 +25,9 @@ namespace DesktopApp
             InitializeComponent();
         }
 
-        private void EditMarketItemWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).MarketTable)[0].Row;
-
-            textbox1.Text = selectedRow[1].ToString();
-            textbox2.Text = selectedRow[2].ToString();
-            textbox3.Text = selectedRow[3].ToString();
-        }
-
         private void EditMarketItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new MarketItem(textbox1.Text));
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new MarketItem(""));
             this.Hide();
         }
     }

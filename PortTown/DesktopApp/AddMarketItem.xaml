@@ -1,0 +1,26 @@
+﻿<Window x:Class="DesktopApp.AddMarketItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopApp"
+        mc:Ignorable="d"
+        Title="AddMarketItemWindow" Height="208.304" Width="340.567" Icon="porttown.ico">
+    <Grid Margin="0,0,37.4,11.4" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="157" Width="270">
+        <TextBox Name="textbox1" HorizontalAlignment="Left" Height="27" Margin="126,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+
+        <ComboBox Name="resourceTypeDropdown" Margin="129,10,-1,117">
+            <ComboBoxItem IsSelected="True">Stone</ComboBoxItem>
+            <ComboBoxItem>Wood</ComboBoxItem>
+            <ComboBoxItem>Gold</ComboBoxItem>
+            <ComboBoxItem>Food</ComboBoxItem>
+            <ComboBoxItem>Iron</ComboBoxItem>
+            <ComboBoxItem>Coal</ComboBoxItem>
+        </ComboBox>
+
+        <Label Content="Resource Type" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Price" HorizontalAlignment="Left" Margin="35,63,0,0" VerticalAlignment="Top" Height="30"/>
+
+        <Button Click="AddMarketItemClick" Name="AddMarketItemButton" Content="Add Market Item" HorizontalAlignment="Left" Margin="85,121,0,0" VerticalAlignment="Top" Width="102" RenderTransformOrigin="-0.237,0.467" Height="26"/>
+    </Grid>
+</Window>

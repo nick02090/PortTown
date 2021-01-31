@@ -1,0 +1,27 @@
+﻿<Window x:Class="DesktopApp.EditUserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopApp"
+        mc:Ignorable="d"
+        Title="EditUserWindow" Loaded="EditUserWindow_Loaded" Height="336.46" Width="363.216" Icon="porttown.ico">
+    <Grid Margin="0,0,38.8,0">
+        <TextBox Name="textbox1" HorizontalAlignment="Left" Height="27" Margin="129,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+        <TextBox Name="textbox2" HorizontalAlignment="Left" Height="27" Margin="129,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+        <TextBox Name="textbox3" HorizontalAlignment="Left" Height="27" Margin="129,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+        <TextBox Name="textbox4" HorizontalAlignment="Left" Height="27" Margin="129,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+        <TextBox x:Name="textbox5" HorizontalAlignment="Left" Height="27" Margin="129,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+
+
+        <Label Content="Username" HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Email" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Height="31"/>
+        <Label Content="Password" HorizontalAlignment="Left" Margin="35,90,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Town Name" HorizontalAlignment="Left" Margin="35,130,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Town Level" HorizontalAlignment="Left" Margin="35,170,0,0" VerticalAlignment="Top" Height="30"/>
+
+        <Button Click="EditUserClick" Name="EditUserButton" Content="Edit User" HorizontalAlignment="Left" Margin="129,246,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="-0.237,0.467" Height="36"/>
+
+
+    </Grid>
+</Window>

@@ -35,12 +35,7 @@ namespace WebAPI.Services
                 {
                     upgradeable.TimeUntilUpgraded = null;
                     upgradeable.IsFinishedUpgrading = true;
-                    // Store the cost for later purpose
-                    var upgradeableCost = upgradeable.RequiredResources;
-                    //upgradeable.RequiredResources = null; TODO: CHECK THIS OUT
-                    // Update the upgradeable and return the reference to the costs
                     await UpgradeableRepository.UpdateAsync(upgradeable);
-                    upgradeable.RequiredResources = upgradeableCost;
                 }
             }
             return upgradeable;

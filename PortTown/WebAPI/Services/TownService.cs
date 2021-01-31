@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Enums;
+using Domain.Template;
 using Domain.Utilities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace WebAPI.Services
         private readonly ICraftableRepository CraftableRepository;
         private readonly IStorageRepository StorageRepository;
         private readonly IProductionBuildingRepository ProductionBuildingRepository;
+        private readonly ISellableRepository SellableRepository;
 
         private readonly IUpgradeableService UpgradeableService;
 
@@ -27,7 +29,8 @@ namespace WebAPI.Services
             IBuildingRepository buildingRepository, IItemRepository itemRepository,
             IResourceBatchRepository resourceBatchRepository, IUpgradeableRepository upgradeableRepository,
             ICraftableRepository craftableRepository, IUpgradeableService upgradeableService,
-            IStorageRepository storageRepository, IProductionBuildingRepository productionBuildingRepository)
+            IStorageRepository storageRepository, IProductionBuildingRepository productionBuildingRepository,
+            ISellableRepository sellableRepository)
         {
             // Repositories
             TownRepository = townRepository;
@@ -38,6 +41,7 @@ namespace WebAPI.Services
             CraftableRepository = craftableRepository;
             StorageRepository = storageRepository;
             ProductionBuildingRepository = productionBuildingRepository;
+            SellableRepository = sellableRepository;
 
             // Services
             UpgradeableService = upgradeableService;
@@ -62,6 +66,11 @@ namespace WebAPI.Services
         {
             var town = await TownRepository.GetAsync(id);
             var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(town.Upgradeable.Id);
+            foreach (var upgradeCost in upgradeCosts)
+            {
+                upgradeCost.Upgradeable = town.Upgradeable;
+            }
+            town.Upgradeable.Town = town;
             town.Upgradeable.RequiredResources = upgradeCosts.ToList();
             town = await UpdateJobs(town);
             return town;
@@ -163,9 +172,11 @@ namespace WebAPI.Services
 
             // Create upgradeable
             upgradeable.Town = town;
+            var upgradeableCosts = upgradeable.RequiredResources;
+            upgradeable.RequiredResources = null;
             upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
             // Create upgradeable costs
-            foreach (var cost in upgradeable.RequiredResources)
+            foreach (var cost in upgradeableCosts)
             {
                 cost.Upgradeable = upgradeable;
                 await ResourceBatchRepository.CreateAsync(cost);
@@ -177,22 +188,102 @@ namespace WebAPI.Services
             return town;
         }
 
-        public async Task ResetAsync(Guid id)
+        public async Task<Town> ResetAsync(Guid id, ICollection<Building> townBuildings)
         {
             var town = await TownRepository.GetAsync(id);
-            town.Level = 1;
+            var user = town.User;
+            var townName = town.Name;
 
-            foreach(var building in town.Buildings)
+            // Delete everything
+
+            var items = town.Items;
+
+            var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(town.Upgradeable.Id);
+            foreach (var upgradeableCost in upgradeableCosts)
             {
+                var upgradeableCostDel = await ResourceBatchRepository.GetForDeleteAsync(upgradeableCost.Id);
+                await ResourceBatchRepository.DeleteAsync(upgradeableCostDel);
+            }
+            var UpgradeableDel = await UpgradeableRepository.GetForDeleteAsync(town.Upgradeable.Id);
+            await UpgradeableRepository.DeleteAsync(UpgradeableDel);
+
+            foreach (var item in items)
+            {
+                var itemDb = await ItemRepository.GetAsync(item.Id);
+
+                var itemSellableDel = await SellableRepository.GetForDeleteAsync(itemDb.Sellable.Id);
+                await SellableRepository.DeleteAsync(itemSellableDel);
+
+                var itemDel = await ItemRepository.GetForDeleteAsync(itemDb.Id);
+                await ItemRepository.DeleteAsync(itemDel);
+
+                var itemParentCraftableDel = await CraftableRepository.GetForDeleteAsync(itemDb.ParentCraftable.Id);
+                await CraftableRepository.DeleteAsync(itemParentCraftableDel);
+            }
+
+            foreach (var building in townBuildings)
+            {
+                // Delete child
+                if (building.BuildingType == BuildingType.Production)
+                {
+                    // Delete production building
+                    var productionDel = await ProductionBuildingRepository.GetForDeleteAsync(building.ChildProductionBuilding.Id);
+                    await ProductionBuildingRepository.DeleteAsync(productionDel);
+                }
+                else
+                {
+                    // Delete storage
+                    var storageResources = await ResourceBatchRepository.GetByStorageAsync(building.ChildStorage.Id);
+                    foreach (var storageResource in storageResources)
+                    {
+                        // Delete storage resources
+                        var storageResourcerDel = await ResourceBatchRepository.GetForDeleteAsync(storageResource.Id);
+                        await ResourceBatchRepository.DeleteAsync(storageResourcerDel);
+                    }
+                    var storageDel = await StorageRepository.GetForDeleteAsync(building.ChildStorage.Id);
+                    await StorageRepository.DeleteAsync(storageDel);
+                }
+
+                // Delete upgradeable
+                var buildingUpgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
+                foreach (var buildingUpgradeableCost in buildingUpgradeableCosts)
+                {
+                    // Delete cost
+                    var upgradeCostDel = await ResourceBatchRepository.GetForDeleteAsync(buildingUpgradeableCost.Id);
+                    await ResourceBatchRepository.DeleteAsync(upgradeCostDel);
+                }
+                var upgradeableDel = await UpgradeableRepository.GetForDeleteAsync(building.Upgradeable.Id);
+                await UpgradeableRepository.DeleteAsync(upgradeableDel);
+
+                // Get building craftable costs before delete a building
+                var buildingCraftable = building.ParentCraftable;
+                var buildingCraftableCosts = await ResourceBatchRepository.GetByCraftableAsync(building.ParentCraftable.Id);
+
+                // Delete building
                 var buildingDel = await BuildingRepository.GetForDeleteAsync(building.Id);
                 await BuildingRepository.DeleteAsync(buildingDel);
-            }
 
-            foreach (var item in town.Items)
-            {
-                var itemDel = await ItemRepository.GetForDeleteAsync(item.Id);
-                await ItemRepository.DeleteAsync(itemDel);
+                // Delete craftable
+                foreach (var buildingCraftableCost in buildingCraftableCosts)
+                {
+                    // Delete craftable cost
+                    var buildingCraftableCostDel = await ResourceBatchRepository.GetForDeleteAsync(buildingCraftableCost.Id);
+                    await ResourceBatchRepository.DeleteAsync(buildingCraftableCostDel);
+                }
+                var buildingCraftableDel = await CraftableRepository.GetForDeleteAsync(buildingCraftable.Id);
+                await CraftableRepository.DeleteAsync(buildingCraftableDel);
             }
+            // Delete town
+            var townDel = await TownRepository.GetForDeleteAsync(town.Id);
+            await TownRepository.DeleteAsync(townDel);
+
+            // Creating new town
+
+            var newTown = TownTemplate.Template();
+            newTown.Name = townName;
+            newTown.User = user;
+            newTown = await CreateFromTemplate(newTown);
+            return newTown;
         }
 
         /// <summary>
@@ -212,18 +303,18 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        public async Task<Town> UpgradeLevel(Town town)
+        public async Task<Town> UpgradeLevel(Town town, ICollection<Building> townBuildings)
         {
             var upgradeable = town.Upgradeable;
-            // NOTE: This check is also made in controller (just in case)
-            if (upgradeable.IsFinishedUpgrading)
-            {
-                upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
-                // Update the town level
-                town.Level += 1;
-                await TownRepository.UpdateAsync(town);
-            }
+            upgradeable.Town = town;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(upgradeable.Id);
+            upgradeable.RequiredResources = upgradeCosts.ToList();
+            upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
+            // Update the town level
+            town.Level += 1;
             town.Upgradeable = upgradeable;
+            town.Buildings = townBuildings;
+            await TownRepository.UpdateAsync(town);
             return town;
         }
 
@@ -232,12 +323,20 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        public async Task<Town> StartUpgradeLevel(Town town)
+        public async Task<Town> StartUpgradeLevel(Town town, ICollection<Building> townBuildings)
         {
             // Remove resources (payment)
-            town = await PayForLevelUpgrade(town);
+            var upgradeable = town.Upgradeable;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(upgradeable.Id);
+            await PayForLevelUpgrade(upgradeCosts.ToList(), townBuildings);
             // Update the upgradable to start the upgrade process
-            var upgradeable = await UpgradeableService.StartUpgradeLevel(town.Upgradeable);
+            upgradeable.Town = town;
+            foreach (var upgradeableCost in upgradeCosts)
+            {
+                upgradeableCost.Upgradeable = upgradeable;
+            }
+            upgradeable.RequiredResources = upgradeCosts.ToList();
+            upgradeable = await UpgradeableService.StartUpgradeLevel(upgradeable);
             town.Upgradeable = upgradeable;
             return town;
         }
@@ -247,15 +346,13 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        private async Task<Town> PayForLevelUpgrade(Town town)
+        private async Task PayForLevelUpgrade(ICollection<ResourceBatch> upgradeCosts, ICollection<Building> townBuildings)
         {
-            var upgradeable = town.Upgradeable;
-            foreach (var cost in upgradeable.RequiredResources)
+            foreach (var cost in upgradeCosts)
             {
-                await GatherPaymentFromBuildings(cost, town.Buildings, true);
-                town.Buildings = (ICollection<Building>)await BuildingRepository.GetByTownAsync(town.Id);
+                var currentTownBuildings = townBuildings;
+                await GatherPaymentFromBuildings(cost, currentTownBuildings, true);
             }
-            return town;
         }
 
         /// <summary>

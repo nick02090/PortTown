@@ -67,29 +67,5 @@ namespace WebAPI.Controllers
             await _repository.DeleteAsync(entityDel);
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
-
-        [Route("api/productionbuilding/harvest/{id}")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> HarvestAsync([FromUri] Guid id)
-        {
-            var canHarvest = await _service.CanHarvest(id);
-            if (!(bool)canHarvest["CanHarvest"])
-            {
-                var error = new JSONErrorFormatter("The production building can't be harvested!", id,
-                    "Id", "POST", $"api/productionbuilding/harvest/{id}",
-                    "ProductionBuildingController.HarvestAsync");
-                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
-            }
-            var harvest = _service.Harvest(id);
-            return Request.CreateResponse(HttpStatusCode.OK, harvest);
-        }
-
-        [Route("api/productionbuilding/can-harvest/{id}")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> CanHarvestAsync([FromUri] Guid id)
-        {
-            var canHarvest = await _service.CanHarvest(id);
-            return Request.CreateResponse(HttpStatusCode.OK, canHarvest);
-        }
     }
 }

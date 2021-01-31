@@ -9,12 +9,12 @@ namespace WebAPI.Interfaces
 {
     public interface ITownService
     {
-        Task ResetAsync(Guid id);
+        Task<Town> ResetAsync(Guid id, ICollection<Building> townBuildings);
         Task<ICollection<Town>> GetTowns();
         Task<Town> GetTown(Guid id);
         Task<Town> UpdateJobs(Town town);
-        Task<Town> UpgradeLevel(Town town);
-        Task<Town> StartUpgradeLevel(Town town);
+        Task<Town> UpgradeLevel(Town town, ICollection<Building> townBuildings);
+        Task<Town> StartUpgradeLevel(Town town, ICollection<Building> townBuildings);
         Task<JSONFormatter> CanUpgradeLevel(Town town, ICollection<Building> townBuildings);
         bool DoesTownAllowUpgrade(Town town, int nextLevel);
         Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);

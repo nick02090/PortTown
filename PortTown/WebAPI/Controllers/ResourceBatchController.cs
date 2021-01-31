@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 
-        [Route("api/resourcebatch/template")]
+        [Route("api/marketplace/template")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetTemplateDataAsync()
         {

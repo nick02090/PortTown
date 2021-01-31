@@ -96,6 +96,13 @@ namespace WebAPI.Controllers
                     "BuildingController.GetWithProductionInfo");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
+            if (building.ParentCraftable.TimeUntilCrafted != null)
+            {
+                var error = new JSONErrorFormatter("The building isn't finished crafting yet!", building.ParentCraftable.TimeUntilCrafted,
+                    "ParentCraftable.TimeUntilCrafted", "GET", $"api/building/production-info/{id}",
+                    "BuildingController.GetWithProductionInfo");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
             var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
             var result = new JSONFormatter();
             result.AddField("Id", building.Id);

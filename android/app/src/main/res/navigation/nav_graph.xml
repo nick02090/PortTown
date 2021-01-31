@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/townFragment">
+    <fragment
+        android:id="@+id/townFragment"
+        android:name="com.example.porttown.ui.game.town.TownFragment"
+        android:label="@string/town" />
+    <fragment
+        android:id="@+id/marketFragment"
+        android:name="com.example.porttown.ui.game.market.MarketFragment"
+        android:label="@string/market" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.porttown.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
+</navigation>

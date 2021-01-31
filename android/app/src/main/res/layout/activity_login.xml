@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="authViewModel"
+            type="com.example.porttown.viewmodels.AuthViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="?colorPrimary">
+
+        <!-- Fix progress bar padding -->
+        <View
+            android:id="@+id/guideline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/verifying_user"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/gameName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="?colorOnPrimary"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:text="@string/app_name"
+            android:textColor="?colorOnPrimary"
+            android:textSize="48sp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- mwhWaves: offsetX[dp]|offsetY[dp]|scaleX|scaleY|velocity-->
+        <com.scwang.wave.MultiWaveHeader
+            android:id="@+id/waveHeader"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            android:scaleY="-1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gameName"
+            app:mwhCloseColor="?colorPrimaryVariant"
+            app:mwhGradientAngle="90"
+            app:mwhStartColor="?colorPrimary"
+            app:mwhVelocity="2"
+            app:mwhWaves="
+            70,25,1.4,1.4,-26
+            100,50,1.4,1.2,15
+            420,70,1.15,1,-10
+            520,10,1.7,1.5,20" />
+
+        <LinearLayout
+            android:id="@+id/buttonGroup"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_border_light"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gameName">
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:background="@drawable/button_top_rounded_corners_ripple"
+                android:clickable="true"
+                android:focusedByDefault="true"
+                android:onClick="onLoginClicked"
+                android:text="@string/login_button_text"
+                android:textColor="?colorSecondary" />
+
+            <include
+                android:id="@+id/login_form"
+                layout="@layout/fragment_login_form"
+                android:visibility="gone"
+                bind:loginViewModel="@{authViewModel}" />
+
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_bottom_rounded_corners_ripple"
+                android:clickable="true"
+                android:onClick="onRegisterClicked"
+                android:text="@string/register_button_text"
+                android:textColor="?colorSecondary" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+

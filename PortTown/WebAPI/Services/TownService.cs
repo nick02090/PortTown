@@ -66,6 +66,11 @@ namespace WebAPI.Services
         {
             var town = await TownRepository.GetAsync(id);
             var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(town.Upgradeable.Id);
+            foreach (var upgradeCost in upgradeCosts)
+            {
+                upgradeCost.Upgradeable = town.Upgradeable;
+            }
+            town.Upgradeable.Town = town;
             town.Upgradeable.RequiredResources = upgradeCosts.ToList();
             town = await UpdateJobs(town);
             return town;
@@ -298,18 +303,18 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        public async Task<Town> UpgradeLevel(Town town)
+        public async Task<Town> UpgradeLevel(Town town, ICollection<Building> townBuildings)
         {
             var upgradeable = town.Upgradeable;
-            // NOTE: This check is also made in controller (just in case)
-            if (upgradeable.IsFinishedUpgrading)
-            {
-                upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
-                // Update the town level
-                town.Level += 1;
-                await TownRepository.UpdateAsync(town);
-            }
+            upgradeable.Town = town;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(upgradeable.Id);
+            upgradeable.RequiredResources = upgradeCosts.ToList();
+            upgradeable = await UpgradeableService.UpgradeLevel(upgradeable);
+            // Update the town level
+            town.Level += 1;
             town.Upgradeable = upgradeable;
+            town.Buildings = townBuildings;
+            await TownRepository.UpdateAsync(town);
             return town;
         }
 
@@ -318,12 +323,20 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        public async Task<Town> StartUpgradeLevel(Town town)
+        public async Task<Town> StartUpgradeLevel(Town town, ICollection<Building> townBuildings)
         {
             // Remove resources (payment)
-            town = await PayForLevelUpgrade(town);
+            var upgradeable = town.Upgradeable;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(upgradeable.Id);
+            await PayForLevelUpgrade(upgradeCosts.ToList(), townBuildings);
             // Update the upgradable to start the upgrade process
-            var upgradeable = await UpgradeableService.StartUpgradeLevel(town.Upgradeable);
+            upgradeable.Town = town;
+            foreach (var upgradeableCost in upgradeCosts)
+            {
+                upgradeableCost.Upgradeable = upgradeable;
+            }
+            upgradeable.RequiredResources = upgradeCosts.ToList();
+            upgradeable = await UpgradeableService.StartUpgradeLevel(upgradeable);
             town.Upgradeable = upgradeable;
             return town;
         }
@@ -333,15 +346,13 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        private async Task<Town> PayForLevelUpgrade(Town town)
+        private async Task PayForLevelUpgrade(ICollection<ResourceBatch> upgradeCosts, ICollection<Building> townBuildings)
         {
-            var upgradeable = town.Upgradeable;
-            foreach (var cost in upgradeable.RequiredResources)
+            foreach (var cost in upgradeCosts)
             {
-                await GatherPaymentFromBuildings(cost, town.Buildings, true);
-                town.Buildings = (ICollection<Building>)await BuildingRepository.GetByTownAsync(town.Id);
+                var currentTownBuildings = townBuildings;
+                await GatherPaymentFromBuildings(cost, currentTownBuildings, true);
             }
-            return town;
         }
 
         /// <summary>

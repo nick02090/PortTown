@@ -37,7 +37,16 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> GetAsync(Guid id)
         {
             var town = await _service.GetTown(id);
-            return Request.CreateResponse(HttpStatusCode.OK, town);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            var canUpgrade = await _service.CanUpgradeLevel(town, townBuildings);
+            var result = new JSONFormatter();
+            result.AddField("Id", town.Id);
+            result.AddField("Level", town.Level);
+            result.AddField("Buildings", town.Buildings);
+            result.AddField("User", town.User);
+            result.AddField("Upgradeable", town.Upgradeable);
+            result.AddField("CanUpgrade", canUpgrade["CanUpgrade"]);
+            return Request.CreateResponse(HttpStatusCode.OK, result.Result);
         }
 
         // POST api/<controller>
@@ -53,6 +62,8 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> UpdateAsync(Guid id, [FromBody] Town entity)
         {
             var entitydb = await _service.GetTown(id);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            entitydb.Buildings = townBuildings;
 
             entitydb.Name = entity.Name;
             entitydb.Level = entity.Level;
@@ -92,7 +103,8 @@ namespace WebAPI.Controllers
                     "TownController.UpgradeAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
-            town = await _service.UpgradeLevel(town);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            town = await _service.UpgradeLevel(town, townBuildings);
             return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 
@@ -110,7 +122,8 @@ namespace WebAPI.Controllers
                     "TownController.StartUpgradeAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
-            town = await _service.StartUpgradeLevel(town);
+            townBuildings = await _buildingService.GetBuildingsByTown(id);
+            town = await _service.StartUpgradeLevel(town, townBuildings);
             return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 

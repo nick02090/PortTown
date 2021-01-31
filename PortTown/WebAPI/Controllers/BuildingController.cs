@@ -194,6 +194,37 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result.Result);
         }
 
+        [Route("api/building/production/harvest/{id}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> HarvestProductionBuildingAsync([FromUri] Guid id)
+        {
+            var building = await _service.GetBuilding(id);
+            if (building.BuildingType != BuildingType.Production)
+            {
+                var error = new JSONErrorFormatter("The building isn't of type production building!", building.BuildingType,
+                    "BuildingType", "GET", $"api/building/production-info/{id}",
+                    "BuildingController.GetWithProductionInfo");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            if (building.ParentCraftable.TimeUntilCrafted != null)
+            {
+                var error = new JSONErrorFormatter("The building isn't finished crafting yet!", building.ParentCraftable.TimeUntilCrafted,
+                    "ParentCraftable.TimeUntilCrafted", "GET", $"api/building/production-info/{id}",
+                    "BuildingController.GetWithProductionInfo");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
+            if ((int)accumulatedResources["AccumulatedResources"] <= 0)
+            {
+                var error = new JSONErrorFormatter("There is nothing to harvest!", building.ChildProductionBuilding.LastHarvestTime,
+                    "ChildProductionBuildings.LastHarvestTime", "GET", $"api/building/production/harvest/{id}",
+                    "BuildingController.GetWithProductionInfo");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            await _productionBuildingService.Harvest(building.ChildProductionBuilding.Id);
+            return Request.CreateResponse(HttpStatusCode.NoContent);
+        }
+
         #region Crafting
         [Route("api/building/craft/{id}")]
         [HttpPost]

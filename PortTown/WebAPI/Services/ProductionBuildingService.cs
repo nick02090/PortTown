@@ -16,11 +16,6 @@ namespace WebAPI.Services
             ProductionBuildingRepository = productionBuildingRepository;
         }
 
-        public Task<JSONFormatter> CanHarvest(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<JSONFormatter> GetCurrentResources(Guid id)
         {
             var result = new JSONFormatter();

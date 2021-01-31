@@ -41,6 +41,7 @@ namespace WebAPI.Controllers
             var canUpgrade = await _service.CanUpgradeLevel(town, townBuildings);
             var result = new JSONFormatter();
             result.AddField("Id", town.Id);
+            result.AddField("Name", town.Name);
             result.AddField("Level", town.Level);
             result.AddField("Buildings", town.Buildings);
             result.AddField("User", town.User);

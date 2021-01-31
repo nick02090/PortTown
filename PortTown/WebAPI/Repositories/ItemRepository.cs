@@ -176,13 +176,7 @@ namespace WebAPI.Repositories
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
                                 TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                CraftableType = x.ParentCraftable.CraftableType,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                CraftableType = x.ParentCraftable.CraftableType
                             },
                             Sellable = new Sellable
                             {

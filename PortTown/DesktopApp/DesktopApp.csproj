@@ -133,17 +133,11 @@
     <Compile Include="AdminWindow.xaml.cs">
       <DependentUpon>AdminWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BuildingWindow.xaml.cs">
-      <DependentUpon>BuildingWindow.xaml</DependentUpon>
+    <Compile Include="EditBuildingWindow.xaml.cs">
+      <DependentUpon>EditBuildingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditItemWindow.xaml.cs">
       <DependentUpon>EditItemWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditResourceWindow.xaml.cs">
-      <DependentUpon>EditResourceWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditBuildingWindow.xaml.cs">
-      <DependentUpon>EditBuildingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditMarketItem.xaml.cs">
       <DependentUpon>EditMarketItem.xaml</DependentUpon>
@@ -168,12 +162,6 @@
     <Compile Include="Models\Town.cs" />
     <Compile Include="Models\Upgradeable.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="NewBuildingWindow.xaml.cs">
-      <DependentUpon>NewBuildingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TownWindow.xaml.cs">
-      <DependentUpon>TownWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="AddStorageBuildingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -206,19 +194,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BuildingWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="EditBuildingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="EditItemWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EditResourceWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EditBuildingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -234,10 +214,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -245,27 +221,8 @@
     <Compile Include="LoginRegistrationWindow.xaml.cs">
       <DependentUpon>LoginRegistrationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Market.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NewBuildingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TownWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Market.xaml.cs">
-      <DependentUpon>Market.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -303,6 +260,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="porttown.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

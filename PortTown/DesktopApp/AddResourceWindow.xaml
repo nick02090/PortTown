@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopApp"
         mc:Ignorable="d"
-        Title="AddResourceWindow" Height="208.595" Width="322.788">
+        Title="AddResourceWindow" Height="208.595" Width="322.788" Icon="porttown.ico">
     <Grid Margin="0,0,38.8,0">
         <ComboBox Name="resourceTypeDropdown" Margin="129,10,-0.8,137.8">
             <ComboBoxItem IsSelected="True">Stone</ComboBoxItem>

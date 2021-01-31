@@ -30,7 +30,6 @@ namespace DesktopApp
         public AdminWindow()
         {
             InitializeComponent();
-            
         }
 
         const string Baseurl = "https://localhost:44366/";
@@ -44,10 +43,11 @@ namespace DesktopApp
         public List<User> users = null;
         public List<Building> buildings = null;
         public List<Item> items = null;
+        public List<ResourceBatch> marketItems = null;
         private async void AdminWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            DataColumn dc1, dc2, dc3, dc4, dc5, dc6, dc7, dc8, dc9, dc10;
+            DataColumn dc1, dc2, dc3, dc4, dc5, dc6, dc7, dc8;
             userTable = new DataTable("users");
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Username", typeof(string));
@@ -112,22 +112,11 @@ namespace DesktopApp
             itemTable.Columns.Add(dc5);
             ItemTable.ItemsSource = itemTable.DefaultView;
 
-            resourceTable = new DataTable("resources");
-            dc1 = new DataColumn("Id", typeof(Guid));
-            dc2 = new DataColumn("Username", typeof(string));
-            dc3 = new DataColumn("Email", typeof(string));
-            dc4 = new DataColumn("Password", typeof(string));
-            resourceTable.Columns.Add(dc1);
-            resourceTable.Columns.Add(dc2);
-            resourceTable.Columns.Add(dc3);
-            resourceTable.Columns.Add(dc4);
-            ResourceTable.ItemsSource = resourceTable.DefaultView;
-
             marketTable = new DataTable("marketItems");
             dc1 = new DataColumn("Id", typeof(Guid));
-            dc2 = new DataColumn("Username", typeof(string));
-            dc3 = new DataColumn("Email", typeof(string));
-            dc4 = new DataColumn("Password", typeof(string));
+            dc2 = new DataColumn("Resource Type", typeof(string));
+            dc3 = new DataColumn("Quantity", typeof(int));
+            dc4 = new DataColumn("Price", typeof(int));
             marketTable.Columns.Add(dc1);
             marketTable.Columns.Add(dc2);
             marketTable.Columns.Add(dc3);
@@ -142,14 +131,11 @@ namespace DesktopApp
             editStorageBuildingButton.IsEnabled = false;
             removeItemButton.IsEnabled = false;
             editItemButton.IsEnabled = false;
-            removeResourceButton.IsEnabled = false;
-            editResourceButton.IsEnabled = false;
-            removeMarketButton.IsEnabled = false;
             editMarketButton.IsEnabled = false;
 
             users = await GetUsers();
-            buildings = await GetBuildingTemplates();
-            items = await GetItemTemplates();
+            //buildings = await GetBuildingTemplates();
+            //items = await GetItemTemplates();
         }
 
         private async void UserTabItemClick(object sender, RoutedEventArgs e)
@@ -168,6 +154,12 @@ namespace DesktopApp
         {
             if (items is null)
                 items = await GetItemTemplates();
+        }
+
+        private async void MarketItemTabItemClick(object sender, RoutedEventArgs e)
+        {
+            if (marketItems is null)
+                marketItems = await GetMarketItemTemplates();
         }
 
         private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -201,17 +193,10 @@ namespace DesktopApp
                     activeEditButton = editItemButton;
                     activeRemoveButton = removeItemButton;
                     break;
-                case "ResourceTable":
-                    //Console.WriteLine("addResourceButton");
-                    activeGrid = ResourceTable;
-                    activeEditButton = editResourceButton;
-                    activeRemoveButton = removeResourceButton;
-                    break;
                 case "MarketTable":
                     //Console.WriteLine("addResourceButton");
                     activeGrid = MarketTable;
                     activeEditButton = editMarketButton;
-                    activeRemoveButton = removeMarketButton;
                     break;
             }
 
@@ -228,63 +213,43 @@ namespace DesktopApp
             switch (((System.Windows.Controls.Button)sender).Name)
             {
                 case "addUserButton":
-                    //.WriteLine("addUserButton");
                     AddUserWindow addUserWindow = new AddUserWindow();
                     addUserWindow.Show();
                     break;
                 case "addBuildingButton":
-                    //Console.WriteLine("addBuildingButton");
                     AddBuildingWindow addBuildingWindow = new AddBuildingWindow();
                     addBuildingWindow.Show();
                     break;
                 case "addProductionBuildingButton":
-                    //Console.WriteLine("addBuildingButton");
                     AddProductionBuildingWindow addProductionBuildingWindow = new AddProductionBuildingWindow();
                     addProductionBuildingWindow.Show();
                     break;
                 case "addStorageBuildingButton":
-                    //Console.WriteLine("addBuildingButton");
                     AddStorageBuildingWindow addStorageBuildingWindow = new AddStorageBuildingWindow();
                     addStorageBuildingWindow.Show();
                     break;
                 case "addItemButton":
-                    //Console.WriteLine("addItemButton");
                     AddItemWindow addItemWindow = new AddItemWindow();
                     addItemWindow.Show();
                     break;
-                //case "addResourceButton":
-                //    //Console.WriteLine("editResourceButton");
-                //    AddResourceWindow addResourceWindow = new AddResourceWindow();
-                //    addResourceWindow.Show();
-                //    break;
                 case "addMarketButton":
-                    //Console.WriteLine("editResourceButton");
                     AddMarketItemWindow addMarketItemWindow = new AddMarketItemWindow();
                     addMarketItemWindow.Show();
                     break;
                 case "editUserButton":
-                    //Console.WriteLine("editUserButton");
                     var selectedRow = GetSelectedRows(UserTable)[0].Row;
                     EditUserWindow editUserWindow = new EditUserWindow(FindUserById((Guid)selectedRow[0]));
                     editUserWindow.Show();
                     break;
                 case "editBuildingButton":
-                    //Console.WriteLine("editBuildingButton");
                     EditBuildingWindow editBuildingWindow = new EditBuildingWindow();
                     editBuildingWindow.Show();
                     break;
                 case "editItemButton":
-                    //Console.WriteLine("editItemButton");
                     EditItemWindow editItemWindow = new EditItemWindow();
                     editItemWindow.Show();
                     break;
-                case "editResourceButton":
-                    //Console.WriteLine("editResourceButton");
-                    EditResourceWindow editResourceWindow = new EditResourceWindow();
-                    editResourceWindow.Show();
-                    break;
                 case "editMarketButton":
-                    //Console.WriteLine("editMarketButton");
                     EditMarketItemWindow editMarketItemWindow = new EditMarketItemWindow();
                     editMarketItemWindow.Show();
                     break;
@@ -300,21 +265,18 @@ namespace DesktopApp
             switch (((System.Windows.Controls.Button)sender).Name)
             {
                 case "removeUserButton":
-                    //Console.WriteLine("removeUserButton");
                     activeGrid = UserTable;
                     activeTable = userTable;
                     activeRemoveButton = removeUserButton;
                     activeEditButton = editUserButton;
                     break;
                 case "removeProductionBuildingButton":
-                    //Console.WriteLine("removeBuildingButton");
                     activeGrid = ProductionBuildingTable;
                     activeTable = productionBuildingTable;
                     activeRemoveButton = removeProductionBuildingButton;
                     activeEditButton = editProductionBuildingButton;
                     break;
                 case "removeStorageBuildingButton":
-                    //Console.WriteLine("removeBuildingButton");
                     activeGrid = StorageBuildingTable;
                     activeTable = storageBuildingTable;
                     activeRemoveButton = removeStorageBuildingButton;
@@ -325,21 +287,11 @@ namespace DesktopApp
                     activeTable = itemTable;
                     activeRemoveButton = removeItemButton;
                     activeEditButton = editItemButton;
-                    //Console.WriteLine("removeItemButton");
-                    break;
-                case "removeResourceButton":
-                    activeGrid = ResourceTable;
-                    activeTable = resourceTable;
-                    activeRemoveButton = removeResourceButton;
-                    activeEditButton = editResourceButton;
-                    //Console.WriteLine("removeResourceButton");
                     break;
                 case "removeMarketButton":
                     activeGrid = MarketTable;
                     activeTable = marketTable;
-                    activeRemoveButton = removeMarketButton;
                     activeEditButton = editMarketButton;
-                    //Console.WriteLine("removeMarketButton");
                     break;
             }
             var rows = activeGrid.SelectedItems.Cast<DataRowView>().ToList();
@@ -400,7 +352,6 @@ namespace DesktopApp
             {
                 resources += resourceList[i].ResourceType + " (" + resourceList[i].Quantity + ")" + ", ";
             }
-            //Console.WriteLine(resources);
             if(resources.Length > 2)
                 resources = resources.Remove(resources.Length - 2, 2);
             dr[4] = resources;
@@ -411,7 +362,6 @@ namespace DesktopApp
             {
                 resources += resourceList[i].ResourceType + " (" + resourceList[i].Quantity + ")" + ", ";
             }
-            //Console.WriteLine(resources);
             if (resources.Length > 2)
                 resources = resources.Remove(resources.Length - 2, 2);
             dr[5] = resources;
@@ -429,7 +379,6 @@ namespace DesktopApp
                 {
                     resources += resourceList[i].ResourceType + ", ";
                 }
-                //Console.WriteLine(resources);
                 if (resources.Length > 2)
                     resources = resources.Remove(resources.Length - 2, 2);
                 dr[6] = resources;
@@ -458,6 +407,18 @@ namespace DesktopApp
             ItemTable.ItemsSource = itemTable.DefaultView;
         }
 
+        public void AddMarketItemToTable(ResourceBatch marketBatch)
+        {
+
+            DataRow dr = marketTable.NewRow();
+            dr[0] = marketBatch.Id;
+            dr[1] = marketBatch.ResourceType;
+            dr[2] = marketBatch.Quantity;
+            dr[3] = marketBatch.Sellable.Price;
+            marketTable.Rows.Add(dr);
+            MarketTable.ItemsSource = marketTable.DefaultView;
+        }
+
         public void EditAddable(TableAddable ta)
         {
             return;
@@ -466,7 +427,6 @@ namespace DesktopApp
         public async Task<User> EditUser(User oldUser, User newUser)
         {
 
-            //User user = FindUserById(id);
             HttpClient client = new HttpClient
             {
                 BaseAddress = new Uri(Baseurl)
@@ -480,7 +440,6 @@ namespace DesktopApp
 
             var townJson = JsonConvert.SerializeObject(oldUser.Town);
             var townStringContent = new StringContent(townJson, Encoding.UTF8, "application/json");
-            //Console.WriteLine(userJson);
 
             HttpResponseMessage response1 = await client.PutAsync($"api/town/{oldUser.Town.Id}", townStringContent);
             HttpResponseMessage response2 = await client.PutAsync($"api/user/{oldUser.Id}", userStringContent);
@@ -598,7 +557,7 @@ namespace DesktopApp
             var marketItemJson = JsonConvert.SerializeObject(marketItem);
             var marketItemStringContent = new StringContent(marketItemJson, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await client.PostAsync("api/building/template", marketItemStringContent);
+            HttpResponseMessage response = await client.PostAsync("api/marketplace/template", marketItemStringContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -633,34 +592,6 @@ namespace DesktopApp
                 //Storing the response details recieved from web api   
                 var responseResult = response.Content.ReadAsStringAsync().Result;
                 //GetItems();
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
-            }
-        }
-
-        public async void AddResource(Resource resource)
-        {
-
-            HttpClient client = new HttpClient
-            {
-                BaseAddress = new Uri(Baseurl)
-            };
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var resourceJson = JsonConvert.SerializeObject(resource);
-            var resourceStringContent = new StringContent(resourceJson, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync("api/resource/template", resourceStringContent);
-
-            if (response.IsSuccessStatusCode)
-            {
-                //Storing the response details recieved from web api   
-                var responseResult = response.Content.ReadAsStringAsync().Result;
-                //GetResources();
             }
             else
             {
@@ -808,6 +739,42 @@ namespace DesktopApp
                 AddItemToTable(item);
             }
             return items;
+        }
+
+        private async Task<List<ResourceBatch>> GetMarketItemTemplates()
+        {
+            List<ResourceBatch> marketBatches = null;
+
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(Baseurl)
+            };
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = await client.GetAsync("api/marketplace/template");
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Storing the response details recieved from web api   
+                var responseResult = response.Content.ReadAsStringAsync().Result;
+
+                //Deserializing the response recieved from web api and storing into the Town  
+                marketBatches = JsonConvert.DeserializeObject<List<ResourceBatch>>(responseResult);
+
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+            }
+            marketTable.Clear();
+            MarketTable.ItemsSource = marketTable.DefaultView;
+            foreach (var marketBatch in marketBatches)
+            {
+                AddMarketItemToTable(marketBatch);
+            }
+            return marketBatches;
         }
 
         private User FindUserById(Guid id)

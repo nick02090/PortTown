@@ -27,16 +27,16 @@ namespace DesktopApp
 
         private void EditBuildingWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).ProductionBuildingTable)[0].Row;
+            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).ItemTable)[0].Row;
 
             textbox1.Text = selectedRow[1].ToString();
             textbox2.Text = selectedRow[2].ToString();
             textbox3.Text = selectedRow[3].ToString();
         }
 
-        private void EditBuildingClick(object sender, RoutedEventArgs e)
+        private void EditItemClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditAddable(new Building());
+            (Application.Current.MainWindow as AdminWindow).EditAddable(new Item());
             this.Hide();
         }
     }

@@ -33,7 +33,7 @@ namespace DesktopApp
         private void AddStorageBuildingWindowWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            DataColumn dc1, dc2, dc3, dc4, dc5, dc6, dc7, dc8, dc9, dc10;
+            DataColumn dc1, dc2;
             buildTable = new DataTable("buildResources");
             //dc1 = new DataColumn("Id", typeof(Guid));
             dc1 = new DataColumn("Type", typeof(string));

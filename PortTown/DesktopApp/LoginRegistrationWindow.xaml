@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopApp"
         mc:Ignorable="d"
-        Title="LoginRegistrationWindow" Height="483.6" Width="719.6">
+        Title="LoginRegistrationWindow" Height="483.6" Width="719.6" Icon="porttown.ico">
     <TabControl>
         <TabItem Header="Login">
             <Grid Margin="0,0,-0.4,9.2">
@@ -38,9 +38,6 @@
 
                 <Label Content="Repeat Password" HorizontalAlignment="Left" Margin="50.9,187,0,0" VerticalAlignment="Top" Width="146" FontSize="18" Grid.Column="1"/>
                 <TextBox HorizontalAlignment="Left" Height="23" Margin="214.9,198,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.522,2.026" Grid.Column="1"/>
-
-                <Label Content="Repeat Password" HorizontalAlignment="Left" Margin="50.9,224,0,0" VerticalAlignment="Top" Width="146" FontSize="18" Grid.Column="1"/>
-                <TextBox HorizontalAlignment="Left" Height="23" Margin="214.9,234,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.522,2.026" Grid.Column="1"/>
 
                 <Label Content="Town name" HorizontalAlignment="Left" Margin="50.9,284,0,0" VerticalAlignment="Top" Width="146" FontSize="18" Grid.Column="1"/>
                 <TextBox HorizontalAlignment="Left" Height="23" Margin="214.9,293,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.522,2.026" Grid.Column="1"/>

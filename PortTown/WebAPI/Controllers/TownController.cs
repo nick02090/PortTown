@@ -92,7 +92,8 @@ namespace WebAPI.Controllers
                     "TownController.UpgradeAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
-            town = await _service.UpgradeLevel(town);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            town = await _service.UpgradeLevel(town, townBuildings);
             return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 
@@ -110,7 +111,8 @@ namespace WebAPI.Controllers
                     "TownController.StartUpgradeAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
-            town = await _service.StartUpgradeLevel(town);
+            townBuildings = await _buildingService.GetBuildingsByTown(id);
+            town = await _service.StartUpgradeLevel(town, townBuildings);
             return Request.CreateResponse(HttpStatusCode.OK, town);
         }
 

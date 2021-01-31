@@ -62,6 +62,8 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> UpdateAsync(Guid id, [FromBody] Town entity)
         {
             var entitydb = await _service.GetTown(id);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            entitydb.Buildings = townBuildings;
 
             entitydb.Name = entity.Name;
             entitydb.Level = entity.Level;

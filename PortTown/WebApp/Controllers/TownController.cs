@@ -170,13 +170,15 @@ namespace WebApp.Controllers
                 Dictionary<string, object> childDict = ((JObject)dict["ChildProductionBuilding"]).ToObject<Dictionary<string, object>>();
                 Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
                 pb.Resource = r;
-                pb.Info = "INFO";
+                pb.Info = (string)dict["UpgradeMessage"];
+                pb.CanUpgrade = (bool)dict["CanUpgrade"];
 
                 Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
                 if (craftDict["TimeUntilUpgraded"] != null)
                 {
                     DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
                     pb.TimeUntilUpgraded = time;
+                    pb.IsUpgradeing = true;
                 }
                 return View(pb);
             }
@@ -205,13 +207,15 @@ namespace WebApp.Controllers
                     StoredResources.Add(r);
                 }
                 pb.StoredResources = StoredResources;
-                pb.Info = "INFO";
+                pb.Info = (string)dict["UpgradeMessage"];
+                pb.CanUpgrade = (bool)dict["CanUpgrade"];
 
                 Dictionary<string, object> craftDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
                 if (craftDict["TimeUntilUpgraded"] != null)
                 {
                     DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
                     pb.TimeUntilUpgraded = time;
+                    pb.IsUpgradeing = true;
                 }
 
                 return View(pb);

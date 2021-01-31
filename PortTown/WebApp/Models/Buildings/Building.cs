@@ -14,6 +14,7 @@ namespace WebApp.Models.Buildings
         public bool CanUpgrade { get; set; }
         public string ImagePath { get; set; }
         public DateTime TimeUntilUpgraded { get; set; }
+        public bool IsUpgradeing { get; set; }
 
         public Building(Guid Id, string Name, int Level, string Info, string ImagePath, bool CanUpgrade)
         {
@@ -23,6 +24,7 @@ namespace WebApp.Models.Buildings
             this.Info = Info;
             this.ImagePath = ImagePath;
             this.CanUpgrade = CanUpgrade;
+            this.IsUpgradeing = false;
         }
     }
 }

@@ -37,7 +37,7 @@
             @Html.DisplayFor(model => model.Resource.Value)
         </dd>
     </dl>
-    @if(Model.TimeUntilUpgraded != null) 
+    @if (Model.IsUpgradeing)
     {
         <dl class="row">
             <dt class="col-md-4 col-sm-4">
@@ -48,7 +48,7 @@
                 @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
             </dt>
         </dl>
-    }
+                    }
 </div>
 
 <div class="row">
@@ -56,7 +56,12 @@
         <a class="btn btn-primary" href="#">Collect</a>
     </div>
     <div class="col-sm-1">
-        <a class="btn btn-primary" href="@Url.Content("/town/upgradebuilding?id=" + Model.Id)">Upgrade</a>
+        @{ bool isDisabled = !Model.CanUpgrade; }
+        <button class="btn btn-primary"
+                onclick="location.href='@Url.Action("UpgradeBuilding", "Town", new { id = Model.Id})'" 
+                disabled="@isDisabled">
+            Upgrade
+        </button>
     </div>
     <div class="col-sm-1">
         <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>

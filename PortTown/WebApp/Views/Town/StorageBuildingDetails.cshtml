@@ -39,7 +39,7 @@
             </dd>
         }
     </dl>
-    @if (Model.TimeUntilUpgraded != null)
+    @if (Model.IsUpgradeing)
     {
         <dl class="row">
             <dt class="col-md-4 col-sm-4">
@@ -54,7 +54,7 @@
 </div>
 <div class="row">
     <div class="col-sm-1">
-        <a class="btn btn-primary" href="@Url.Content("/town/upgradebuilding?id=" + Model.Id)">Upgrade</a>
+        <button class="btn btn-primary" onclick="location.href='@Url.Content("/town/upgradebuilding?id=" + Model.Id)'" disabled="@(!Model.CanUpgrade)">Upgrade</button>
     </div>
     <div class="col-sm-1">
         <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>

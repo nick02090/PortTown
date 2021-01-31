@@ -74,6 +74,13 @@ namespace WebAPI.Controllers
             buildingResult.AddField("ChildStorage", building.ChildStorage);
             buildingResult.AddField("CanUpgrade", canUpgrade["CanUpgrade"]);
             buildingResult.AddField("UpgradeMessage", upgradeMessage["UpgradeMessage"]);
+
+            if (building.BuildingType == BuildingType.Production)
+            {
+                var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
+                buildingResult.AddField("AccumulatedResources", accumulatedResources["AccumulatedResources"]);
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, buildingResult.Result);
         }
 

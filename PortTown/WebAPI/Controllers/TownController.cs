@@ -74,7 +74,8 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> ResetAsync([FromUri] Guid id)
         {
-            await _service.ResetAsync(id);
+            var townBuildings = await _buildingService.GetBuildingsByTown(id);
+            await _service.ResetAsync(id, townBuildings);
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 

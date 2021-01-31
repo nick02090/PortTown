@@ -9,7 +9,7 @@ namespace WebAPI.Interfaces
 {
     public interface ITownService
     {
-        Task ResetAsync(Guid id);
+        Task<Town> ResetAsync(Guid id, ICollection<Building> townBuildings);
         Task<ICollection<Town>> GetTowns();
         Task<Town> GetTown(Guid id);
         Task<Town> UpdateJobs(Town town);

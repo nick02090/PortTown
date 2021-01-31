@@ -114,6 +114,7 @@ namespace WebAPI.Controllers
                 buildingResult.AddField("ParentCraftable", building.ParentCraftable);
                 buildingResult.AddField("Upgradeable", building.Upgradeable);
                 buildingResult.AddField("ChildProductionBuilding", building.ChildProductionBuilding);
+                buildingResult.AddField("ChildStorage", building.ChildStorage);
                 buildingResult.AddField("CanUpgrade", canUpgrade["CanUpgrade"]);
                 buildingResult.AddField("UpgradeMessage", upgradeMessage["UpgradeMessage"]);
                 result.Add(buildingResult.Result);

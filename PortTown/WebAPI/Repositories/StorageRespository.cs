@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Storage entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -144,6 +143,33 @@ namespace WebAPI.Repositories
                                 Quantity = y.Quantity,
                                 ResourceType = y.ResourceType
                             }).ToList()
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return storage;
+        }
+
+        public async Task<Storage> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Storage storage = new Storage();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    storage = await session
+                        .Query<Storage>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Storage
+                        {
+                            Id = x.Id
                         })
                         .SingleOrDefaultAsync();
 

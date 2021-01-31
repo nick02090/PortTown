@@ -63,7 +63,8 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
-            await _repository.DeleteAsync(id);
+            var entityDel = await _repository.GetForDeleteAsync(id);
+            await _repository.DeleteAsync(entityDel);
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 

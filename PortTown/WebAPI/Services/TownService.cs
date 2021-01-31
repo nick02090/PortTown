@@ -184,12 +184,14 @@ namespace WebAPI.Services
 
             foreach(var building in town.Buildings)
             {
-                await BuildingRepository.DeleteAsync(building.Id);
+                var buildingDel = await BuildingRepository.GetForDeleteAsync(building.Id);
+                await BuildingRepository.DeleteAsync(buildingDel);
             }
 
             foreach (var item in town.Items)
             {
-                await ItemRepository.DeleteAsync(item.Id);
+                var itemDel = await ItemRepository.GetForDeleteAsync(item.Id);
+                await ItemRepository.DeleteAsync(itemDel);
             }
         }
 

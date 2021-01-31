@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(ProductionBuilding entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -151,6 +150,33 @@ namespace WebAPI.Repositories
                             ResourceProduced = x.ResourceProduced,
                             LastHarvestTime = x.LastHarvestTime,
                             ProductionRate = x.ProductionRate
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return productionBuilding;
+        }
+
+        public async Task<ProductionBuilding> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            ProductionBuilding productionBuilding = new ProductionBuilding();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    productionBuilding = await session
+                        .Query<ProductionBuilding>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new ProductionBuilding
+                        {
+                            Id = x.Id
                         })
                         .SingleOrDefaultAsync();
 

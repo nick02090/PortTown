@@ -57,7 +57,8 @@ namespace WebAPI.Controllers
         // DELETE api/<controller>/5
         public async Task DeleteAsync(Guid id)
         {
-            await _repository.DeleteAsync(id);
+            var entityDel = await _repository.GetForDeleteAsync(id);
+            await _repository.DeleteAsync(entityDel);
             return;
         }
     }

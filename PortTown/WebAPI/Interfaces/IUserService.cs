@@ -1,4 +1,5 @@
 ﻿using Domain;
+using System;
 using System.Threading.Tasks;
 using WebAPI.Helpers;
 
@@ -10,5 +11,7 @@ namespace WebAPI.Interfaces
         Task<JSONFormatter> CheckAvailability(string email);
         Task<User> CreateUserWithTown(User user, string townName);
         Task Logout(string token);
+
+        Task DeleteUserWithTownAsync(Guid userId);
     }
 }

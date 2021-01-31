@@ -36,9 +36,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Building entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -212,6 +211,34 @@ namespace WebAPI.Repositories
                 NHibernateHelper.CloseSession();
             }
             return buildings;
+        }
+
+        public async Task<Building> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Building building = new Building();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    building = await session
+                        .Query<Building>()
+                        .Where(x => x.Id == id)
+                        .Where(x => x.Town.Id != null)
+                        .Select(x => new Building
+                        {
+                            Id = x.Id
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return building;
         }
 
         public async Task<IEnumerable<Building>> GetTemplateAsync()

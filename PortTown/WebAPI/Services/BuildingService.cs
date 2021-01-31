@@ -229,15 +229,8 @@ namespace WebAPI.Services
         {
             var upgradeable = new JSONFormatter();
             upgradeable.AddField("CanUpgrade", true);
-            var town = await TownService.GetTown(building.Town.Id);
-            if (!TownService.DoesTownAllowUpgrade(town, building.Level + 1))
-            {
-                upgradeable["CanUpgrade"] = false;
-                // NOTE: this is an early return to avoid the computational heavy cost calculation
-                return upgradeable;
-            }
             var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
-            var townBuildings = await GetBuildingsByTown(town.Id);
+            var townBuildings = await GetBuildingsByTown(building.Town.Id);
             foreach (var cost in upgradeCosts)
             {
                 var remainingCost = await TownService.GatherPaymentFromBuildings(cost, townBuildings);

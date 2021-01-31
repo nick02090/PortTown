@@ -17,14 +17,16 @@ namespace WebAPI.Controllers
         private readonly IBuildingRepository _repository;
         private readonly IBuildingService _service;
         private readonly IProductionBuildingService _productionBuildingService;
+        private readonly ITownService _townService;
 
         public BuildingController(IBuildingRepository repository, IBuildingService service,
-            IProductionBuildingService productionBuildingService)
+            IProductionBuildingService productionBuildingService, ITownService townService)
         {
             _repository = repository;
             _service = service;
 
             _productionBuildingService = productionBuildingService;
+            _townService = townService;
         }
 
 
@@ -81,7 +83,42 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> GetByTownAsync([FromUri] Guid id)
         {
             var buildings = await _service.GetBuildingsByTown(id);
-            return Request.CreateResponse(HttpStatusCode.OK, buildings);
+            var result = new List<object>();
+            foreach (var building in buildings)
+            {
+                var canUpgrade = new JSONFormatter();
+                canUpgrade.AddField("CanUpgrade", true);
+                var upgradeMessage = new JSONFormatter();
+                upgradeMessage.AddField("UpgradeMessage", $"Building can be upgraded to level {building.Level + 1}.");
+                var town = await _townService.GetTown(building.Town.Id);
+                if (!_townService.DoesTownAllowUpgrade(town, building.Level + 1))
+                {
+                    canUpgrade["CanUpgrade"] = false;
+                    upgradeMessage["UpgradeMessage"] = "Town level doesn't allow this upgrade!";
+                }
+                else
+                {
+                    canUpgrade = await _service.CanUpgradeLevel(building);
+                    if (!(bool)canUpgrade["CanUpgrade"])
+                    {
+                        upgradeMessage["UpgradeMessage"] = "Unsufficient funds to upgrade this building!";
+                    }
+                }
+                var buildingResult = new JSONFormatter();
+                buildingResult.AddField("Id", building.Id);
+                buildingResult.AddField("Name", building.Name);
+                buildingResult.AddField("Level", building.Level);
+                buildingResult.AddField("Capacity", building.Capacity);
+                buildingResult.AddField("BuildingType", building.BuildingType);
+                buildingResult.AddField("Town", building.Town);
+                buildingResult.AddField("ParentCraftable", building.ParentCraftable);
+                buildingResult.AddField("Upgradeable", building.Upgradeable);
+                buildingResult.AddField("ChildProductionBuilding", building.ChildProductionBuilding);
+                buildingResult.AddField("CanUpgrade", canUpgrade["CanUpgrade"]);
+                buildingResult.AddField("UpgradeMessage", upgradeMessage["UpgradeMessage"]);
+                result.Add(buildingResult.Result);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [Route("api/building/production-info/{id}")]

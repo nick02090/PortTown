@@ -9,11 +9,13 @@ namespace WebApp.Models.Buildings
     {
         public Building Building { get; set; }
         public DateTime TimeUntilCrafted { get; set; }
+        public bool IsFinishedCrafting { get; set; }
 
-        public CraftingBuilding(Building building, DateTime timeUntilCrafted)
+        public CraftingBuilding(Building building, DateTime timeUntilCrafted, bool isFinishedCrafting)
         {
             this.Building = building;
             this.TimeUntilCrafted = timeUntilCrafted;
+            this.IsFinishedCrafting = isFinishedCrafting;
         }
     }
 }

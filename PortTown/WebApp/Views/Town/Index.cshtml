@@ -13,23 +13,43 @@
         <h4>@Html.DisplayNameFor(model => model.Level): @Html.DisplayFor(model => model.Level) </h4>
     </div>
     <br />
-    <div>
-        <button class="btn btn-primary"
-                onclick="location.href='@Url.Action("UpgradeBuilding", "Town", new { id = Model.Id})'"
-                >
-            Upgrade Town!
-        </button>
+    <div class="row">
+        <div class="col-sm-4">
+            @{ bool isDisabled = !Model.CanUpgrade; }
+            <button class="btn btn-primary"
+                    onclick="location.href='@Url.Action("UpgradeTown", "Town", new { id = Model.Id })'"
+                    disabled="@isDisabled">
+                Upgrade Town!
+            </button>
+        </div>
+        <div class="col-sm-4">
+            @{ bool isDisabled2 = !Model.IsFinishUpgrade; }
+            <button class="btn btn-primary"
+                    onclick="location.href='@Url.Action("FinishUpgradeTown", "Town", new { id = Model.Id })'"
+                    disabled="@isDisabled2">
+                Finish Upgrade!
+            </button>
+        </div>
     </div>
     <br />
+    @if (Model.IsUpgrading)
+    {
+        var time = Model.TimeToUpgrade - DateTime.UtcNow;
+        <div>
+            <p>Time to upgrade: @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)</p>
+        </div>
+    }
 
-    <div>
-        <h3>Buildings</h3>
+<div>
+    <h3>Buildings</h3>
 
-        @{ Html.RenderAction("ProductionBuildings", new { town = Model });}
-        @{ Html.RenderAction("StorageBuildings", new { town = Model });}
-        @{ Html.RenderAction("CraftingBuildings", new { town = Model });}
+    @{ Html.RenderAction("ProductionBuildings", new { town = Model });}
+    @{ Html.RenderAction("StorageBuildings", new { town = Model });}
+    @{ Html.RenderAction("CraftingBuildings", new { town = Model });}
+    @{ Html.RenderAction("UpgradingBuildings", new { town = Model });}
 
-    </div>
+
+</div>
     <br />
     <div>
         <a href="town/build" class="btn btn-primary">New building</a>

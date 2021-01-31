@@ -9,6 +9,7 @@ namespace WebApp.Models.TownViewModels
     public class Craftable
     {
         public bool CanCraft { get; set; }
+        public bool IsFinishedCrafting { get; set; }
         public Building Building { get; set; }
         public List<Resources.Resource> RequiredResources { get; set; }
 
@@ -17,6 +18,7 @@ namespace WebApp.Models.TownViewModels
             this.Building = Building;
             this.CanCraft = CanCraft;
             this.RequiredResources = new List<Resources.Resource>();
+            this.IsFinishedCrafting = false;
         }
     }
 }

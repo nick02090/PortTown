@@ -277,6 +277,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Town\CraftingBuildings.cshtml" />
+    <Content Include="Views\Town\UpgradingBuildings.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

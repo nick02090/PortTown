@@ -49,6 +49,15 @@ namespace WebApp.Controllers
                     int townLevel = Convert.ToInt32((long)dict["Level"]);
                     Session["townLevel"] = townLevel;
                     town = new Town(townID, townName, townLevel);
+                    town.CanUpgrade = (bool)dict["CanUpgrade"];
+
+                    var upgradeDict = ((JObject)dict["Upgradeable"]).ToObject<Dictionary<string, object>>();
+                    if(upgradeDict["TimeUntilUpgraded"] != null)
+                    {
+                        town.IsUpgrading = true;
+                        town.TimeToUpgrade = (DateTime)upgradeDict["TimeUntilUpgraded"];
+                    }
+                    town.IsFinishUpgrade = (bool)upgradeDict["IsFinishedUpgrading"];
 
                     HttpResponseMessage buildingsHttpResponse = await client.GetAsync($"api/building/town/{townID}");
                     if(buildingsHttpResponse.IsSuccessStatusCode)
@@ -82,20 +91,90 @@ namespace WebApp.Controllers
                                 Resource r = new Resource((ResourceType)((int)((long)childDict["ResourceProduced"])), 69);
                                 b = new ProductionBuilding(buildingID, buildingName, buildingLevel, "INFO", imgPath, false, r);
                             }
-                            town.Buildings.Add(b);
-                            Dictionary<string, object> craftDict = ((JObject)buildingDict["ParentCraftable"]).ToObject<Dictionary<string, object>>();
-                            if(craftDict["TimeUntilCrafted"] != null)
+                            Dictionary<string, object> upgDict = ((JObject)buildingDict["Upgradeable"]).ToObject<Dictionary<string, object>>();
+                            bool isFinishedUpg = (bool)upgDict["IsFinishedUpgrading"];
+                            if (isFinishedUpg || upgDict["TimeUntilUpgraded"] != null)
                             {
-                                DateTime time = (DateTime)craftDict["TimeUntilCrafted"];
-                                town.CraftingBuildings.Add(new CraftingBuilding(b, time));
+                                DateTime time = new DateTime();
+                                if (upgDict["TimeUntilUpgraded"] != null)
+                                {
+                                    time = (DateTime)upgDict["TimeUntilUpgraded"];
+                                }
+                                town.UpgradeingBuildings.Add(new CraftingBuilding(b, time, isFinishedUpg));
+                            } else
+                            {
+                                town.Buildings.Add(b);
+                            }
+                            Dictionary<string, object> craftDict = ((JObject)buildingDict["ParentCraftable"]).ToObject<Dictionary<string, object>>();
+                            bool isFinishedCrafting = (bool)craftDict["IsFinishedCrafting"];
+                            if (isFinishedCrafting || craftDict["TimeUntilCrafted"] != null)
+                            {
+                                DateTime time = new DateTime();
+                                if(craftDict["TimeUntilCrafted"] != null)
+                                {
+                                    time = (DateTime)craftDict["TimeUntilCrafted"];
+                                }
+                                town.CraftingBuildings.Add(new CraftingBuilding(b, time, isFinishedCrafting));
 
-                            } 
+                            }
                             Console.WriteLine();
                         }
                     }
                 }
                 //returning the town info to view
                 return View("Index", town);
+            }
+        }
+
+        public async Task<ActionResult> FinishCrafting(Guid id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/building/craft/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
+        public async Task<ActionResult> FinishUpgradeing(Guid id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/building/upgrade/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
+        public async Task<ActionResult> FinishUpgradeTown(Guid id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/town/upgrade/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
+            }
+        }
+
+        public async Task<ActionResult> UpgradeTown(Guid id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsync($"api/town/start-upgrade/{id}", null);
+                return RedirectToAction("Index", new { townID = Session["townId"] });
             }
         }
 
@@ -125,6 +204,17 @@ namespace WebApp.Controllers
             }
         }
 
+        [ChildActionOnly]
+        public ActionResult UpgradingBuildings(Town town)
+        {
+            TownBuildingsViewModel buildings = new TownBuildingsViewModel();
+
+            buildings.UpgradingBuildings = town.UpgradeingBuildings;
+
+            return PartialView("UpgradingBuildings", buildings);
+        }
+
+        [ChildActionOnly]
         public ActionResult CraftingBuildings(Town town)
         {
             TownBuildingsViewModel buildings = new TownBuildingsViewModel();

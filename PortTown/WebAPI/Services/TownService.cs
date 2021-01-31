@@ -43,9 +43,26 @@ namespace WebAPI.Services
             UpgradeableService = upgradeableService;
         }
 
+        public async Task<JSONFormatter> GetTownWithCraftInfo(Guid id, ICollection<Building> townBuildings)
+        {
+            var town = await GetTown(id);
+            var canUpgrade = await CanUpgradeLevel(town, townBuildings);
+
+            var result = new JSONFormatter();
+            result.AddField("Id", town.Id);
+            result.AddField("Level", town.Level);
+            result.AddField("Buildings", town.Buildings);
+            result.AddField("User", town.User);
+            result.AddField("Upgradeable", town.Upgradeable);
+            result.AddField("CanUpgrade", canUpgrade["CanUpgrade"]);
+            return result;
+        }
+
         public async Task<Town> GetTown(Guid id)
         {
             var town = await TownRepository.GetAsync(id);
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(town.Upgradeable.Id);
+            town.Upgradeable.RequiredResources = upgradeCosts.ToList();
             town = await UpdateJobs(town);
             return town;
         }
@@ -147,6 +164,12 @@ namespace WebAPI.Services
             // Create upgradeable
             upgradeable.Town = town;
             upgradeable = await UpgradeableRepository.CreateAsync(upgradeable);
+            // Create upgradeable costs
+            foreach (var cost in upgradeable.RequiredResources)
+            {
+                cost.Upgradeable = upgradeable;
+                await ResourceBatchRepository.CreateAsync(cost);
+            }
 
             // Update and return the town
             town.Buildings = townBuildings;
@@ -161,12 +184,14 @@ namespace WebAPI.Services
 
             foreach(var building in town.Buildings)
             {
-                await BuildingRepository.DeleteAsync(building.Id);
+                var buildingDel = await BuildingRepository.GetForDeleteAsync(building.Id);
+                await BuildingRepository.DeleteAsync(buildingDel);
             }
 
             foreach (var item in town.Items)
             {
-                await ItemRepository.DeleteAsync(item.Id);
+                var itemDel = await ItemRepository.GetForDeleteAsync(item.Id);
+                await ItemRepository.DeleteAsync(itemDel);
             }
         }
 
@@ -209,16 +234,11 @@ namespace WebAPI.Services
         /// <returns></returns>
         public async Task<Town> StartUpgradeLevel(Town town)
         {
-            // NOTE: This check is also made in controller (just in case)
-            var canUpgradeLevel = await CanUpgradeLevel(town);
-            if ((bool)canUpgradeLevel["CanUpgrade"])
-            {
-                // Remove resources (payment)
-                town = await PayForLevelUpgrade(town);
-                // Update the upgradable to start the upgrade process
-                var upgradeable = await UpgradeableService.StartUpgradeLevel(town.Upgradeable);
-                town.Upgradeable = upgradeable;
-            }
+            // Remove resources (payment)
+            town = await PayForLevelUpgrade(town);
+            // Update the upgradable to start the upgrade process
+            var upgradeable = await UpgradeableService.StartUpgradeLevel(town.Upgradeable);
+            town.Upgradeable = upgradeable;
             return town;
         }
 
@@ -258,14 +278,14 @@ namespace WebAPI.Services
         /// </summary>
         /// <param name="town"></param>
         /// <returns></returns>
-        public async Task<JSONFormatter> CanUpgradeLevel(Town town)
+        public async Task<JSONFormatter> CanUpgradeLevel(Town town, ICollection<Building> townBuildings)
         {
             var result = new JSONFormatter();
             result.AddField("CanUpgrade", true);
-            var upgradeCosts = town.Upgradeable.RequiredResources;
+            var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(town.Upgradeable.Id);
             foreach (var cost in upgradeCosts)
             {
-                var remainingCost = await GatherPaymentFromBuildings(cost, town.Buildings);
+                var remainingCost = await GatherPaymentFromBuildings(cost, townBuildings);
                 if (remainingCost > 0)
                 {
                     result["CanUpgrade"] = false;

@@ -15,11 +15,12 @@ namespace WebAPI.Interfaces
         Task<Town> UpdateJobs(Town town);
         Task<Town> UpgradeLevel(Town town);
         Task<Town> StartUpgradeLevel(Town town);
-        Task<JSONFormatter> CanUpgradeLevel(Town town);
+        Task<JSONFormatter> CanUpgradeLevel(Town town, ICollection<Building> townBuildings);
         bool DoesTownAllowUpgrade(Town town, int nextLevel);
         Task<int> GatherPaymentFromBuildings(ResourceBatch cost, ICollection<Building> buildings, bool shouldUpdateDb = false);
         ICollection<Storage> FilterStorages(ResourceType resourceType, ICollection<Building> buildings);
         Task<Town> CreateFromTemplate(Town template);
         Task<Building> AddBuildingToTown(Building building, Town town, bool isTemplate = false);
+        Task<JSONFormatter> GetTownWithCraftInfo(Guid id, ICollection<Building> townBuildings);
     }
 }

@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Upgradeable entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -119,6 +118,33 @@ namespace WebAPI.Repositories
                                 ResourceType = y.ResourceType,
                                 Quantity = y.Quantity
                             }).ToList()
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return upgradeable;
+        }
+
+        public async Task<Upgradeable> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Upgradeable upgradeable = new Upgradeable();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    upgradeable = await session
+                        .Query<Upgradeable>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Upgradeable
+                        {
+                            Id = x.Id
                         })
                         .SingleOrDefaultAsync();
 

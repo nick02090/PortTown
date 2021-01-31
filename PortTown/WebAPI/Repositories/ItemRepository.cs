@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Item entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -75,11 +74,7 @@ namespace WebAPI.Repositories
                             Name = x.Name,
                             Town = new Town
                             {
-                                Id = x.Town.Id,
-                                User = new User
-                                {
-                                    Id = x.Town.User.Id
-                                }
+                                Id = x.Town.Id
                             },
                             ParentCraftable = new Craftable
                             {
@@ -87,13 +82,7 @@ namespace WebAPI.Repositories
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
                                 TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                CraftableType = x.ParentCraftable.CraftableType,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                CraftableType = x.ParentCraftable.CraftableType
                             },
                             Sellable = new Sellable
                             {
@@ -130,11 +119,7 @@ namespace WebAPI.Repositories
                             Name = x.Name,
                             Town = new Town
                             {
-                                Id = x.Town.Id,
-                                User = new User
-                                {
-                                    Id = x.Town.User.Id
-                                }
+                                Id = x.Town.Id
                             },
                             ParentCraftable = new Craftable
                             {
@@ -142,13 +127,7 @@ namespace WebAPI.Repositories
                                 IsFinishedCrafting = x.ParentCraftable.IsFinishedCrafting,
                                 TimeToBuild = x.ParentCraftable.TimeToBuild,
                                 TimeUntilCrafted = x.ParentCraftable.TimeUntilCrafted,
-                                CraftableType = x.ParentCraftable.CraftableType,
-                                RequiredResources = x.ParentCraftable.RequiredResources.Select(y => new ResourceBatch
-                                {
-                                    Id = y.Id,
-                                    ResourceType = y.ResourceType,
-                                    Quantity = y.Quantity
-                                }).ToList()
+                                CraftableType = x.ParentCraftable.CraftableType
                             },
                             Sellable = new Sellable
                             {
@@ -221,6 +200,33 @@ namespace WebAPI.Repositories
                 NHibernateHelper.CloseSession();
             }
             return items;
+        }
+
+        public async Task<Item> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Item item = new Item();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    item = await session
+                        .Query<Item>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Item
+                        {
+                            Id = x.Id
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return item;
         }
 
         public async Task<IEnumerable<Item>> GetTemplateAsync()

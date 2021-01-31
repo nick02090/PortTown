@@ -11,5 +11,6 @@ namespace WebAPI.Interfaces
         Task<IEnumerable<ResourceBatch>> GetTemplateAsync();
         Task<IEnumerable<ResourceBatch>> GetByCraftableAsync(Guid craftableId);
         Task<IEnumerable<ResourceBatch>> GetByUpgradeableAsync(Guid upgradeableId);
+        Task<IEnumerable<ResourceBatch>> GetByStorageAsync(Guid storageId);
     }
 }

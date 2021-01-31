@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Sellable entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -101,6 +100,33 @@ namespace WebAPI.Repositories
                         {
                             Id = x.Id,
                             Price = x.Price
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return sellable;
+        }
+
+        public async Task<Sellable> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            var sellable = new Sellable();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    sellable = await session
+                        .Query<Sellable>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Sellable
+                        {
+                            Id = x.Id
                         })
                         .SingleOrDefaultAsync();
 

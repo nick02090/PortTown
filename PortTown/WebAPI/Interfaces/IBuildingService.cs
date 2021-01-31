@@ -30,6 +30,7 @@ namespace WebAPI.Interfaces
         Task AddInitialTemplateData();
         Task AddDataToTemplate(Building building);
         Task<ICollection<JSONFormatter>> FilterTemplateForTown(Guid townId);
+        Task<ICollection<Building>> GetTemplateBuildings();
         #endregion
     }
 }

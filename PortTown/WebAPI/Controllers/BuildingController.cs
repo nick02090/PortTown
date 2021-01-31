@@ -79,21 +79,25 @@ namespace WebAPI.Controllers
             {
                 var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
                 buildingResult.AddField("AccumulatedResources", accumulatedResources["AccumulatedResources"]);
+                buildingResult.AddField("HarvestMessage", "Accumulated resources can be harvested!");
                 if (building.ParentCraftable.IsFinishedCrafting)
                 {
                     buildingResult["AccumulatedResources"] = 0;
                     accumulatedResources["AccumulatedResources"] = 0;
+                    buildingResult["HarvestMessage"] = "This building is still under construction!";
                 }
                 buildingResult.AddField("CanHarvest", true);
                 if ((int)accumulatedResources["AccumulatedResources"] <= 0)
                 {
                     buildingResult["CanHarvest"] = false;
+                    buildingResult["HarvestMessage"] = "There is nothing to harvest!";
                 }
                 var townBuildings = await _service.GetBuildingsByTown(building.Town.Id);
                 var canHarvest = await _productionBuildingService.CanHarvest(building.ChildProductionBuilding.Id, townBuildings);
                 if (!(bool)canHarvest["CanHarvest"])
                 {
                     buildingResult["CanHarvest"] = false;
+                    buildingResult["HarvestMessage"] = "There is no storage room to harvest the accumulated resources!";
                 }
             }
 

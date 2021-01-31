@@ -79,6 +79,22 @@ namespace WebAPI.Controllers
             {
                 var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
                 buildingResult.AddField("AccumulatedResources", accumulatedResources["AccumulatedResources"]);
+                if (building.ParentCraftable.IsFinishedCrafting)
+                {
+                    buildingResult["AccumulatedResources"] = 0;
+                    accumulatedResources["AccumulatedResources"] = 0;
+                }
+                buildingResult.AddField("CanHarvest", true);
+                if ((int)accumulatedResources["AccumulatedResources"] <= 0)
+                {
+                    buildingResult["CanHarvest"] = false;
+                }
+                var townBuildings = await _service.GetBuildingsByTown(building.Town.Id);
+                var canHarvest = await _productionBuildingService.CanHarvest(building.ChildProductionBuilding.Id, townBuildings);
+                if (!(bool)canHarvest["CanHarvest"])
+                {
+                    buildingResult["CanHarvest"] = false;
+                }
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, buildingResult.Result);
@@ -191,6 +207,17 @@ namespace WebAPI.Controllers
             result.AddField("Upgradeable", building.Upgradeable);
             result.AddField("ChildProductionBuilding", building.ChildProductionBuilding);
             result.AddField("AccumulatedResources", accumulatedResources["AccumulatedResources"]);
+            result.AddField("CanHarvest", true);
+            if ((int)accumulatedResources["AccumulatedResources"] <= 0)
+            {
+                result["CanHarvest"] = false;
+            }
+            var townBuildings = await _service.GetBuildingsByTown(building.Town.Id);
+            var canHarvest = await _productionBuildingService.CanHarvest(building.ChildProductionBuilding.Id, townBuildings);
+            if (!(bool)canHarvest["CanHarvest"])
+            {
+                result["CanHarvest"] = false;
+            }
             return Request.CreateResponse(HttpStatusCode.OK, result.Result);
         }
 
@@ -203,14 +230,14 @@ namespace WebAPI.Controllers
             {
                 var error = new JSONErrorFormatter("The building isn't of type production building!", building.BuildingType,
                     "BuildingType", "GET", $"api/building/production-info/{id}",
-                    "BuildingController.GetWithProductionInfo");
+                    "BuildingController.HarvestProductionBuildingAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
             if (building.ParentCraftable.TimeUntilCrafted != null)
             {
                 var error = new JSONErrorFormatter("The building isn't finished crafting yet!", building.ParentCraftable.TimeUntilCrafted,
                     "ParentCraftable.TimeUntilCrafted", "GET", $"api/building/production-info/{id}",
-                    "BuildingController.GetWithProductionInfo");
+                    "BuildingController.HarvestProductionBuildingAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
             var accumulatedResources = await _productionBuildingService.GetCurrentResources(building.ChildProductionBuilding.Id);
@@ -218,10 +245,20 @@ namespace WebAPI.Controllers
             {
                 var error = new JSONErrorFormatter("There is nothing to harvest!", building.ChildProductionBuilding.LastHarvestTime,
                     "ChildProductionBuildings.LastHarvestTime", "GET", $"api/building/production/harvest/{id}",
-                    "BuildingController.GetWithProductionInfo");
+                    "BuildingController.HarvestProductionBuildingAsync");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
-            await _productionBuildingService.Harvest(building.ChildProductionBuilding.Id);
+            var townBuildings = await _service.GetBuildingsByTown(building.Town.Id);
+            var canHarvest = await _productionBuildingService.CanHarvest(building.ChildProductionBuilding.Id, townBuildings);
+            if (!(bool)canHarvest["CanHarvest"])
+            {
+                var error = new JSONErrorFormatter("There is not enough room to harvest!", building.ChildProductionBuilding.ResourceProduced,
+                    "ChildProductionBuildings.ResourceProduces", "GET", $"api/building/production/harvest/{id}",
+                    "BuildingController.HarvestProductionBuildingAsync");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+            }
+            townBuildings = await _service.GetBuildingsByTown(building.Town.Id);
+            await _productionBuildingService.Harvest(building.ChildProductionBuilding.Id, townBuildings);
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
 

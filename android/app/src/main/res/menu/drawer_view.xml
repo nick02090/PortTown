@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_game"
+        android:title="@string/text_game">
+        <menu>
+            <group android:checkableBehavior="none">
+                <item
+                    android:id="@+id/nav_town"
+                    android:title="@string/town" />
+
+                <item
+                    android:id="@+id/nav_market"
+                    android:title="@string/market" />
+            </group>
+        </menu>
+
+    </item>
+    <item
+        android:id="@+id/nav_account"
+        android:title="@string/account">
+
+        <menu>
+            <group android:checkableBehavior="none">
+                <item
+                    android:id="@+id/nav_logout"
+                    android:title="@string/log_out" />
+                <item
+                    android:id="@+id/nav_settings"
+                    android:title="@string/settings" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

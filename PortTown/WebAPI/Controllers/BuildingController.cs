@@ -60,6 +60,11 @@ namespace WebAPI.Controllers
                 {
                     upgradeMessage["UpgradeMessage"] = "Unsufficient funds to upgrade this building!";
                 }
+                if (building.Upgradeable.TimeUntilUpgraded != null || building.Upgradeable.IsFinishedUpgrading)
+                {
+                    canUpgrade["CanUpgrade"] = false;
+                    upgradeMessage["UpgradeMessage"] = "Building is currently upgrading!";
+                }
             }
             var buildingResult = new JSONFormatter();
             buildingResult.AddField("Id", building.Id);
@@ -160,6 +165,11 @@ namespace WebAPI.Controllers
                     if (!(bool)canUpgrade["CanUpgrade"])
                     {
                         upgradeMessage["UpgradeMessage"] = "Unsufficient funds to upgrade this building!";
+                    }
+                    if (building.Upgradeable.TimeUntilUpgraded != null || building.Upgradeable.IsFinishedUpgrading)
+                    {
+                        canUpgrade["CanUpgrade"] = false;
+                        upgradeMessage["UpgradeMessage"] = "Building is currently upgrading!";
                     }
                 }
                 var buildingResult = new JSONFormatter();

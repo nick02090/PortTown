@@ -1,0 +1,83 @@
+﻿@model WebApp.Models.Buildings.ProductionBuilding
+
+@{
+    ViewBag.Title = "View";
+}
+
+<h2>@Html.DisplayFor(model => model.Name)</h2>
+
+<div class="container">
+    <h4>ProductionBuilding</h4>
+    <hr />
+    <dl class="row">
+
+        <dt class="col-md-4 col-sm-4">
+            @Html.DisplayNameFor(model => model.Level):
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Level)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.DisplayNameFor(model => model.Info):
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Info)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.Encode("Collect"):
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.HarvestMessage)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Resource.Type):
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Resource.Value) / @Html.DisplayFor(model => model.MaxResource.Value)
+        </dd>
+    </dl>
+    @if (Model.IsUpgradeing)
+    {
+        <dl class="row">
+            <dt class="col-md-4 col-sm-4">
+                @Html.Encode("Time to upgrade")
+            </dt>
+            <dt class="col-md-4 col-sm-4">
+                @{ var time = Model.TimeUntilUpgraded - DateTime.UtcNow; }
+                @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
+            </dt>
+        </dl>
+    }
+</div>
+
+<div class="row">
+    <div class="col-sm-1">
+        @{ bool isDisabledHarvest = !Model.CanHarvest; }
+        <button class="btn btn-primary"
+                onclick="location.href='@Url.Action("Harvest", "Town", new { id = Model.Id})'"
+                disabled="@isDisabledHarvest">
+            Collect
+        </button>
+    </div>
+    <div class="col-sm-1">
+        @{ bool isDisabled = !Model.CanUpgrade; }
+        <button class="btn btn-primary"
+                onclick="location.href='@Url.Action("UpgradeBuilding", "Town", new { id = Model.Id})'" 
+                disabled="@isDisabled">
+            Upgrade
+        </button>
+    </div>
+    <div class="col-sm-1">
+        <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>
+    </div>
+</div>

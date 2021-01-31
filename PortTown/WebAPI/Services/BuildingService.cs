@@ -60,8 +60,18 @@ namespace WebAPI.Services
                 building.ChildStorage = await StorageRepository.GetByBuildingAsync(building.Id);
             }
             var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(building.ParentCraftable.Id);
+            foreach (var craftableCost in craftableCosts)
+            {
+                craftableCost.Craftable = building.ParentCraftable;
+            }
+            building.ParentCraftable.ChildBuilding = building;
             building.ParentCraftable.RequiredResources = craftableCosts.ToList();
             var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
+            foreach (var upgradeableCost in upgradeableCosts)
+            {
+                upgradeableCost.Upgradeable = building.Upgradeable;
+            }
+            building.Upgradeable.Building = building;
             building.Upgradeable.RequiredResources = upgradeableCosts.ToList();
             building = await UpdateJobs(building);
             return building;
@@ -73,23 +83,7 @@ namespace WebAPI.Services
             var newBuildings = new List<Building>();
             foreach (var building in buildings)
             {
-                var newBuilding = await UpdateJobs(building);
-                var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(newBuilding.ParentCraftable.Id);
-                newBuilding.ParentCraftable.RequiredResources = craftableCosts.ToList();
-                var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(newBuilding.Upgradeable.Id);
-                newBuilding.Upgradeable.RequiredResources = upgradeableCosts.ToList();
-                if (newBuilding.BuildingType == BuildingType.Production)
-                {
-                    // get production child
-                    var productionChild = await ProductionBuildingRepository.GetByBuildingAsync(newBuilding.Id);
-                    newBuilding.ChildProductionBuilding = productionChild;
-                }
-                else
-                {
-                    // get storage child
-                    var storageChild = await StorageRepository.GetByBuildingAsync(newBuilding.Id);
-                    newBuilding.ChildStorage = storageChild;
-                }
+                var newBuilding = await GetBuilding(building.Id);
                 newBuildings.Add(newBuilding);
             }
             return newBuildings;
@@ -219,7 +213,12 @@ namespace WebAPI.Services
             var upgradeCosts = await ResourceBatchRepository.GetByUpgradeableAsync(building.Upgradeable.Id);
             await PayForAction(upgradeCosts.ToList(), building.Town.Id);
             // Update the upgradable to start the upgrade process
+            foreach (var upgradeCost in upgradeCosts)
+            {
+                upgradeCost.Upgradeable = building.Upgradeable;
+            }
             building.Upgradeable.Building = building;
+            building.Upgradeable.RequiredResources = upgradeCosts.ToList();
             var upgradeable = await UpgradeableService.StartUpgradeLevel(building.Upgradeable);
             building.Upgradeable = upgradeable;
             return building;

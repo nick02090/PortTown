@@ -1,15 +1,23 @@
 package com.example.porttown.ui.login
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import com.example.porttown.ui.main.MainActivity
 import com.example.porttown.databinding.ActivityLoginBinding
+import com.example.porttown.network.auth.AuthResource.AuthStatus
 import com.example.porttown.viewmodels.AuthViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalCoroutinesApi
 class AuthActivity : AppCompatActivity() {
-    private lateinit var authViewModel: AuthViewModel
+    private val authViewModel: AuthViewModel by viewModel()
     private lateinit var binding: ActivityLoginBinding
 
     private var isLoginVisible = false
@@ -19,39 +27,62 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
-        authViewModel.eventLoginClicked.observe(this, Observer {
-            onLoginClicked()
+        authViewModel.observeAuthState.observe(this, Observer {
+            when (it.status) {
+                AuthStatus.LOADING -> {
+                    showProgressBar(true)
+                    Log.d(TAG, "LOADING")
+                }
+                AuthStatus.NOT_AUTHENTICATED -> {
+                    Toast.makeText(this, "NOT_AUTHENTICATED", Toast.LENGTH_SHORT).show()
+                }
+
+                AuthStatus.AUTHENTICATED -> {
+                    showProgressBar(false)
+                    Log.d(TAG, "AUTHENTICATED")
+                    onLoginSuccess()
+                }
+                AuthStatus.ERROR -> {
+                    showProgressBar(false)
+                    Log.d(TAG, "ERROR")
+                    Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
+                }
+            }
         })
 
-        authViewModel.eventRegisterClicked.observe(this, Observer {
-            onRegisterClicked()
-        })
-
-        authViewModel.eventNextClicked.observe(this, Observer {
-            onNextClicked()
-        })
-
-        binding.loginViewModel = authViewModel
+        binding.authViewModel = authViewModel
         binding.lifecycleOwner = this
         setContentView(binding.root)
     }
 
-    private fun onLoginClicked() {
+    private fun onLoginSuccess() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    fun onLoginClicked(view: View) {
         if (isRegisterVisible) showRegisterForm(false)
         if (isLoginVisible) return
         showLoginForm()
     }
 
-    private fun onRegisterClicked() {
+    fun onRegisterClicked(view: View) {
         if (isRegisterVisible) return
+        if (!isLoginVisible) showLoginForm()
         showRegisterForm(true)
     }
 
-    private fun onNextClicked() {
-        startLoading()
-        binding.loginForm.apply {
-
+    fun onNextClicked(view: View) {
+        if (isRegisterVisible) {
+            binding.loginForm.apply {
+                authViewModel.registerAccount(
+                    usernameInputText.text.toString(),
+                    passwordInputText.text.toString(),
+                    emailInputText.text.toString(),
+                    townNameInputText.text.toString()
+                )
+            }
         }
     }
 
@@ -62,12 +93,25 @@ class AuthActivity : AppCompatActivity() {
 
     private fun showRegisterForm(visibility: Boolean) {
         isRegisterVisible = visibility
-        binding.loginForm.townNameInputLayout.visibility =
-            if (visibility) View.VISIBLE else View.GONE
+        binding.loginForm.apply {
+            val viewVisibility = if (visibility) View.VISIBLE else View.GONE
+            townNameInputLayout.visibility = viewVisibility
+            emailInputLayout.visibility = viewVisibility
+        }
     }
 
-    private fun startLoading() {
-        binding.verifyingUser.visibility = View.VISIBLE
+    private fun showProgressBar(visibility: Boolean) {
+        binding.verifyingUser.visibility = if (visibility) View.VISIBLE else View.GONE
+    }
 
+    private fun showEmailAlreadyInUseError() {
+        AlertDialog.Builder(this)
+            .setMessage("Email already in use!")
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
+    companion object {
+        val TAG = AuthActivity::class.java.simpleName
     }
 }

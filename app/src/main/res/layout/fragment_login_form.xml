@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,9 +10,7 @@
             type="com.example.porttown.viewmodels.AuthViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:background="@color/black">
@@ -47,7 +47,7 @@
             app:counterEnabled="true"
             app:counterMaxLength="16"
             app:counterTextColor="?colorOnPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/town_name_input_layout"
+            app:layout_constraintBottom_toTopOf="@+id/email_input_layout"
             app:layout_constraintTop_toBottomOf="@+id/username_text_layout">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -56,6 +56,31 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLength="16"
+                android:maxLines="1"
+                android:textColor="?colorOnPrimary"
+                android:textCursorDrawable="@drawable/cursor_color_on_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_input_layout"
+            style="@style/Widget.PortTown.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:visibility="gone"
+            app:counterEnabled="true"
+            app:counterMaxLength="25"
+            app:counterTextColor="?colorOnPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/town_name_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/password_text_layout"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_input_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="25"
                 android:maxLines="1"
                 android:textColor="?colorOnPrimary"
                 android:textCursorDrawable="@drawable/cursor_color_on_primary" />
@@ -72,7 +97,7 @@
             app:counterMaxLength="25"
             app:counterTextColor="?colorOnPrimary"
             app:layout_constraintBottom_toTopOf="@+id/next_button"
-            app:layout_constraintTop_toBottomOf="@+id/password_text_layout"
+            app:layout_constraintTop_toBottomOf="@+id/email_input_layout"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -90,20 +115,21 @@
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
             android:background="@drawable/button_bottom_rounded_corners_ripple"
             android:clickable="true"
-            android:onClick="@{() -> loginViewModel.onNextClicked()}"
+            android:onClick="onNextClicked"
             android:text="Next"
             android:textColor="?colorSecondary"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
             app:layout_constraintTop_toBottomOf="@+id/town_name_input_layout" />
 
         <View
+            android:id="@+id/view4"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gold"
-            app:layout_constraintTop_toBottomOf="@id/next_button" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/next_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

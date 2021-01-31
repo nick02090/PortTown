@@ -1,31 +1,28 @@
 package com.example.porttown.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.porttown.model.Account
+import com.example.porttown.network.auth.AuthRepository
+import com.example.porttown.network.auth.AuthResource
+import com.example.porttown.session.SessionManager
+import kotlinx.coroutines.*
 
-class AuthViewModel : ViewModel() {
-    private val _eventLoginClicked = MutableLiveData<Boolean>()
-    val eventLoginClicked: LiveData<Boolean> get() = _eventLoginClicked
+@ExperimentalCoroutinesApi
+class AuthViewModel constructor(
+    private val authRepository: AuthRepository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
-    private val _eventRegisterClicked = MutableLiveData<Boolean>()
-    val eventRegisterClicked: LiveData<Boolean> get() = _eventRegisterClicked
+    val observeAuthState: LiveData<AuthResource<Account>> get() = sessionManager.getAccount()
 
-    private val _eventNextClicked = MutableLiveData<Boolean>()
-    val eventNextClicked: LiveData<Boolean> get() = _eventNextClicked
-
-    private val _eventLoginFailed = MutableLiveData<Boolean>()
-    val eventLoginFailed: LiveData<Boolean> get() = _eventLoginFailed
-
-    fun onLoginClicked() {
-        _eventLoginClicked.value = true
+    fun registerAccount(username: String, password: String, email: String, townName: String) {
+        viewModelScope.launch {
+            val source = authRepository.registerAccount(username, password, email, townName)
+            sessionManager.registerAccount(source.asLiveData())
+        }
     }
 
-    fun onRegisterClicked() {
-        _eventRegisterClicked.value = true
-    }
-
-    fun onNextClicked() {
-        _eventNextClicked.value = true
+    companion object {
+        val TAG = AuthViewModel::class.java.simpleName
     }
 }

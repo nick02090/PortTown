@@ -10,17 +10,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.porttown.databinding.FragmentMarketBinding
 import com.example.porttown.model.Resource
-import com.example.porttown.model.resources.Gold
 import com.mikepenz.fastadapter.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.select.SelectExtension
 import com.mikepenz.fastadapter.select.getSelectExtension
-import org.koin.core.qualifier._q
 
 class MarketFragment : Fragment() {
     private lateinit var binding: FragmentMarketBinding
 
     //save our FastAdapter
-    private lateinit var fastItemAdapter: FastItemAdapter<MarketResourceItem>
+    private lateinit var sellItemAdapter: FastItemAdapter<MarketResourceItem>
     private lateinit var selectExtension: SelectExtension<MarketResourceItem>
 
     override fun onCreateView(
@@ -36,27 +34,27 @@ class MarketFragment : Fragment() {
     }
 
     private fun setupResourcePicker() {
-        fastItemAdapter = FastItemAdapter()
-        selectExtension = fastItemAdapter.getSelectExtension()
+        sellItemAdapter = FastItemAdapter()
+        selectExtension = sellItemAdapter.getSelectExtension()
         selectExtension.isSelectable = true
 
         val event = MarketResourceItem.RadioButtonClickEvent()
-        fastItemAdapter.onClickListener = { _, _, item, position ->
+        sellItemAdapter.onClickListener = { _, _, item, position ->
             Log.d("Selected", "${item.resource}")
             selectExtension.deselect()
             selectExtension.select(position)
             true
         }
 
-        fastItemAdapter.addEventHook(event)
+        sellItemAdapter.addEventHook(event)
 
         binding.supply.apply {
             layoutManager = LinearLayoutManager(this.context)
             itemAnimator = DefaultItemAnimator()
-            adapter = fastItemAdapter
+            adapter = sellItemAdapter
         }
 
-        fastItemAdapter.add(Resource.Type.values()
+        sellItemAdapter.add(Resource.Type.values()
             .filter { it != Resource.Type.GOLD }
             .map { MarketResourceItem(it) })
     }

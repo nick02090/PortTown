@@ -7,8 +7,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.porttown.R
+import com.example.porttown.session.SessionManager
+import org.koin.android.ext.android.inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    private val sessionManager by inject<SessionManager>()
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         preferenceScreen.findPreference<Preference>("delete_town")?.onPreferenceClickListener =

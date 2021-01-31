@@ -7,6 +7,7 @@ interface Building {
     fun getType(): Type
     fun getUsage() = getType().getUsage()
     fun getNameResource() = getType().getNameResource()
+    fun getResourceType(): Resource.Type?
 
     enum class Type(private val nameResource: Int, private val usage: Usage) {
         FARM(R.string.building_farm, Usage.PRODUCTION),
@@ -26,7 +27,9 @@ interface Building {
 
     enum class Usage(private val nameResource: Int) {
         STORAGE(R.string.usage_storage),
-        PRODUCTION(R.string.usage_production)
+        PRODUCTION(R.string.usage_production);
+
+        fun getNameResource(): Int = nameResource
     }
 
 }

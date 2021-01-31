@@ -16,7 +16,7 @@ import com.mikepenz.fastadapter.select.SelectExtension
 class MarketResourceItem(val resource: Resource.Type) : AbstractItem<MarketResourceItem.ViewHolder>() {
 
     override val type: Int
-        get() = R.id.fastadapter_radiobutton_sample_item_id
+        get() = R.id.sell_item_id
 
     override val layoutRes: Int
         get() = R.layout.item_market_resource

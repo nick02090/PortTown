@@ -1,6 +1,6 @@
 package com.example.porttown.session
 
-import com.example.porttown.model.Account
+import com.example.porttown.model.User
 
-class ResourceSessionController(account: Account) {
+class ResourceSessionController(user: User) {
 }

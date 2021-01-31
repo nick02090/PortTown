@@ -1,37 +1,42 @@
-package com.example.porttown
+package com.example.porttown.ui.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.os.PersistableBundle
 import android.view.MenuItem
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.porttown.BaseActivity
+import com.example.porttown.R
 import com.example.porttown.databinding.ActivityMainBinding
 import com.example.porttown.adapters.ResourceAdapter
 import com.example.porttown.model.helpers.Resources
+import com.example.porttown.network.auth.AuthResource
+import com.example.porttown.session.SessionManager
+import com.example.porttown.ui.login.AuthActivity
 import com.google.android.material.navigation.NavigationView
-import java.lang.IllegalArgumentException
+import org.koin.android.ext.android.inject
+import java.util.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var drawer: DrawerLayout
 
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        if (savedInstanceState == null) {
-//        val intent = Intent(this, AuthActivity::class.java)
-//        startActivity(intent)
-//        finish()
-//        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         drawer = binding.navigationDrawer
 
@@ -41,7 +46,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupToolbar()
         setupResourcesTrackerView()
     }
-
 
     private fun setupNavController() {
         val navHostFragment =
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setupNavDrawer() {
         NavigationUI.setupWithNavController(binding.navView, navController)
         binding.navView.setNavigationItemSelectedListener(this)
+        setupNavDrawerHeader()
     }
 
     private fun setupNavDrawerHeader() {
@@ -60,7 +65,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val headerTownName = header.findViewById<TextView>(R.id.header_username)
         val headerUserName = header.findViewById<TextView>(R.id.header_town_name)
 
-        headerTownName.text = "Rome"
+        //headerTownName.text = sessionManager.getNickname()
+        //headerUserName.text = sessionManager.getTownName()
+
+        headerTownName.text = "Novigrad"
         headerUserName.text = "Marko"
     }
 
@@ -73,7 +81,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setupResourcesTrackerView() {
         binding.resourcesView.apply {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
-            adapter = ResourceAdapter(Resources.createAllWithProvider { _ -> 0L })
+            adapter =
+                ResourceAdapter(Resources.createAllWithProvider { _ ->
+                    Random().nextInt(100_000).toLong()
+                })
         }
     }
 

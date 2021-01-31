@@ -1,8 +1,8 @@
 package com.example.porttown.session
 
-import com.example.porttown.model.Account
+import com.example.porttown.model.User
 
-class GameSession(var account: Account) {
+class GameSession(var user: User) {
 
     companion object {
         lateinit var gameSession: GameSession

@@ -7,7 +7,7 @@
     <data>
 
         <variable
-            name="loginViewModel"
+            name="authViewModel"
             type="com.example.porttown.viewmodels.AuthViewModel" />
     </data>
 
@@ -97,7 +97,7 @@
                 android:background="@drawable/button_top_rounded_corners_ripple"
                 android:clickable="true"
                 android:focusedByDefault="true"
-                android:onClick="@{() -> loginViewModel.onLoginClicked()}"
+                android:onClick="onLoginClicked"
                 android:text="@string/login_button_text"
                 android:textColor="?colorSecondary" />
 
@@ -105,7 +105,7 @@
                 android:id="@+id/login_form"
                 layout="@layout/fragment_login_form"
                 android:visibility="gone"
-                bind:loginViewModel="@{loginViewModel}" />
+                bind:loginViewModel="@{authViewModel}" />
 
             <Button
                 android:id="@+id/register_button"
@@ -113,7 +113,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/button_bottom_rounded_corners_ripple"
                 android:clickable="true"
-                android:onClick="@{() -> loginViewModel.onRegisterClicked()}"
+                android:onClick="onRegisterClicked"
                 android:text="@string/register_button_text"
                 android:textColor="?colorSecondary" />
         </LinearLayout>

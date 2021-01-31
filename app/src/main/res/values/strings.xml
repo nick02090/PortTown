@@ -36,4 +36,5 @@
     <string name="market">Market</string>
     <string name="town">Town</string>
     <string name="text_game">Game</string>
+    <string name="lvl">Lvl.</string>
 </resources>

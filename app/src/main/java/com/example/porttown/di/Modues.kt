@@ -1,43 +1,42 @@
 package com.example.porttown.di
 
-import com.example.porttown.model.Account
-import com.example.porttown.network.auth.AuthApi
+import com.example.porttown.model.User
+import com.example.porttown.network.auth.AuthService
+import com.example.porttown.network.auth.AuthRepository
 import com.example.porttown.session.ResourceSessionController
+import com.example.porttown.session.SessionManager
 import com.example.porttown.util.Api
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.example.porttown.viewmodels.AuthViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+@ExperimentalCoroutinesApi
 val appModule = module {
-    // predati account nakon log in
-    factory { (account: Account) -> ResourceSessionController(account) }
-
-//    Defines a factory ( creates new instance every time)
-//    factory { /* nesto */}
+    factory { (user: User) -> ResourceSessionController(user) }
+    single { SessionManager() }
+    viewModel { AuthViewModel(authRepository = get(), sessionManager = get()) }
 }
 
 val netModule = module {
     single { provideOkHttpClient() }
     single { provideRetrofit(get()) }
-    factory { provideAuthApi(get()) }
-
-//    single {
-//        Moshi.Builder()
-//            .addLast(KotlinJsonAdapterFactory())
-//            .build()
-//    }
-//
+    factory { provideAuthApi(retrofit = get()) }
 }
 
 fun provideOkHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
         .build()
 }
 
@@ -45,8 +44,12 @@ fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
     return Retrofit.Builder()
         .baseUrl(Api.BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 }
 
-fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+fun provideAuthApi(retrofit: Retrofit): AuthService = retrofit.create(AuthService::class.java)
+
+val repositoryModule = module {
+    single { AuthRepository(authService = get()) }
+}

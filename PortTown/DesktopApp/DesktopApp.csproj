@@ -109,6 +109,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddStorageBuildingWindow.xaml.cs">
+      <DependentUpon>AddStorageBuildingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddProductionBuildingWindow.xaml.cs">
+      <DependentUpon>AddProductionBuildingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddMarketItemWindow.xaml.cs">
       <DependentUpon>AddMarketItemWindow.xaml</DependentUpon>
     </Compile>
@@ -168,6 +174,14 @@
     <Compile Include="TownWindow.xaml.cs">
       <DependentUpon>TownWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="AddStorageBuildingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddProductionBuildingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AddMarketItemWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

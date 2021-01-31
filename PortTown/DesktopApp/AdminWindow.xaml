@@ -17,9 +17,10 @@
                 <Grid Margin="23,27,17,59.6">
                     <DataGrid SelectionChanged="DataGridSelectionChanged" AutoGenerateColumns="True" CanUserAddRows="False" Name="UserTable" Margin="18,-5,159,4.4"/>
 
-                    <Button Click="OpenWindowClick" Name="addUserButton" Content="Add User" HorizontalAlignment="Right" Margin="0,0,10,141.4" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="OpenWindowClick" Name="editUserButton" Content="Edit User" HorizontalAlignment="Right" Margin="0,0,10,91.4" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="RemoveClick" Name="removeUserButton" Content="Remove User" HorizontalAlignment="Right" Margin="0,0,10,41.4" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
+                    <Button Click="OpenWindowClick" Name="addUserButton" Content="Add User" HorizontalAlignment="Right" Margin="0,0,10.2,189" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
+                    <Button Click="OpenWindowClick" Name="editUserButton" Content="Edit User" HorizontalAlignment="Right" Margin="0,0,10.2,139" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
+                    <Button Click="RemoveClick" Name="removeUserButton" Content="Remove User" HorizontalAlignment="Right" Margin="0,0,10.2,89" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
+                    <Button Click="RemoveClick" Name="resetTownButton" Content="Reset Town" HorizontalAlignment="Right" Margin="0,0,10.2,29" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -29,8 +30,12 @@
                     HorizontalAlignment="Stretch"/>
                 </TabItem.Header>
                 <Grid Margin="23,27,17,59.6">
-                    <DataGrid SelectionChanged="DataGridSelectionChanged" AutoGenerateColumns="True" CanUserAddRows="False" Name="ProductionBuildingTable" Margin="18,10,159.2,330.6"/>
-                    <Label x:Name="productionLabel" Content="Production" Margin="821,60,-39.8,484.6" FontWeight="Bold" FontSize="22" RenderTransformOrigin="0.5,0.5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20*"/>
+                        <RowDefinition Height="551*"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid SelectionChanged="DataGridSelectionChanged" AutoGenerateColumns="True" CanUserAddRows="False" Name="ProductionBuildingTable" Margin="18,12,159.2,330.2" Grid.Row="1"/>
+                    <Label x:Name="productionLabel" Content="Production" Margin="8,-12,773.2,524.2" FontWeight="Bold" FontSize="18" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2">
                         <Label.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -40,17 +45,25 @@
                             </TransformGroup>
                         </Label.RenderTransform>
                     </Label>
-                    <Button Click="OpenWindowClick" Name="addProductionBuildingButton" Content="Add Building" HorizontalAlignment="Right" Margin="0,0,10.4,140.8" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="OpenWindowClick" Name="editProductionBuildingButton" Content="Edit Building" HorizontalAlignment="Right" Margin="0,0,10.4,90.8" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="RemoveClick" Name="removeProductionBuildingButton" Content="Remove Building" HorizontalAlignment="Right" Margin="0,0,10.4,40.8" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
+                    <Button Click="OpenWindowClick" x:Name="addProductionBuildingButton" Content="Add Production" HorizontalAlignment="Right" Margin="0,0,10.2,430" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
+                    <Button Click="OpenWindowClick" x:Name="editProductionBuildingButton" Content="Edit Production" HorizontalAlignment="Right" Margin="0,0,10.2,380" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
+                    <Button Click="RemoveClick" x:Name="removeProductionBuildingButton" Content="Remove Production" HorizontalAlignment="Right" Margin="0,0,10.2,330" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
 
+                    <DataGrid SelectionChanged="DataGridSelectionChanged" AutoGenerateColumns="True" CanUserAddRows="False" Name="StorageBuildingTable" Margin="18,323,159.2,40.2" Grid.Row="1"/>
+                    <Label x:Name="storageLabel" Content="Storage" Margin="8,268,789.2,214.2" FontWeight="Bold" FontSize="20" RenderTransformOrigin="0.5,0.5" Grid.Row="1">
+                        <Label.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="-0.68"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Label.RenderTransform>
+                    </Label>
+                    <Button Click="OpenWindowClick" Name="addStorageBuildingButton" Content="Add Storage" HorizontalAlignment="Right" Margin="0,0,10.2,141" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
+                    <Button Click="OpenWindowClick" Name="editStorageBuildingButton" Content="Edit Storage" HorizontalAlignment="Right" Margin="0,0,10.2,91" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
+                    <Button Click="RemoveClick" Name="removeStorageBuildingButton" Content="Remove Storage" HorizontalAlignment="Right" Margin="0,0,10.2,41" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467" Grid.Row="1"/>
 
-                    <DataGrid SelectionChanged="DataGridSelectionChanged" AutoGenerateColumns="True" CanUserAddRows="False" Name="StorageBuildingTable" Margin="18,296,159.2,40.6"/>
-                    <Label x:Name="storageLabel" Content="Storage" Margin="834,352,-26.8,191.6" FontWeight="Bold" FontSize="22"/>
-                    <Button Click="OpenWindowClick" x:Name="addStorageBuildingButton" Content="Add Building" HorizontalAlignment="Right" Margin="0,0,10.2,430.6" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="OpenWindowClick" x:Name="editStorageBuildingButton" Content="Edit Building" HorizontalAlignment="Right" Margin="0,0,10.2,380.6" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    <Button Click="RemoveClick" x:Name="removeStorageBuildingButton" Content="Remove Building" HorizontalAlignment="Right" Margin="0,0,10.2,330.6" VerticalAlignment="Bottom" Width="107" RenderTransformOrigin="-0.237,0.467"/>
-                    
                 </Grid>
             </TabItem>
             <TabItem>

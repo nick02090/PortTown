@@ -40,7 +40,7 @@ namespace DesktopApp
 
         private void EditUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditUser(userId);
+            (Application.Current.MainWindow as AdminWindow).EditUser(userId, new User(textbox1.Text, textbox2.Text, textbox3.Text));
             this.Hide();
         }
     }

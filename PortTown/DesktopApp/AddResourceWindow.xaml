@@ -5,16 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopApp"
         mc:Ignorable="d"
-        Title="AddResourceWindow" Height="228.92" Width="301.393">
+        Title="AddResourceWindow" Height="208.595" Width="322.788">
     <Grid Margin="0,0,38.8,0">
-        <TextBox Name="textbox1" HorizontalAlignment="Left" Height="27" Margin="129,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="textbox2" HorizontalAlignment="Left" Height="27" Margin="129,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="textbox3" HorizontalAlignment="Left" Height="27" Margin="129,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <ComboBox Name="resourceTypeDropdown" Margin="129,10,-0.8,137.8">
+            <ComboBoxItem IsSelected="True">Stone</ComboBoxItem>
+            <ComboBoxItem>Wood</ComboBoxItem>
+            <ComboBoxItem>Gold</ComboBoxItem>
+            <ComboBoxItem>Food</ComboBoxItem>
+            <ComboBoxItem>Iron</ComboBoxItem>
+            <ComboBoxItem>Coal</ComboBoxItem>
+        </ComboBox>
+        <TextBox Name="textbox1" HorizontalAlignment="Left" Height="27" Margin="129,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Username" HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Height="30"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Height="31"/>
-        <Label Content="Password" HorizontalAlignment="Left" Margin="35,90,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Type" HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Height="30"/>
+        <Label Content="Quantity" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Height="31"/>
 
-        <Button Click="AddResourceClick" Name="AddResourceButton" Content="Add Resource" HorizontalAlignment="Left" Margin="71,145,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="-0.237,0.467" Height="36"/>
+        <Button Click="AddResourceClick" Name="AddResourceButton" Content="Add Resource" HorizontalAlignment="Left" Margin="82,108,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="-0.237,0.467" Height="36"/>
     </Grid>
 </Window>

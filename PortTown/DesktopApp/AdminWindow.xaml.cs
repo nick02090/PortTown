@@ -65,7 +65,7 @@ namespace DesktopApp
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Name", typeof(string));
             dc3 = new DataColumn("Capacity", typeof(int));
-            dc4 = new DataColumn("Time To Build", typeof(DateTime));
+            dc4 = new DataColumn("Time To Build", typeof(string));
             dc5 = new DataColumn("Resources To Build", typeof(string));
             dc6 = new DataColumn("Resources To Upgrade", typeof(string));
             dc7 = new DataColumn("Production Rate", typeof(float));
@@ -84,7 +84,7 @@ namespace DesktopApp
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Name", typeof(string));
             dc3 = new DataColumn("Capacity", typeof(int));
-            dc4 = new DataColumn("Time To Build", typeof(DateTime));
+            dc4 = new DataColumn("Time To Build", typeof(string));
             dc5 = new DataColumn("Resources To Build", typeof(string));
             dc6 = new DataColumn("Resources To Upgrade", typeof(string));
             dc7 = new DataColumn("Stores", typeof(string));
@@ -101,11 +101,13 @@ namespace DesktopApp
             dc1 = new DataColumn("Id", typeof(Guid));
             dc2 = new DataColumn("Name", typeof(string));
             dc3 = new DataColumn("Quality", typeof(string));
-            dc4 = new DataColumn("Required Resources", typeof(string));
+            dc4 = new DataColumn("Price", typeof(int));
+            dc5 = new DataColumn("Required Resources", typeof(string));
             itemTable.Columns.Add(dc1);
             itemTable.Columns.Add(dc2);
             itemTable.Columns.Add(dc3);
             itemTable.Columns.Add(dc4);
+            itemTable.Columns.Add(dc5);
             ItemTable.ItemsSource = itemTable.DefaultView;
 
             resourceTable = new DataTable("resources");
@@ -233,16 +235,26 @@ namespace DesktopApp
                     AddBuildingWindow addBuildingWindow = new AddBuildingWindow();
                     addBuildingWindow.Show();
                     break;
+                case "addProductionBuildingButton":
+                    //Console.WriteLine("addBuildingButton");
+                    AddProductionBuildingWindow addProductionBuildingWindow = new AddProductionBuildingWindow();
+                    addProductionBuildingWindow.Show();
+                    break;
+                case "addStorageBuildingButton":
+                    //Console.WriteLine("addBuildingButton");
+                    AddStorageBuildingWindow addStorageBuildingWindow = new AddStorageBuildingWindow();
+                    addStorageBuildingWindow.Show();
+                    break;
                 case "addItemButton":
                     //Console.WriteLine("addItemButton");
                     AddItemWindow addItemWindow = new AddItemWindow();
                     addItemWindow.Show();
                     break;
-                case "addResourceButton":
-                    //Console.WriteLine("editResourceButton");
-                    AddResourceWindow addResourceWindow = new AddResourceWindow();
-                    addResourceWindow.Show();
-                    break;
+                //case "addResourceButton":
+                //    //Console.WriteLine("editResourceButton");
+                //    AddResourceWindow addResourceWindow = new AddResourceWindow();
+                //    addResourceWindow.Show();
+                //    break;
                 case "addMarketButton":
                     //Console.WriteLine("editResourceButton");
                     AddMarketItemWindow addMarketItemWindow = new AddMarketItemWindow();
@@ -377,12 +389,12 @@ namespace DesktopApp
             dr[0] = building.Id;
             dr[1] = building.Name;
             dr[2] = building.Capacity;
-            dr[3] = building.ParentCraftable.TimeToBuild;
+            dr[3] = building.ParentCraftable.TimeToBuild.ToString("HH:mm:ss");
             string resources = "";
             var resourceList = building.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
             for (int i = 0; i < resourceList.Count; i++)
             {
-                resources += resourceList[i].ResourceType + ", ";
+                resources += resourceList[i].ResourceType + " (" + resourceList[i].Quantity + ")" + ", ";
             }
             //Console.WriteLine(resources);
             if(resources.Length > 2)
@@ -393,7 +405,7 @@ namespace DesktopApp
             resourceList = building.Upgradeable.RequiredResources.ToList<ResourceBatch>();
             for (int i = 0; i < resourceList.Count; i++)
             {
-                resources += resourceList[i].ResourceType + ", ";
+                resources += resourceList[i].ResourceType + " (" + resourceList[i].Quantity + ")" + ", ";
             }
             //Console.WriteLine(resources);
             if (resources.Length > 2)
@@ -407,6 +419,7 @@ namespace DesktopApp
             }
             else
             {
+                resources = "";
                 resourceList = building.ChildStorage.StoredResources.ToList<ResourceBatch>();
                 for (int i = 0; i < resourceList.Count; i++)
                 {
@@ -429,13 +442,14 @@ namespace DesktopApp
             dr[0] = item.Id;
             dr[1] = item.Name;
             dr[2] = item.Quality;
-            string resources = "    ";
+            string resources = "";
+            dr[3] = item.Sellable.Price;
             var resourceList = item.ParentCraftable.RequiredResources.ToList<ResourceBatch>();
             for (int i = 0; i < item.ParentCraftable.RequiredResources.Count; i++)
             {
-                resources += resourceList[i].ResourceType + ", ";
+                resources += resourceList[i].ResourceType + " (" + resourceList[i].Quantity + ")" + ", ";
             }
-            dr[3] = resources.Remove(resources.Length - 2, 2);
+            dr[4] = resources.Remove(resources.Length - 2, 2);
             itemTable.Rows.Add(dr);
             ItemTable.ItemsSource = itemTable.DefaultView;
         }
@@ -445,10 +459,10 @@ namespace DesktopApp
             return;
         }
 
-        public async void EditUser(Guid id)
+        public async void EditUser(Guid id, User user)
         {
 
-            User user = FindUserById(id);
+            //User user = FindUserById(id);
             HttpClient client = new HttpClient
             {
                 BaseAddress = new Uri(Baseurl)
@@ -461,7 +475,7 @@ namespace DesktopApp
             var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
             //Console.WriteLine(userJson);
 
-            HttpResponseMessage response = await client.PutAsync($"api/user/{user.Id}", userStringContent);
+            HttpResponseMessage response = await client.PutAsync($"api/user/{id}", userStringContent);
 
             if (response.IsSuccessStatusCode)
             {

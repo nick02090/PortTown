@@ -1,0 +1,62 @@
+﻿@model WebApp.Models.Buildings.StorageBuilding
+
+@{
+    ViewBag.Title = "StorageBuildingDetails";
+}
+
+<h2>@Html.DisplayFor(model => model.Name)</h2>
+
+<div>
+    <h4>StorageBuilding</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.DisplayNameFor(model => model.Level)
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Level)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.DisplayNameFor(model => model.Info)
+        </dt>
+
+        <dd class="col-md-4 col-sm-4">
+            @Html.DisplayFor(model => model.Info)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-md-4 col-sm-4">
+            @Html.Label("Stored resources")
+        </dt>
+
+        @foreach (var res in Model.StoredResources)
+        {
+            <dd class="col-md-4 col-sm-4">
+                @Html.Encode(res.Type.ToString()): @Html.Encode(res.Value) / @Html.Encode(Model.Capacity)
+            </dd>
+        }
+    </dl>
+    @if (Model.IsUpgradeing)
+    {
+        <dl class="row">
+            <dt class="col-md-4 col-sm-4">
+                @Html.Encode("Time to upgrade")
+            </dt>
+            <dt class="col-md-4 col-sm-4">
+                @{ var time = Model.TimeUntilUpgraded - DateTime.UtcNow; }
+                @Html.Encode(time.Hours + ":" + time.Minutes + ":" + time.Seconds)
+            </dt>
+        </dl>
+    }
+</div>
+<div class="row">
+    <div class="col-sm-1">
+        <button class="btn btn-primary" onclick="location.href='@Url.Content("/town/upgradebuilding?id=" + Model.Id)'" disabled="@(!Model.CanUpgrade)">Upgrade</button>
+    </div>
+    <div class="col-sm-1">
+        <a class="btn btn-danger" href="@Url.Content("/town?townId=" + Session["townId"])">Back</a>
+    </div>
+</div>

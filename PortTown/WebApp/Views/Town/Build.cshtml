@@ -1,0 +1,128 @@
+﻿@model WebApp.Models.TownViewModels.BuildViewModel
+
+@{
+    ViewBag.Title = "Build";
+}
+
+
+<br />
+<h2>Available buildings</h2>
+<br />
+<div>
+    <h4>Production buildings</h4>
+    <div>
+        @for (int i = 0; i < Model.Craftables.Count;)
+        {
+            <div class="row">
+                @{int j = 0;}
+                @for (int cnt = 0; cnt < 3 && i + j < Model.Craftables.Count; ++j)
+                {
+                    var item = Model.Craftables[i + j];
+                    if (item.Building is WebApp.Models.Buildings.ProductionBuilding)
+                    {
+                        ++cnt;
+                        <div class="col-md-4 col-sm-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="row">
+                                        <div class="col">
+                                            <img class="rounded-circle" src="@Url.Content(item.Building.ImagePath)" alt="Generic placeholder image" width="200" height="200" />
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="font-weight-bold">@Html.Encode(item.Building.Name)</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <dl>
+                                                <dt>Required resources</dt>
+                                                @foreach (var res in item.RequiredResources)
+                                                {
+                                                    <dd>@Html.Encode(res.Type.ToString()): @Html.Encode(res.Value)</dd>
+                                                }
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="btn btn-primary" 
+                                                    disabled="@(!item.CanCraft)" 
+                                                    onclick="location.href='@Url.Action("BuildBuilding", "Town", new {id = item.Building.Id})'">
+                                                Build
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                @{ i += j; }
+            </div>
+        }
+    </div>
+    <br />
+    <div>
+        <h4>Storage buildings</h4>
+        @for (int i = 0; i < Model.Craftables.Count; i += 3)
+        {
+            <div class="row">
+                @{ int j = 0; }
+                @for (int cnt = 0; cnt < 3 && i + j < Model.Craftables.Count; ++j)
+                {
+                    var item = Model.Craftables[i + j];
+                    if (item.Building is WebApp.Models.Buildings.StorageBuilding)
+                    {
+                        ++cnt;
+                        <div class="col-md-4 col-sm-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="row">
+                                        <div class="col">
+                                            <img class="rounded-circle" src="@Url.Content(item.Building.ImagePath)" alt="Generic placeholder image" width="200" height="200" />
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="font-weight-bold">@Html.Encode(item.Building.Name)</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <dl>
+                                                <dt>Required resources</dt>
+                                                @foreach (var res in item.RequiredResources)
+                                                {
+                                                    <dd>@Html.Encode(res.Type.ToString()): @Html.Encode(res.Value)</dd>
+                                                }
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="btn btn-primary"
+                                                    disabled="@(!item.CanCraft)"
+                                                    onclick="location.href='@Url.Action("BuildBuilding", "Town", new {id = item.Building.Id})'">
+                                                Build
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                @{ i += j; }
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <br />
+    <input type="button" class="btn btn-primary" value="Back to my town" onclick="location.href = '@Url.Action("Index", "Town", new { townID = Session["townId"] })'" />
+</div>

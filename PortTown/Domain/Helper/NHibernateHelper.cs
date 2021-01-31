@@ -9,7 +9,7 @@ namespace Domain.Helper
     public sealed class NHibernateHelper
     {
         //private static readonly string pathToDB = "C:\\Users\\Korisnik\\source\\repos\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
-        private static readonly string pathToDB = "C:\\Users\\Nikola\\Documents\\GitHub\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
+        private static readonly string pathToDB = "C:\\Users\\forec\\FER\\OO\\PortTown\\PortTown\\Domain\\PortTownDb.mdf";
         private static readonly bool deleteShemaOnStart = true;
 
         private const string CurrentSessionKey = "nhibernate.current_session";

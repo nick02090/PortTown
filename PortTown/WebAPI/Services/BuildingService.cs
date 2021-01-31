@@ -83,23 +83,7 @@ namespace WebAPI.Services
             var newBuildings = new List<Building>();
             foreach (var building in buildings)
             {
-                var newBuilding = await UpdateJobs(building);
-                var craftableCosts = await ResourceBatchRepository.GetByCraftableAsync(newBuilding.ParentCraftable.Id);
-                newBuilding.ParentCraftable.RequiredResources = craftableCosts.ToList();
-                var upgradeableCosts = await ResourceBatchRepository.GetByUpgradeableAsync(newBuilding.Upgradeable.Id);
-                newBuilding.Upgradeable.RequiredResources = upgradeableCosts.ToList();
-                if (newBuilding.BuildingType == BuildingType.Production)
-                {
-                    // get production child
-                    var productionChild = await ProductionBuildingRepository.GetByBuildingAsync(newBuilding.Id);
-                    newBuilding.ChildProductionBuilding = productionChild;
-                }
-                else
-                {
-                    // get storage child
-                    var storageChild = await StorageRepository.GetByBuildingAsync(newBuilding.Id);
-                    newBuilding.ChildStorage = storageChild;
-                }
+                var newBuilding = await GetBuilding(building.Id);
                 newBuildings.Add(newBuilding);
             }
             return newBuildings;

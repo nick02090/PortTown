@@ -54,11 +54,13 @@ namespace DesktopApp
             dc3 = new DataColumn("Email", typeof(string));
             dc4 = new DataColumn("Password", typeof(string));
             dc5 = new DataColumn("Town", typeof(string));
+            dc6 = new DataColumn("Town Level", typeof(int));
             userTable.Columns.Add(dc1);
             userTable.Columns.Add(dc2);
             userTable.Columns.Add(dc3);
             userTable.Columns.Add(dc4);
             userTable.Columns.Add(dc5);
+            userTable.Columns.Add(dc6);
             UserTable.ItemsSource = userTable.DefaultView;
 
             productionBuildingTable = new DataTable("productionBuildings");
@@ -262,7 +264,8 @@ namespace DesktopApp
                     break;
                 case "editUserButton":
                     //Console.WriteLine("editUserButton");
-                    EditUserWindow editUserWindow = new EditUserWindow();
+                    var selectedRow = GetSelectedRows(UserTable)[0].Row;
+                    EditUserWindow editUserWindow = new EditUserWindow(FindUserById((Guid)selectedRow[0]));
                     editUserWindow.Show();
                     break;
                 case "editBuildingButton":
@@ -366,6 +369,7 @@ namespace DesktopApp
             dr[2] = user.Email;
             dr[3] = "*********";
             dr[4] = user.Town.Name;
+            dr[5] = user.Town.Level;
             userTable.Rows.Add(dr);
             UserTable.ItemsSource = userTable.DefaultView;
         }
@@ -459,7 +463,7 @@ namespace DesktopApp
             return;
         }
 
-        public async void EditUser(Guid id, User user)
+        public async Task<User> EditUser(User oldUser, User newUser)
         {
 
             //User user = FindUserById(id);
@@ -471,22 +475,27 @@ namespace DesktopApp
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var userJson = JsonConvert.SerializeObject(user);
+            var userJson = JsonConvert.SerializeObject(newUser);
             var userStringContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+
+            var townJson = JsonConvert.SerializeObject(oldUser.Town);
+            var townStringContent = new StringContent(townJson, Encoding.UTF8, "application/json");
             //Console.WriteLine(userJson);
 
-            HttpResponseMessage response = await client.PutAsync($"api/user/{id}", userStringContent);
+            HttpResponseMessage response1 = await client.PutAsync($"api/town/{oldUser.Town.Id}", townStringContent);
+            HttpResponseMessage response2 = await client.PutAsync($"api/user/{oldUser.Id}", userStringContent);
 
-            if (response.IsSuccessStatusCode)
+            if (response2.IsSuccessStatusCode && response1.IsSuccessStatusCode)
             {
                 //Storing the response details recieved from web api   
-                var responseResult = response.Content.ReadAsStringAsync().Result;
+                var responseResult = response1.Content.ReadAsStringAsync().Result;
                 await GetUsers();
             }
             else
             {
-                System.Windows.MessageBox.Show("Error Code" + response.StatusCode + " : Message - " + response.ReasonPhrase);
+                System.Windows.MessageBox.Show("Error Code" + response1.StatusCode + " : Message - " + response1.ReasonPhrase);
             }
+            return FindUserById(oldUser.Id);
         }
 
         public List<DataRowView> GetSelectedRows(System.Windows.Controls.DataGrid grid)

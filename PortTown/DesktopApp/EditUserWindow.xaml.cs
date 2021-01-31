@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DesktopApp.Models;
+using System.Net.Http;
 namespace DesktopApp
 {
     /// <summary>
@@ -20,27 +21,33 @@ namespace DesktopApp
     /// </summary>
     public partial class EditUserWindow : Window
     {
-        public Guid userId;
-        public EditUserWindow()
+        //public Guid userId;
+        public User User;
+        public EditUserWindow(User user)
         {
             InitializeComponent();
+            User = user;
         }
 
         private void EditUserWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).UserTable)[0].Row;
+            //var selectedRow = (Application.Current.MainWindow as AdminWindow).GetSelectedRows((Application.Current.MainWindow as AdminWindow).UserTable)[0].Row;
 
-            userId = (Guid)selectedRow[0];
-            textbox1.Text = selectedRow[1].ToString();
-            textbox2.Text = selectedRow[2].ToString();
+            //userId = (Guid)selectedRow[0];
+            textbox1.Text = User.Username;
+            textbox2.Text = User.Email;
             //textbox3.Text = selectedRow[3].ToString();
             textbox3.Text = "";
-            textbox4.Text = selectedRow[4].ToString();
+            textbox4.Text = User.Town.Name;
+            textbox5.Text = User.Town.Level.ToString();
         }
 
-        private void EditUserClick(object sender, RoutedEventArgs e)
+        private async void EditUserClick(object sender, RoutedEventArgs e)
         {
-            (Application.Current.MainWindow as AdminWindow).EditUser(userId, new User(textbox1.Text, textbox2.Text, textbox3.Text));
+            //Town newTown = new Town();
+            User.Town.Name = textbox4.Text;
+            User.Town.Level = Int32.Parse(textbox5.Text);
+            await (Application.Current.MainWindow as AdminWindow).EditUser(User, new User(textbox1.Text, textbox2.Text, textbox3.Text));
             this.Hide();
         }
     }

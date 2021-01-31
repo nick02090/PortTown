@@ -11,5 +11,7 @@ namespace WebAPI.Interfaces
         Task<JSONFormatter> CheckAvailability(string email, Guid userId);
         Task<User> CreateUserWithTown(User user, string townName);
         Task Logout(string token);
+
+        Task DeleteUserWithTownAsync(Guid userId);
     }
 }

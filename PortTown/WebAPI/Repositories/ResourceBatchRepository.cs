@@ -35,9 +35,8 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(ResourceBatch entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -69,7 +68,7 @@ namespace WebAPI.Repositories
                 {
                     resourceBatches = await session
                         .Query<ResourceBatch>()
-                        .Where(x => x.Sellable.Id == null)
+                        .Where(x => x.Sellable == null)
                         .Select(x => new ResourceBatch
                         {
                             Id = x.Id,
@@ -99,7 +98,7 @@ namespace WebAPI.Repositories
                     resourceBatch = await session
                         .Query<ResourceBatch>()
                         .Where(x => x.Id == id)
-                        .Where(x => x.Sellable.Id == null)
+                        .Where(x => x.Sellable == null)
                         .Select(x => new ResourceBatch
                         {
                             Id = x.Id,
@@ -162,6 +161,35 @@ namespace WebAPI.Repositories
                     resourceBatches = await session
                         .Query<ResourceBatch>()
                         .Where(x => x.Upgradeable.Id == upgradeableId)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id,
+                            ResourceType = x.ResourceType,
+                            Quantity = x.Quantity
+                        })
+                        .ToListAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatches;
+        }
+
+        public async Task<IEnumerable<ResourceBatch>> GetByStorageAsync(Guid storageId)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            List<ResourceBatch> resourceBatches = new List<ResourceBatch>();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatches = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Storage.Id == storageId)
                         .Select(x => new ResourceBatch
                         {
                             Id = x.Id,
@@ -270,6 +298,33 @@ namespace WebAPI.Repositories
             }
 
             return entity;
+        }
+
+        public async Task<ResourceBatch> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            ResourceBatch resourceBatch = new ResourceBatch();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    resourceBatch = await session
+                        .Query<ResourceBatch>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new ResourceBatch
+                        {
+                            Id = x.Id
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return resourceBatch;
         }
     }
 }

@@ -36,9 +36,9 @@ namespace WebAPI.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+
+        public async Task DeleteAsync(Craftable entity)
         {
-            var entity = await GetAsync(id);
             ISession session = NHibernateHelper.GetCurrentSession();
 
             try
@@ -116,6 +116,33 @@ namespace WebAPI.Repositories
                             {
                                 Id = y.Id
                             }).ToList()
+                        })
+                        .SingleOrDefaultAsync();
+
+                    await tx.CommitAsync();
+                }
+            }
+            finally
+            {
+                NHibernateHelper.CloseSession();
+            }
+            return craftable;
+        }
+
+        public async Task<Craftable> GetForDeleteAsync(Guid id)
+        {
+            ISession session = NHibernateHelper.GetCurrentSession();
+            Craftable craftable = new Craftable();
+            try
+            {
+                using (var tx = session.BeginTransaction())
+                {
+                    craftable = await session
+                        .Query<Craftable>()
+                        .Where(x => x.Id == id)
+                        .Select(x => new Craftable
+                        {
+                            Id = x.Id
                         })
                         .SingleOrDefaultAsync();
 
